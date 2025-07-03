@@ -58,12 +58,12 @@ enum SocialMediaPlatform: String, Decodable {
     case X
 }
 
-enum Day: String, Decodable {
+enum Day: String, Decodable, CaseIterable {
+    case Sunday
     case Monday
     case Tuesday
     case Wednesday
     case Thursday
     case Friday
     case Saturday
-    case Sunday
 }

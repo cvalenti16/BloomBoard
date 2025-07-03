@@ -11,6 +11,14 @@ struct SkeletonListView: View {
     var socialPost: [SocialPost]
     var day: Day
     
+    let rowHeight: CGFloat = 70
+    let maxHeight: CGFloat = 325
+    
+    var listHeight: CGFloat {
+        let totalHeight = rowHeight * CGFloat(filteredPost.count)
+        return min(totalHeight,maxHeight)
+    }
+    
     var filteredPost: [SocialPost] {
         socialPost.filter { $0.postDay == day}
     }
@@ -22,7 +30,7 @@ struct SkeletonListView: View {
                 .font(.largeTitle)
             
             if (filteredPost.isEmpty) {
-                Text("Rest Day")
+                Text(UIStrings.restDayString.rawValue)
                     .padding()
                     .padding(.top, -20)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -35,7 +43,7 @@ struct SkeletonListView: View {
                     
                 }
                 .listStyle(.plain)
-                .frame(height: 210)
+                .frame(height: listHeight)
             }
         }
     }
