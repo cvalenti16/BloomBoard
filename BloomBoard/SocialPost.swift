@@ -40,7 +40,6 @@ struct SocialPost: Decodable, Identifiable {
             SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.X, postDay: Day.Friday),
             SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.Reddit, postDay: Day.Friday),
             
-            SocialPost(postType: PostType.TextPost, platform: SocialMediaPlatform.X, postDay: Day.Saturday)
         ]
     }
 }
