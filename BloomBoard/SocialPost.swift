@@ -45,11 +45,11 @@ struct SocialPost: Decodable, Identifiable {
 }
 
 enum PostType: String, Decodable {
-    case LongFormVideo
-    case ShortFormVideo
-    case ImagePost
-    case QuizPost
-    case TextPost
+    case LongFormVideo = "Long Form Video"
+    case ShortFormVideo = "Short Form Video"
+    case ImagePost = "Image Post"
+    case QuizPost = "Quiz Post"
+    case TextPost = "Text Post"
 }
 
 enum SocialMediaPlatform: String, Decodable {

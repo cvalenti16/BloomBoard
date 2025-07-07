@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct BasePlanView: View {
     var socialPosts = SocialPost.skeletonWeekExample
     
     var body: some View {
@@ -17,9 +17,11 @@ struct HomeView: View {
                 SkeletonListView(socialPost: socialPosts, day: day)
             }
         }
+        .scrollIndicators(.hidden)
+
     }
 }
 
 #Preview {
-    HomeView()
+    BasePlanView()
 }

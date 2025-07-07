@@ -17,6 +17,7 @@ struct SkeletonPostView: View {
                 .font(.title3)
                 
             Text(socialPost.postType.rawValue)
+                .font(.subheadline)
               
         }
     }

@@ -20,7 +20,9 @@ struct SkeletonListView: View {
     }
     
     var filteredPost: [SocialPost] {
-        socialPost.filter { $0.postDay == day}
+        socialPost
+            .filter { $0.postDay == day}
+            .sorted { $0.platform.rawValue < $1.platform.rawValue}
     }
     
     var body: some View {
@@ -28,16 +30,18 @@ struct SkeletonListView: View {
             Text(day.rawValue)
                 .padding()
                 .font(.largeTitle)
+                .bold()
+            
+            
             
             if (filteredPost.isEmpty) {
                 Text(UIStrings.restDayString.rawValue)
                     .padding()
                     .padding(.top, -20)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
-                    
-            } else {
                 
+                
+            } else {
                 List (filteredPost) { post in
                     SkeletonPostView(socialPost: post)
                     
