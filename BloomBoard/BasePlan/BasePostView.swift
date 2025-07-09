@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SkeletonPostView: View {
+struct BasePostView: View {
     var socialPost: SocialPost
     
     var body: some View {
@@ -18,11 +18,10 @@ struct SkeletonPostView: View {
                 
             Text(socialPost.postType.rawValue)
                 .font(.subheadline)
-              
         }
     }
 }
 
 #Preview {
-    SkeletonPostView(socialPost: SocialPost.skeletonWeekExample[0])
+    BasePostView(socialPost: SocialPost.skeletonWeekExample[0])
 }

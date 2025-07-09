@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SkeletonListView: View {
+struct BasePostListView: View {
     var socialPost: [SocialPost]
     var day: Day
     
@@ -43,7 +43,7 @@ struct SkeletonListView: View {
                 
             } else {
                 List (filteredPost) { post in
-                    SkeletonPostView(socialPost: post)
+                    BasePostView(socialPost: post)
                     
                 }
                 .listStyle(.plain)
@@ -54,5 +54,5 @@ struct SkeletonListView: View {
 }
 
 #Preview {
-    SkeletonListView(socialPost: SocialPost.skeletonWeekExample, day: Day.Saturday)
+    BasePostListView(socialPost: SocialPost.skeletonWeekExample, day: Day.Saturday)
 }

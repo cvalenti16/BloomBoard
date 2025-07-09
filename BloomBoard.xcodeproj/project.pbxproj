@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		833DCF212E131A8B00CE88FA /* BloomBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BloomBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		833DCF212E131A8B00CE88FA /* BloomBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = BloomBoard.app; path = "/Users/cvalenti16/Documents/IOS Projects/BloomBoard/BloomBoard/build/Debug-iphoneos/BloomBoard.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				833DCF232E131A8B00CE88FA /* BloomBoard */,
-				833DCF222E131A8B00CE88FA /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		833DCF222E131A8B00CE88FA /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				833DCF212E131A8B00CE88FA /* BloomBoard.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +86,7 @@
 			mainGroup = 833DCF182E131A8B00CE88FA;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 833DCF222E131A8B00CE88FA /* Products */;
+			productRefGroup = 833DCF182E131A8B00CE88FA;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
