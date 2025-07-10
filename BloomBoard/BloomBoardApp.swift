@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct BloomBoardApp: App {
@@ -14,6 +15,6 @@ struct BloomBoardApp: App {
             ContentView()
                 .preferredColorScheme(.dark)
         }
-        
+        .modelContainer(for: SocialPost.self)
     }
 }

@@ -6,45 +6,29 @@
 //
 
 import Foundation
+import SwiftData
 
-struct SocialPost: Decodable, Identifiable {
-    var id = UUID().description
+
+@Model
+class SocialPost: Identifiable {
+    @Attribute(.unique) var id = UUID().description
     var title: String?
-    var description: String?
+    var postDescription: String?
     var postType: PostType
     var platform: SocialMediaPlatform
     var postDay: Day
     
-    static var skeletonWeekExample: [SocialPost] {
-        [
-            SocialPost(postType: PostType.LongFormVideo, platform: SocialMediaPlatform.Youtube, postDay: Day.Sunday),
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.X, postDay: Day.Sunday),
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.Reddit, postDay: Day.Sunday),
-            
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.Reddit, postDay: Day.Monday),
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.X, postDay: Day.Monday),
-            SocialPost(postType: PostType.ShortFormVideo, platform: SocialMediaPlatform.Youtube, postDay: Day.Monday),
-            
-            SocialPost(postType: PostType.ShortFormVideo, platform: SocialMediaPlatform.Youtube, postDay: Day.Tuesday),
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.X, postDay: Day.Tuesday),
-            
-            
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.Reddit, postDay: Day.Wednesday),
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.X, postDay: Day.Wednesday),
-            SocialPost(postType: PostType.ShortFormVideo, platform: SocialMediaPlatform.Youtube, postDay: Day.Wednesday),
-            
-            
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.X, postDay: Day.Thursday),
-            SocialPost(postType: PostType.QuizPost, platform: SocialMediaPlatform.Youtube, postDay: Day.Thursday),
-            
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.X, postDay: Day.Friday),
-            SocialPost(postType: PostType.ImagePost, platform: SocialMediaPlatform.Reddit, postDay: Day.Friday),
-            
-        ]
+    init(id: String = UUID().description, title: String? = nil, postDescription: String? = nil, postType: PostType, platform: SocialMediaPlatform, postDay: Day) {
+        self.id = id
+        self.title = title
+        self.postDescription = postDescription
+        self.postType = postType
+        self.platform = platform
+        self.postDay = postDay
     }
 }
 
-enum PostType: String, Decodable,CaseIterable {
+enum PostType: String, CaseIterable,Codable {
     case LongFormVideo = "Long Form Video"
     case ShortFormVideo = "Short Form Video"
     case ImagePost = "Image Post"
@@ -52,13 +36,13 @@ enum PostType: String, Decodable,CaseIterable {
     case TextPost = "Text Post"
 }
 
-enum SocialMediaPlatform: String, Decodable, CaseIterable {
+enum SocialMediaPlatform: String, CaseIterable,Codable {
     case Reddit
     case Youtube
     case X
 }
 
-enum Day: String, Decodable, CaseIterable {
+enum Day: String, CaseIterable,Codable {
     case Sunday
     case Monday
     case Tuesday

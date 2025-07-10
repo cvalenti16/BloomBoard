@@ -27,32 +27,40 @@ struct BasePostListView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(day.rawValue)
-                .padding()
-                .font(.largeTitle)
-                .bold()
             
-            
-            
-            if (filteredPost.isEmpty) {
-                Text(UIStrings.restDayString.rawValue)
+            if(!filteredPost.isEmpty) {
+                Text(day.rawValue)
                     .padding()
-                    .padding(.top, -20)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(.largeTitle)
+                    .bold()
                 
                 
-            } else {
                 List (filteredPost) { post in
                     BasePostView(socialPost: post)
                     
                 }
                 .listStyle(.plain)
                 .frame(height: listHeight)
+                
             }
+            
+            
+        
+//            if (filteredPost.isEmpty) {
+//                Text(UIStrings.restDayString.rawValue)
+//                    .padding()
+//                    .padding(.top, -20)
+//                    .frame(maxWidth: .infinity, alignment: .leading)
+//                
+//                
+//            } else {
+//                List (filteredPost) { post in
+//                    BasePostView(socialPost: post)
+//                    
+//                }
+//                .listStyle(.plain)
+//                .frame(height: listHeight)
+//            }
         }
     }
-}
-
-#Preview {
-    BasePostListView(socialPost: SocialPost.skeletonWeekExample, day: Day.Saturday)
 }

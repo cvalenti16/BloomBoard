@@ -21,7 +21,3 @@ struct BasePostView: View {
         }
     }
 }
-
-#Preview {
-    BasePostView(socialPost: SocialPost.skeletonWeekExample[0])
-}
