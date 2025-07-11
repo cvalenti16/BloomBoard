@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct BasePostListView: View {
+    @Environment(\.modelContext) var modelContext
+    
     var socialPost: [SocialPost]
     var day: Day
     
@@ -26,6 +28,7 @@ struct BasePostListView: View {
     }
     
     var body: some View {
+        
         VStack(alignment: .leading) {
             
             if(!filteredPost.isEmpty) {
@@ -37,30 +40,19 @@ struct BasePostListView: View {
                 
                 List (filteredPost) { post in
                     BasePostView(socialPost: post)
-                    
+                        .swipeActions(edge: .trailing) {
+                            Button {
+                                modelContext.delete(post)
+                            } label: {
+                                Image(systemName: UIIcons.trashIcon.rawValue)
+                                    .tint(.red)
+                            }
+                        }
                 }
                 .listStyle(.plain)
                 .frame(height: listHeight)
-                
             }
-            
-            
-        
-//            if (filteredPost.isEmpty) {
-//                Text(UIStrings.restDayString.rawValue)
-//                    .padding()
-//                    .padding(.top, -20)
-//                    .frame(maxWidth: .infinity, alignment: .leading)
-//                
-//                
-//            } else {
-//                List (filteredPost) { post in
-//                    BasePostView(socialPost: post)
-//                    
-//                }
-//                .listStyle(.plain)
-//                .frame(height: listHeight)
-//            }
         }
     }
 }
+

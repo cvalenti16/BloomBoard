@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct AddBasePostView: View {
-    @Environment(\.dismiss) var dismiss
-    
     @State private var selectedPlatform: SocialMediaPlatform = .Youtube
     @State private var selectedPostType: PostType = .LongFormVideo
     @State private var selectedDay: Day = .Sunday
+    
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
     
     var body: some View {
         NavigationStack {
@@ -50,6 +51,9 @@ struct AddBasePostView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
+                        let newBasePost = SocialPost(postType: selectedPostType, platform: selectedPlatform, postDay: selectedDay)
+                        modelContext.insert(newBasePost)
+                        dismiss()
                         
                     } label: {
                         Text(UIStrings.saveString.rawValue)

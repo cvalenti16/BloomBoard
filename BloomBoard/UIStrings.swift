@@ -21,6 +21,7 @@ enum UIStrings: String {
 
 enum UIIcons: String {
     case addIcon = "plus"
+    case trashIcon = "trash"
 }
 
 
