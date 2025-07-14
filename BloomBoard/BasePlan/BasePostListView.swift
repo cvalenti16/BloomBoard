@@ -10,6 +10,9 @@ import SwiftUI
 struct BasePostListView: View {
     @Environment(\.modelContext) var modelContext
     
+    @State private var postToDelete: SocialPost?
+    @State private var showDeleteAlert = false
+    
     var socialPost: [SocialPost]
     var day: Day
     
@@ -42,7 +45,8 @@ struct BasePostListView: View {
                     BasePostView(socialPost: post)
                         .swipeActions(edge: .trailing) {
                             Button {
-                                modelContext.delete(post)
+                                postToDelete = post
+                                showDeleteAlert.toggle()
                             } label: {
                                 Image(systemName: UIIcons.trashIcon.rawValue)
                                     .tint(.red)
@@ -51,6 +55,17 @@ struct BasePostListView: View {
                 }
                 .listStyle(.plain)
                 .frame(height: listHeight)
+            }
+                
+        }
+        .alert(UIStrings.removeBasePost.rawValue, isPresented: $showDeleteAlert) {
+            Button(UIStrings.deleteString.rawValue, role: .destructive) {
+                if let post = postToDelete {
+                    modelContext.delete(post)
+                }
+            }
+            Button(UIStrings.cancelString.rawValue, role: .cancel) {
+                postToDelete = nil
             }
         }
     }

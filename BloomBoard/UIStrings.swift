@@ -17,6 +17,8 @@ enum UIStrings: String {
     case saveString = "Save"
     case basePlanEmpty = "Build Your Base Plan"
     case startString = "Start"
+    case removeBasePost = "Remove Base Post"
+    case deleteString = "Delete"
 }
 
 enum UIIcons: String {

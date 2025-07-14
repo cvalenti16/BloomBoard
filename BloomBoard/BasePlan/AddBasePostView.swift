@@ -18,6 +18,12 @@ struct AddBasePostView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Picker(UIStrings.day.rawValue, selection: $selectedDay) {
+                    ForEach(Day.allCases, id: \.self) { day in
+                        Text(day.rawValue)
+                    }
+                }
+                
                 Picker(UIStrings.platformString.rawValue, selection: $selectedPlatform) {
                     ForEach(SocialMediaPlatform.allCases, id: \.self) { platform in
                         Text(platform.rawValue)
@@ -25,14 +31,8 @@ struct AddBasePostView: View {
                 }
                 
                 Picker(UIStrings.postType.rawValue, selection: $selectedPostType) {
-                    ForEach(PostType.allCases, id: \.self) { platform in
-                        Text(platform.rawValue)
-                    }
-                }
-                
-                Picker(UIStrings.day.rawValue, selection: $selectedDay) {
-                    ForEach(Day.allCases, id: \.self) { platform in
-                        Text(platform.rawValue)
+                    ForEach(PostType.allCases, id: \.self) { postType in
+                        Text(postType.rawValue)
                     }
                 }
             }
