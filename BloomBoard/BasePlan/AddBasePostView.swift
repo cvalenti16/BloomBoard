@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddBasePostView: View {
     @State private var selectedPlatform: SocialMediaPlatform = .Youtube
-    @State private var selectedPostType: PostType = .LongFormVideo
+    @State private var selectedPostType: PostType = .ImagePost
     @State private var selectedDay: Day = .Sunday
     
     @Environment(\.dismiss) var dismiss
@@ -31,7 +31,7 @@ struct AddBasePostView: View {
                 }
                 
                 Picker(UIStrings.postType.rawValue, selection: $selectedPostType) {
-                    ForEach(PostType.allCases, id: \.self) { postType in
+                    ForEach(selectedPlatform.availablePostTypes, id: \.self) { postType in
                         Text(postType.rawValue)
                     }
                 }

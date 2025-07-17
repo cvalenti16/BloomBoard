@@ -31,15 +31,12 @@ struct BasePostListView: View {
     }
     
     var body: some View {
-        
         VStack(alignment: .leading) {
-            
             if(!filteredPost.isEmpty) {
                 Text(day.rawValue)
                     .padding()
                     .font(.largeTitle)
                     .bold()
-                
                 
                 List (filteredPost) { post in
                     BasePostView(socialPost: post)
@@ -56,7 +53,6 @@ struct BasePostListView: View {
                 .listStyle(.plain)
                 .frame(height: listHeight)
             }
-                
         }
         .alert(UIStrings.removeBasePost.rawValue, isPresented: $showDeleteAlert) {
             Button(UIStrings.deleteString.rawValue, role: .destructive) {

@@ -34,12 +34,24 @@ enum PostType: String, CaseIterable,Codable {
     case ImagePost = "Image Post"
     case QuizPost = "Quiz Post"
     case TextPost = "Text Post"
+    case CrossPost = "Cross Post"
 }
 
 enum SocialMediaPlatform: String, CaseIterable,Codable {
     case Reddit
     case Youtube
     case X
+    
+    var availablePostTypes: [PostType] {
+        switch self {
+        case .Reddit:
+            return [.ImagePost, .TextPost, .CrossPost]
+        case .Youtube:
+            return [.ImagePost, .LongFormVideo, .ShortFormVideo, .QuizPost]
+        case .X:
+            return [.ImagePost, .TextPost]
+        }
+    }
 }
 
 enum Day: String, CaseIterable,Codable {

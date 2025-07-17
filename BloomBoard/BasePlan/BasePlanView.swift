@@ -19,7 +19,6 @@ struct BasePlanView: View {
                 VStack {
                     Text(UIStrings.basePlanEmpty.rawValue)
                         .font(.title3)
-
                     
                     Button {
                         showAddSheet.toggle()
@@ -32,11 +31,8 @@ struct BasePlanView: View {
                             .foregroundStyle(.white)
                             .clipShape(.rect(cornerRadius: 10))
                             .padding()
-    
                     }
                 }
-                
-
             } else {
                 ScrollView {
                     ForEach(Day.allCases, id: \.self) { day in
