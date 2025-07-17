@@ -8,12 +8,20 @@
 import SwiftUI
 
 struct AddBasePostView: View {
-    @State private var selectedPlatform: SocialMediaPlatform = .Youtube
-    @State private var selectedPostType: PostType = .ImagePost
-    @State private var selectedDay: Day = .Sunday
+    @State private var selectedPlatform: SocialMediaPlatform
+    @State private var selectedPostType: PostType
+    @State private var selectedDay: Day
+    var existingPost: SocialPost?
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
+    
+    init(existingPost: SocialPost? = nil) {
+        _selectedPlatform = State(initialValue: existingPost?.platform ?? . Youtube)
+        _selectedPostType = State(initialValue: existingPost?.postType ?? .ImagePost)
+        _selectedDay = State(initialValue: existingPost?.postDay ?? .Sunday)
+        self.existingPost = existingPost
+    }
     
     var body: some View {
         NavigationStack {
@@ -37,7 +45,7 @@ struct AddBasePostView: View {
                 }
             }
             .scrollDisabled(true)
-            .navigationTitle(UIStrings.addBasePost.rawValue)
+            .navigationTitle(existingPost == nil ? UIStrings.addBasePost.rawValue : UIStrings.editBasePost.rawValue)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -51,9 +59,22 @@ struct AddBasePostView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        let newBasePost = SocialPost(postType: selectedPostType, platform: selectedPlatform, postDay: selectedDay)
-                        modelContext.insert(newBasePost)
-                        dismiss()
+                        if let post = existingPost {
+                            post.platform = selectedPlatform
+                            post.postType = selectedPostType
+                            post.postDay = selectedDay
+                            
+                            try? modelContext.save()
+                            dismiss()
+                            
+                        } else {
+                            let newBasePost = SocialPost(postType: selectedPostType, platform: selectedPlatform, postDay: selectedDay)
+                            modelContext.insert(newBasePost)
+                            dismiss()
+                        }
+                        
+                        
+                        
                         
                     } label: {
                         Text(UIStrings.saveString.rawValue)

@@ -11,6 +11,7 @@ struct BasePostListView: View {
     @Environment(\.modelContext) var modelContext
     
     @State private var postToDelete: SocialPost?
+    @State private var postToEdit: SocialPost?
     @State private var showDeleteAlert = false
     
     var socialPost: [SocialPost]
@@ -39,16 +40,20 @@ struct BasePostListView: View {
                     .bold()
                 
                 List (filteredPost) { post in
-                    BasePostView(socialPost: post)
-                        .swipeActions(edge: .trailing) {
-                            Button {
-                                postToDelete = post
-                                showDeleteAlert.toggle()
-                            } label: {
-                                Image(systemName: UIIcons.trashIcon.rawValue)
-                                    .tint(.red)
-                            }
+                    Button {
+                        postToEdit = post
+                    } label: {
+                        BasePostView(socialPost: post)
+                    }
+                    .swipeActions(edge: .trailing) {
+                        Button {
+                            postToDelete = post
+                            showDeleteAlert.toggle()
+                        } label: {
+                            Image(systemName: UIIcons.trashIcon.rawValue)
+                                .tint(.red)
                         }
+                    }
                 }
                 .listStyle(.plain)
                 .frame(height: listHeight)
@@ -63,6 +68,9 @@ struct BasePostListView: View {
             Button(UIStrings.cancelString.rawValue, role: .cancel) {
                 postToDelete = nil
             }
+        }
+        .sheet(item: $postToEdit) { post in
+            AddBasePostView(existingPost: post)
         }
     }
 }
