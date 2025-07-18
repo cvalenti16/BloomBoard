@@ -55,6 +55,7 @@ struct BasePostListView: View {
                         }
                     }
                 }
+                .scrollDisabled(true)
                 .listStyle(.plain)
                 .frame(height: listHeight)
             }
