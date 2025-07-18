@@ -17,13 +17,13 @@ struct BasePlanView: View {
         NavigationStack {
             if (socialPosts.isEmpty) {
                 VStack {
-                    Text(UIStrings.basePlanEmpty.rawValue)
+                    Text(UIStrings.basePlanEmpty)
                         .font(.title3)
                     
                     Button {
                         showAddSheet.toggle()
                     } label: {
-                        Text(UIStrings.startString.rawValue)
+                        Text(UIStrings.startString)
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
@@ -45,7 +45,7 @@ struct BasePlanView: View {
                         Button {
                             showAddSheet.toggle()
                         } label: {
-                            Image(systemName: UIIcons.addIcon.rawValue)
+                            Image(systemName: UIIcons.addIcon)
                                 .foregroundStyle(.white)
                         }
                     }

@@ -50,7 +50,7 @@ struct BasePostListView: View {
                             postToDelete = post
                             showDeleteAlert.toggle()
                         } label: {
-                            Image(systemName: UIIcons.trashIcon.rawValue)
+                            Image(systemName: UIIcons.trashIcon)
                                 .tint(.red)
                         }
                     }
@@ -59,13 +59,13 @@ struct BasePostListView: View {
                 .frame(height: listHeight)
             }
         }
-        .alert(UIStrings.removeBasePost.rawValue, isPresented: $showDeleteAlert) {
-            Button(UIStrings.deleteString.rawValue, role: .destructive) {
+        .alert(UIStrings.removeBasePost, isPresented: $showDeleteAlert) {
+            Button(UIStrings.deleteString, role: .destructive) {
                 if let post = postToDelete {
                     modelContext.delete(post)
                 }
             }
-            Button(UIStrings.cancelString.rawValue, role: .cancel) {
+            Button(UIStrings.cancelString, role: .cancel) {
                 postToDelete = nil
             }
         }

@@ -11,18 +11,16 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TabView {
-                Tab(UIStrings.basePlanString.rawValue, systemImage: UIIcons.plan.rawValue) {
+                Tab(UIStrings.basePlanString,
+                    systemImage: UIIcons.basePlan) {
                     BasePlanView()
                 }
                 
-                Tab(UIStrings.postString.rawValue, systemImage: UIIcons.posts.rawValue) {
-                    Text("Hello World")
+                Tab(UIStrings.postString,
+                    systemImage: UIIcons.posts) {
+                   PostView()
                 }
-                
-                
             }
-            
-    
         }
     }
 }

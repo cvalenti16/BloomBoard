@@ -7,28 +7,27 @@
 
 import Foundation
 
-enum UIStrings: String {
-    case restDayString = "Rest Day"
-    case platformString = "Platform"
-    case postType = "Post Type"
-    case day = "Day"
-    case addBasePost = "Add Base Post"
-    case cancelString = "Cancel"
-    case saveString = "Save"
-    case basePlanEmpty = "Build Your Base Plan"
-    case startString = "Start"
-    case removeBasePost = "Remove Base Post"
-    case deleteString = "Delete"
-    case editBasePost = "Edit Base Post"
-    case basePlanString = "Base Plan"
-    case postString = "Posts"
+struct UIStrings {
+    static let platformString = "Platform"
+    static let postType = "Post Type"
+    static let day = "Day"
+    static let addBasePost = "Add Base Post"
+    static let cancelString = "Cancel"
+    static let saveString = "Save"
+    static let basePlanEmpty = "Build Your Base Plan"
+    static let startString = "Start"
+    static let removeBasePost = "Remove Base Post"
+    static let deleteString = "Delete"
+    static let editBasePost = "Edit Base Post"
+    static let basePlanString = "Base Plan"
+    static let postString = "Posts"
 }
 
-enum UIIcons: String {
-    case addIcon = "plus"
-    case trashIcon = "trash"
-    case plan = "list.bullet"
-    case posts = "text.bubble"
+struct UIIcons {
+    static let addIcon = "plus"
+    static let trashIcon = "trash"
+    static let basePlan = "list.bullet"
+    static let posts = "text.bubble"
 }
 
 

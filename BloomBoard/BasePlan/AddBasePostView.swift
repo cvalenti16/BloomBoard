@@ -26,33 +26,33 @@ struct AddBasePostView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Picker(UIStrings.day.rawValue, selection: $selectedDay) {
+                Picker(UIStrings.day, selection: $selectedDay) {
                     ForEach(Day.allCases, id: \.self) { day in
                         Text(day.rawValue)
                     }
                 }
                 
-                Picker(UIStrings.platformString.rawValue, selection: $selectedPlatform) {
+                Picker(UIStrings.platformString, selection: $selectedPlatform) {
                     ForEach(SocialMediaPlatform.allCases, id: \.self) { platform in
                         Text(platform.rawValue)
                     }
                 }
                 
-                Picker(UIStrings.postType.rawValue, selection: $selectedPostType) {
+                Picker(UIStrings.postType, selection: $selectedPostType) {
                     ForEach(selectedPlatform.availablePostTypes, id: \.self) { postType in
                         Text(postType.rawValue)
                     }
                 }
             }
             .scrollDisabled(true)
-            .navigationTitle(existingPost == nil ? UIStrings.addBasePost.rawValue : UIStrings.editBasePost.rawValue)
+            .navigationTitle(existingPost == nil ? UIStrings.addBasePost : UIStrings.editBasePost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         dismiss()
                     } label: {
-                        Text(UIStrings.cancelString.rawValue)
+                        Text(UIStrings.cancelString)
                             .foregroundStyle(.white)
                     }
                 }
@@ -77,7 +77,7 @@ struct AddBasePostView: View {
                         
                         
                     } label: {
-                        Text(UIStrings.saveString.rawValue)
+                        Text(UIStrings.saveString)
                             .foregroundStyle(.white)
                     }
                 }
