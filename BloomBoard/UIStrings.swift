@@ -20,11 +20,15 @@ enum UIStrings: String {
     case removeBasePost = "Remove Base Post"
     case deleteString = "Delete"
     case editBasePost = "Edit Base Post"
+    case basePlanString = "Base Plan"
+    case postString = "Posts"
 }
 
 enum UIIcons: String {
     case addIcon = "plus"
     case trashIcon = "trash"
+    case plan = "list.bullet"
+    case posts = "text.bubble"
 }
 
 
