@@ -18,7 +18,7 @@ struct ContentView: View {
                 
                 Tab(UIStrings.postString,
                     systemImage: UIIcons.posts) {
-                   CalendarMonthView()
+                   PostView()
                 }
             }
         }
