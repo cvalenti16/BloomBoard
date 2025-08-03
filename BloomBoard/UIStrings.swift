@@ -21,6 +21,11 @@ struct UIStrings {
     static let editBasePost = "Edit Base Post"
     static let basePlanString = "Base Plan"
     static let postString = "Posts"
+    static let postDATE = "Post Date"
+}
+
+struct Punctuation {
+    static let colen = ":"
 }
 
 struct UIIcons {

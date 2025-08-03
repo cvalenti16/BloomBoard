@@ -8,11 +8,29 @@
 import SwiftUI
 
 struct PostView: View {
+    private let testPost = Post.testPost
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Text(testPost.title)
+                .font(.title3)
+            
+            Text(testPost.community)
+            
+            Text(testPost.date, format: .dateTime.day().month().year())
+            
+            Image(testPost.image)
+                .resizable()
+                .scaledToFit()
+        }
     }
 }
 
+
+
+
+
 #Preview {
     PostView()
+        .preferredColorScheme(.dark)
 }

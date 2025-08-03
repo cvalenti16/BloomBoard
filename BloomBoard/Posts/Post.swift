@@ -14,13 +14,17 @@ class Post:Identifiable {
     var title: String
     var image:String
     var date: Date
+    var community: String
     
     
-    init(id: String = UUID().description, title: String, image: String, date: Date) {
+    init(id: String = UUID().description, title: String, image: String, date: Date, community: String) {
         self.id = id
         self.title = title
         self.image = image
         self.date = date
+        self.community = community
     }
+    
+    static var testPost = Post(title: "How is my SwiftData Model?", image: "PostSampleImage", date: Date.now, community: "iOS Dev Community")
 
-}
+}   
