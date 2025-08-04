@@ -26,5 +26,6 @@ class Post:Identifiable {
     }
     
     static var testPost = Post(title: "How is my SwiftData Model?", image: "PostSampleImage", date: Date.now, community: "iOS Dev Community")
+}
 
-}   
+

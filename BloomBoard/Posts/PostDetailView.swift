@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PostView: View {
+struct PostDetailView: View {
     private let testPost = Post.testPost
     
     var body: some View {
@@ -26,11 +26,7 @@ struct PostView: View {
     }
 }
 
-
-
-
-
 #Preview {
-    PostView()
+    PostDetailView()
         .preferredColorScheme(.dark)
 }
