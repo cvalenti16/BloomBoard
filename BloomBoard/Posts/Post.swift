@@ -12,9 +12,9 @@ import SwiftData
 class Post:Identifiable {
     @Attribute(.unique) var id = UUID().description
     var title: String
-    var image:String
+    var image:String?
     var date: Date
-    var community: String
+    var community: String?
     
     
     init(id: String = UUID().description, title: String, image: String, date: Date, community: String) {

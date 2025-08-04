@@ -20,8 +20,17 @@ struct UIStrings {
     static let deleteString = "Delete"
     static let editBasePost = "Edit Base Post"
     static let basePlanString = "Base Plan"
+    static let postDate = "Post Date"
+}
+
+struct PostStrings {
+    static let communityString = "Community"
+    static let title = "Title"
     static let postString = "Posts"
-    static let postDATE = "Post Date"
+    static let uploadImage = "Upload Image"
+
+    
+
 }
 
 struct Punctuation {

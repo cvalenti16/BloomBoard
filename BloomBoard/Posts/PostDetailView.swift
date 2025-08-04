@@ -15,11 +15,11 @@ struct PostDetailView: View {
             Text(testPost.title)
                 .font(.title3)
             
-            Text(testPost.community)
+            Text(testPost.community ?? "")
             
             Text(testPost.date, format: .dateTime.day().month().year())
             
-            Image(testPost.image)
+            Image(testPost.image ?? "")
                 .resizable()
                 .scaledToFit()
         }

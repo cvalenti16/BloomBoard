@@ -88,4 +88,5 @@ struct AddBasePostView: View {
 
 #Preview {
     AddBasePostView()
+        .preferredColorScheme(.dark)
 }

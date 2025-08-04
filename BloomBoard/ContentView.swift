@@ -16,7 +16,7 @@ struct ContentView: View {
                     BasePlanView()
                 }
                 
-                Tab(UIStrings.postString,
+                Tab(PostStrings.postString,
                     systemImage: UIIcons.posts) {
                    PostDetailView()
                 }
