@@ -18,7 +18,7 @@ struct ContentView: View {
                 
                 Tab(PostStrings.postString,
                     systemImage: UIIcons.posts) {
-                   PostDetailView()
+                   AddPostView()
                 }
             }
         }

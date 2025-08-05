@@ -6,13 +6,17 @@
 //
 
 import SwiftUI
+import PhotosUI
+import SwiftData
 
 struct AddPostView: View {
     @Environment(\.dismiss) var dismiss
     @State private var postTitle = ""
-    @State private var postImage = ""
+    @State private var postImage: String? = nil
     @State private var postCommunity = ""
     @State private var postDate = Date()
+    
+    @State private var selectedImage: PhotosPickerItem? = nil
     
     private var post: Post?
     
@@ -36,23 +40,36 @@ struct AddPostView: View {
             Text(postDate, format: .dateTime.day().month().year())
                 .foregroundStyle(.gray)
             
-            if !postImage.isEmpty {
-                Image(postImage)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxHeight: 200)
-                    .clipShape(.rect(cornerRadius: 10))
-            } else {
-                Text(PostStrings.uploadImage)
-                    .foregroundStyle(.gray)
-                    .frame(maxWidth: .infinity, maxHeight: 200)
-                    .background(.ultraThinMaterial)
+                PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {
+                    if let postImage,
+                       let data = Data(base64Encoded: postImage),
+                       let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxHeight: 200)
+                            .clipShape(.rect(cornerRadius: 10))
+                    } else {
+                        Text(PostStrings.uploadImage)
+                            .foregroundStyle(.gray)
+                            .frame(maxWidth: .infinity, maxHeight: 200)
+                            .background(.ultraThinMaterial)
+                    }
+                }
+                .onChange(of: selectedImage) {oldValue, newValue in
+                    Task {
+                        if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                            postImage = data.base64EncodedString()
+                        }
+                    }
+                }
             }
         }
     }
-}
 
-#Preview {
-    AddPostView()
-        .preferredColorScheme(.dark)
-}
+    
+    
+    #Preview {
+        AddPostView()
+            .preferredColorScheme(.dark)
+    }
