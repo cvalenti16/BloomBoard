@@ -9,7 +9,10 @@ import SwiftUI
 import SwiftData
 
 struct PostListView: View {
+    @Environment(\.modelContext) var modelContext
+    
     @Query var posts: [Post]
+    
     @State private var showAddSheet = false
     @State private var postDetailPath = NavigationPath()
     
@@ -32,6 +35,14 @@ struct PostListView: View {
                 List(posts) { post in
                     PostItemView(post: post) { post in
                         postDetailPath.append(post)
+                    }
+                    .swipeActions(edge: .trailing) {
+                        Button {
+                            modelContext.delete(post)
+                        } label: {
+                            Image(systemName: UIIcons.trashIcon)
+                                .tint(.red)
+                        }
                     }
                 }
                 .navigationDestination(for: Post.self) { post in

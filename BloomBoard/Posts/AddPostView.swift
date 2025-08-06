@@ -11,8 +11,8 @@ import SwiftData
 
 struct AddPostView: View {
     @State private var postTitle = ""
-    @State private var postImage: String? = nil
     @State private var selectedImage: PhotosPickerItem? = nil
+    @State private var uiImage: UIImage? = nil
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
@@ -25,9 +25,7 @@ struct AddPostView: View {
                     .padding(10)
                 
                 PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {
-                    if let postImage,
-                       let data = Data(base64Encoded: postImage),
-                       let uiImage = UIImage(data: data) {
+                    if let uiImage {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFit()
@@ -44,7 +42,7 @@ struct AddPostView: View {
                 .onChange(of: selectedImage) {oldValue, newValue in
                     Task {
                         if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                            postImage = data.base64EncodedString()
+                            uiImage = UIImage(data: data)
                         }
                     }
                 }
@@ -64,15 +62,37 @@ struct AddPostView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-                        let newPost = Post(title: postTitle, image: postImage)
+                        
+                        var filename: String? = nil
+                        
+                        if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
+                            filename = saveImageToDisk(imageData)
+                        }
+                        
+                        let newPost = Post(title: postTitle, image:filename)
                         modelContext.insert(newPost)
                         dismiss()
+                        
                     } label: {
                         Text(UIStrings.saveString)
                             .foregroundStyle(.white)
                     }
                 }
             }
+        }
+    }
+    
+    func saveImageToDisk(_ data: Data) -> String? {
+        let filename = UUID().uuidString + ".jpg"
+        let url = FileManager.default
+            .urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(filename)
+        do {
+            try data.write(to: url)
+            return filename
+        } catch {
+            print("Error saving image to disk: \(error)")
+            return nil
         }
     }
 }
