@@ -28,13 +28,12 @@ struct PostStrings {
     static let title = "Title"
     static let postString = "Posts"
     static let uploadImage = "Upload Image"
-
-    
-
+    static let createPost = "Create Post"
+    static let noPosts = "No Posts"
 }
 
 struct Punctuation {
-    static let colen = ":"
+    static let colon = ":"
 }
 
 struct UIIcons {

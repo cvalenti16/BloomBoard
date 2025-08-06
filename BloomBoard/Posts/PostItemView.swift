@@ -8,21 +8,21 @@
 import SwiftUI
 
 struct PostItemView: View {
-    private let testPost = Post.testPost
+    let post: Post
     
     var body: some View {
         VStack (alignment: .leading) {
-            Text(testPost.title)
+            Text(post.title)
                 .bold()
                 .font(.title3)
             
-            Text(testPost.date, format: .dateTime.day().month().year())
-                .font(.subheadline)
+//            Text(testPost.completedDate, format: .dateTime.day().month().year())
+//                .font(.subheadline)
         }
     }
 }
 
 #Preview {
-    PostItemView()
+    PostItemView(post: Post.testPost)
         .preferredColorScheme(.dark)
 }

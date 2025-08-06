@@ -14,10 +14,8 @@ struct PostDetailView: View {
         VStack {
             Text(testPost.title)
                 .font(.title3)
-            
-            Text(testPost.community ?? "")
-            
-            Text(testPost.date, format: .dateTime.day().month().year())
+                        
+//            Text(testPost.completedDate, format: .dateTime.day().month().year())
             
             Image(testPost.image ?? "")
                 .resizable()

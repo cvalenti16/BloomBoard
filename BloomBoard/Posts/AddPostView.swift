@@ -10,36 +10,20 @@ import PhotosUI
 import SwiftData
 
 struct AddPostView: View {
-    @Environment(\.dismiss) var dismiss
     @State private var postTitle = ""
     @State private var postImage: String? = nil
-    @State private var postCommunity = ""
-    @State private var postDate = Date()
-    
     @State private var selectedImage: PhotosPickerItem? = nil
     
-    private var post: Post?
-    
-    init(post: Post? = nil) {
-        _postTitle = State(initialValue: post?.title ?? "")
-        _postImage = State(initialValue: post?.image ?? "")
-        _postCommunity = State(initialValue: post?.community ?? "")
-        _postDate = State(initialValue: post?.date ?? Date())
-    }
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
     
     var body: some View {
-        VStack {
-            TextField(post?.title ?? PostStrings.title ,text: $postTitle, axis: .vertical)
-                .textFieldStyle(.plain)
-                .padding(10)
-            
-            TextField(post?.community ?? PostStrings.communityString, text: $postCommunity, axis: .vertical)
-                .textFieldStyle(PlainTextFieldStyle())
-                .padding(10)
-            
-            Text(postDate, format: .dateTime.day().month().year())
-                .foregroundStyle(.gray)
-            
+        NavigationStack {
+            VStack {
+                TextField(PostStrings.title ,text: $postTitle, axis: .vertical)
+                    .textFieldStyle(.plain)
+                    .padding(10)
+                
                 PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {
                     if let postImage,
                        let data = Data(base64Encoded: postImage),
@@ -54,6 +38,7 @@ struct AddPostView: View {
                             .foregroundStyle(.gray)
                             .frame(maxWidth: .infinity, maxHeight: 200)
                             .background(.ultraThinMaterial)
+                            .clipShape(.rect(cornerRadius: 10))
                     }
                 }
                 .onChange(of: selectedImage) {oldValue, newValue in
@@ -64,12 +49,35 @@ struct AddPostView: View {
                     }
                 }
             }
+            .navigationTitle(PostStrings.createPost)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text(UIStrings.cancelString)
+                            .foregroundStyle(.white)
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                        let newPost = Post(title: postTitle, image: postImage)
+                        modelContext.insert(newPost)
+                        dismiss()
+                    } label: {
+                        Text(UIStrings.saveString)
+                            .foregroundStyle(.white)
+                    }
+                }
+            }
         }
     }
+}
 
-    
-    
-    #Preview {
-        AddPostView()
-            .preferredColorScheme(.dark)
-    }
+#Preview {
+    AddPostView()
+        .preferredColorScheme(.dark)
+}

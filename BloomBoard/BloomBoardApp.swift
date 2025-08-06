@@ -15,6 +15,6 @@ struct BloomBoardApp: App {
             ContentView()
                 .preferredColorScheme(.dark)
         }
-        .modelContainer(for: SocialPost.self)
+        .modelContainer(for: [SocialPost.self, Post.self])
     }
 }
