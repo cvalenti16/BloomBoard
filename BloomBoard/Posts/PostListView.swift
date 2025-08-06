@@ -63,6 +63,8 @@ struct PostListView: View {
         }
         .sheet(isPresented: $showAddSheet) {
             AddPostView()
+                .presentationDetents([.fraction(0.60)])
+
         }
        
     }

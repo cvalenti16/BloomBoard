@@ -27,6 +27,11 @@ struct AddPostView: View {
                     .textFieldStyle(.plain)
                     .padding(10)
                 
+                Rectangle()
+                    .foregroundStyle(.white)
+                    .frame(height: 2)
+                    .padding(10)
+                
                 PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {
                     if let uiImage {
                         Image(uiImage: uiImage)
@@ -34,12 +39,14 @@ struct AddPostView: View {
                             .scaledToFit()
                             .frame(maxHeight: 200)
                             .clipShape(.rect(cornerRadius: 10))
+                            .padding(10)
                     } else {
                         Text(PostStrings.uploadImage)
                             .foregroundStyle(.gray)
                             .frame(maxWidth: .infinity, maxHeight: 200)
                             .background(.ultraThinMaterial)
                             .clipShape(.rect(cornerRadius: 10))
+                            .padding(10)
                     }
                 }
                 .onChange(of: selectedImage) {oldValue, newValue in
