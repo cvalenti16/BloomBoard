@@ -37,6 +37,17 @@ struct PostListView: View {
                 .navigationDestination(for: Post.self) { post in
                     PostDetailView(post: post)
                 }
+                
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showAddSheet.toggle()
+                        } label: {
+                            Image(systemName: UIIcons.addIcon)
+                                .foregroundStyle(.white)
+                        }
+                    }
+                }
             }
         }
         .sheet(isPresented: $showAddSheet) {
