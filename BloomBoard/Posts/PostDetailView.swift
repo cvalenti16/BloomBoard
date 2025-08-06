@@ -24,12 +24,19 @@ struct PostDetailView: View {
             Text(post.title)
                 .font(.title3)
                 .padding()
+                .textSelection(.enabled)
            
             if let uiImage = loadedImage {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFit()
                     .clipShape(.rect(cornerRadius: 10))
+                    .padding()
+                
+                Button(PostStrings.downloadImage) {
+                     UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                 }
+                 .padding(.top)
             }
                         
 //            Text(testPost.completedDate, format: .dateTime.day().month().year())

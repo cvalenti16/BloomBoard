@@ -30,6 +30,7 @@ struct PostStrings {
     static let uploadImage = "Upload Image"
     static let createPost = "Create Post"
     static let noPosts = "No Posts"
+    static let downloadImage = "Download Image"
 }
 
 struct Punctuation {
