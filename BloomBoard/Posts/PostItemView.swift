@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PostItemView: View {
     let post: Post
+    let onSelect: (Post) -> Void
     
     var body: some View {
         VStack (alignment: .leading) {
@@ -19,10 +20,15 @@ struct PostItemView: View {
 //            Text(testPost.completedDate, format: .dateTime.day().month().year())
 //                .font(.subheadline)
         }
+        .onTapGesture {
+            onSelect(post)
+        }
     }
 }
 
 #Preview {
-    PostItemView(post: Post.testPost)
-        .preferredColorScheme(.dark)
+    PostItemView(post: Post.testPost) { post in
+        
+    }
+    .preferredColorScheme(.dark)
 }

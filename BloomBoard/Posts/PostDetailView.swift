@@ -8,23 +8,28 @@
 import SwiftUI
 
 struct PostDetailView: View {
-    private let testPost = Post.testPost
-    
+    let post: Post
     var body: some View {
         VStack {
-            Text(testPost.title)
+            Text(post.title)
                 .font(.title3)
+                .padding()
+            
+            if let image = post.image {
+                Image(image)
+                    .resizable()
+                    .scaledToFit()
+            }
                         
 //            Text(testPost.completedDate, format: .dateTime.day().month().year())
-            
-            Image(testPost.image ?? "")
-                .resizable()
-                .scaledToFit()
+//            Image(testPost.image ?? "")
+//                .resizable()
+//                .scaledToFit()
         }
     }
 }
 
 #Preview {
-    PostDetailView()
+    PostDetailView(post: Post.testPost)
         .preferredColorScheme(.dark)
 }

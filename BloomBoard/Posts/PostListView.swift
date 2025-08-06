@@ -11,10 +11,10 @@ import SwiftData
 struct PostListView: View {
     @Query var posts: [Post]
     @State private var showAddSheet = false
-    
+    @State private var postDetailPath = NavigationPath()
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $postDetailPath) {
             if (posts.isEmpty) {
                 Button {
                     showAddSheet.toggle()
@@ -30,14 +30,19 @@ struct PostListView: View {
                 }
             } else {
                 List(posts) { post in
-                    PostItemView(post: post)
+                    PostItemView(post: post) { post in
+                        postDetailPath.append(post)
+                    }
+                }
+                .navigationDestination(for: Post.self) { post in
+                    PostDetailView(post: post)
                 }
             }
         }
         .sheet(isPresented: $showAddSheet) {
             AddPostView()
         }
-        
+       
     }
 }
 
