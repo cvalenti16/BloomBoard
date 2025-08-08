@@ -48,7 +48,7 @@ struct AddPostView: View {
                 Rectangle()
                     .foregroundStyle(.white)
                     .frame(height: 2)
-                    .padding(10)
+                    .padding(.horizontal ,10)
                 
                 PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {
                     if let uiImage {
