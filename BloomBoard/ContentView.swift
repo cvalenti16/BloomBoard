@@ -11,15 +11,18 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TabView {
-                Tab(UIStrings.basePlanString,
-                    systemImage: UIIcons.basePlan) {
-                    BasePlanView()
-                }
                 
                 Tab(PostStrings.postString,
                     systemImage: UIIcons.posts) {
                    PostListView()
                 }
+                
+                Tab(UIStrings.basePlanString,
+                    systemImage: UIIcons.basePlan) {
+                    CalendarMonthView()
+                }
+                
+                
             }
         }
     }
