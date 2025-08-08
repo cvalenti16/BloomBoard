@@ -35,6 +35,10 @@ struct PostStrings {
     static let deletePost = "Delete Post?"
     static let edit = "Edit"
     static let post = "Post"
+    static let selectPostDate = "Select Post Date"
+    static let postedOn = "Posted On"
+    static let unpost = "Unpost"
+
 }
 
 struct Punctuation {

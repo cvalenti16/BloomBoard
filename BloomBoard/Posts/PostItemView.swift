@@ -23,8 +23,6 @@ struct PostItemView: View {
                     .foregroundStyle(.white)
             }
             
-            //            Text(testPost.completedDate, format: .dateTime.day().month().year())
-            //                .font(.subheadline)
         }
     }
 }

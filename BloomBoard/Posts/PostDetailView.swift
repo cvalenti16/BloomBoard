@@ -8,6 +8,9 @@ import SwiftUI
 
 struct PostDetailView: View {
     @State private var showEditSheet = false
+    @State private var showPostDateSheet = false
+    @State private var selectedPostDate = Date()
+    
     let post: Post
     
     var loadedImage: UIImage? {
@@ -23,6 +26,12 @@ struct PostDetailView: View {
             Text(post.title)
                 .font(.title3)
                 .textSelection(.enabled)
+            
+            if let postDate = post.postDate {
+                Text(postDate, format: .dateTime.day().month().year())
+                    .font(.subheadline)
+            }
+            
             
             if let uiImage = loadedImage {
                 ZStack {
@@ -56,11 +65,16 @@ struct PostDetailView: View {
                 }
                 
                 Spacer()
-                    
+                
                 Button {
-                    
+                    if post.postDate != nil {
+                        post.postDate = nil
+                    } else {
+                        selectedPostDate = post.postDate ?? Date()
+                        showPostDateSheet = true
+                    }
                 } label: {
-                    Text(PostStrings.post)
+                    Text(post.postDate == nil  ? PostStrings.post : PostStrings.unpost)
                         .padding()
                         .background(.ultraThinMaterial)
                         .clipShape(.rect(cornerRadius: 10))
@@ -73,7 +87,32 @@ struct PostDetailView: View {
             AddPostView(postToEdit: post)
                 .presentationDetents([.fraction(0.60)])
         }
-        .frame(maxHeight: 350)
+        .sheet(isPresented: $showPostDateSheet) {
+            VStack {
+                Text(PostStrings.selectPostDate)
+                    .font(.headline)
+                
+                DatePicker(
+                    PostStrings.postedOn,
+                    selection: $selectedPostDate,
+                    displayedComponents: .date
+                )
+                .datePickerStyle(.graphical)
+                
+                HStack {
+                    Button(UIStrings.cancelString) { showPostDateSheet = false }
+                    
+                    Spacer()
+                    
+                    Button(UIStrings.saveString) {
+                        post.postDate = selectedPostDate
+                        showPostDateSheet = false
+                    }
+                }
+                .padding(.horizontal)
+            }
+         
+        }
     }
 }
 
