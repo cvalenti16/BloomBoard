@@ -15,6 +15,9 @@ struct PostListView: View {
     
     @State private var showAddSheet = false
     @State private var postDetailPath = NavigationPath()
+    @State private var showDeleteAlert = false
+    @State private var postToDelete: Post?
+
     
     var body: some View {
         NavigationStack(path: $postDetailPath) {
@@ -38,7 +41,9 @@ struct PostListView: View {
                     }
                     .swipeActions(edge: .trailing) {
                         Button {
-                            modelContext.delete(post)
+                            postToDelete = post
+                            showDeleteAlert.toggle()
+//                            modelContext.delete(post)
                         } label: {
                             Image(systemName: UIIcons.trashIcon)
                                 .tint(.red)
@@ -57,6 +62,17 @@ struct PostListView: View {
                             Image(systemName: UIIcons.addIcon)
                                 .foregroundStyle(.white)
                         }
+                    }
+                }
+                
+                .alert(PostStrings.deletePost, isPresented: $showDeleteAlert) {
+                    Button(UIStrings.deleteString, role: .destructive) {
+                        if let post = postToDelete {
+                            modelContext.delete(post)
+                        }
+                    }
+                    Button(UIStrings.cancelString, role: .cancel) {
+                        postToDelete = nil
                     }
                 }
             }

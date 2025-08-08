@@ -31,6 +31,7 @@ struct PostStrings {
     static let createPost = "Create Post"
     static let noPosts = "No Posts"
     static let downloadImage = "Download Image"
+    static let deletePost = "Delete Post?"
 }
 
 struct Punctuation {
@@ -42,6 +43,7 @@ struct UIIcons {
     static let trashIcon = "trash"
     static let basePlan = "list.bullet"
     static let posts = "text.bubble"
+    static let download = "square.and.arrow.down"
 }
 
 

@@ -18,32 +18,32 @@ struct PostDetailView: View {
         return UIImage(contentsOfFile: url.path)
     }
     
-    
     var body: some View {
-        VStack {
-            Text(post.title)
-                .font(.title3)
-                .padding()
-                .textSelection(.enabled)
-           
-            if let uiImage = loadedImage {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(.rect(cornerRadius: 10))
+    
+            VStack {
+                Text(post.title)
+                    .font(.title3)
                     .padding()
-                
-                Button(PostStrings.downloadImage) {
-                     UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                 }
-                 .padding(.top)
+                    .textSelection(.enabled)
+               
+                if let uiImage = loadedImage {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(.rect(cornerRadius: 10))
+                        .padding()
+                    
+                    Button {
+                        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                    } label: {
+                        Image(systemName: UIIcons.download)
+                            .foregroundStyle(.white)
+                    }
+                }
+                            
+    //            Text(testPost.completedDate, format: .dateTime.day().month().year())
+
             }
-                        
-//            Text(testPost.completedDate, format: .dateTime.day().month().year())
-//            Image(testPost.image ?? "")
-//                .resizable()
-//                .scaledToFit()
-        }
     }
 }
 

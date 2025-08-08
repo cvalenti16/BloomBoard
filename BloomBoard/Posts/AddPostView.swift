@@ -26,6 +26,7 @@ struct AddPostView: View {
                 TextField(PostStrings.title ,text: $postTitle, axis: .vertical)
                     .textFieldStyle(.plain)
                     .padding(10)
+                    .bold()
                 
                 Rectangle()
                     .foregroundStyle(.white)
@@ -89,7 +90,9 @@ struct AddPostView: View {
                     }
                 }
             }
+
         }
+
     }
     
     func saveImageToDisk(_ data: Data) -> String? {
