@@ -13,6 +13,11 @@ struct PostListView: View {
     
     @Query var posts: [Post]
     
+    var filteredPosts: [Post] {
+        posts.sorted { $0.title < $1.title}
+        // Might need more filtering later
+    }
+    
     @State private var showAddSheet = false
     @State private var postDetailPath = NavigationPath()
     @State private var showDeleteAlert = false
@@ -21,7 +26,7 @@ struct PostListView: View {
     
     var body: some View {
         NavigationStack(path: $postDetailPath) {
-            if (posts.isEmpty) {
+            if (filteredPosts.isEmpty) {
                 Button {
                     showAddSheet.toggle()
                 } label: {
@@ -35,7 +40,7 @@ struct PostListView: View {
                         .padding()
                 }
             } else {
-                List(posts) { post in
+                List(filteredPosts) { post in
                     PostItemView(post: post) { post in
                         postDetailPath.append(post)
                     }
@@ -43,7 +48,6 @@ struct PostListView: View {
                         Button {
                             postToDelete = post
                             showDeleteAlert.toggle()
-//                            modelContext.delete(post)
                         } label: {
                             Image(systemName: UIIcons.trashIcon)
                                 .tint(.red)
