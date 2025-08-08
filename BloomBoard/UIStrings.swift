@@ -33,6 +33,8 @@ struct PostStrings {
     static let noPosts = "No Posts"
     static let downloadImage = "Download Image"
     static let deletePost = "Delete Post?"
+    static let edit = "Edit"
+    static let post = "Post"
 }
 
 struct Punctuation {

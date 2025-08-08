@@ -22,48 +22,58 @@ struct PostDetailView: View {
         VStack {
             Text(post.title)
                 .font(.title3)
-                .padding()
                 .textSelection(.enabled)
             
             if let uiImage = loadedImage {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(.rect(cornerRadius: 10))
-                    .padding()
-            }
-            
-            // 🔹 Buttons row (edit always visible)
-            HStack(spacing: 40) {
-                if let uiImage = loadedImage {
+                ZStack {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(.rect(cornerRadius: 10))
+                        .padding()
+                        .frame(maxHeight: 300)
+                    
                     Button {
                         UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                     } label: {
                         Image(systemName: UIIcons.download)
-                            .font(.system(size: 24))
+                            .font(.system(size: 20))
                             .foregroundStyle(.white)
                             .padding(12)
                             .background(.ultraThinMaterial, in: Circle())
                     }
                 }
-                
+            }
+            
+            HStack {
                 Button {
                     showEditSheet.toggle()
                 } label: {
-                    Image(systemName: UIIcons.edit)
-                        .font(.system(size: 24))
-                        .foregroundStyle(.white)
-                        .padding(12)
-                        .background(.ultraThinMaterial, in: Circle())
+                    Text(PostStrings.edit)
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .clipShape(.rect(cornerRadius: 10))
+                }
+                
+                Spacer()
+                    
+                Button {
+                    
+                } label: {
+                    Text(PostStrings.post)
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .clipShape(.rect(cornerRadius: 10))
                 }
             }
-            .frame(maxWidth: .infinity)   // centers even if only one button
+            .padding(.horizontal)
             .padding(.top, 10)
         }
         .sheet(isPresented: $showEditSheet) {
             AddPostView(postToEdit: post)
                 .presentationDetents([.fraction(0.60)])
         }
+        .frame(maxHeight: 350)
     }
 }
 

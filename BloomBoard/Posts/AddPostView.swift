@@ -83,7 +83,6 @@ struct AddPostView: View {
                         dismiss()
                     } label: {
                         Text(UIStrings.cancelString)
-                            .foregroundStyle(.white)
                     }
                 }
                 
@@ -91,14 +90,16 @@ struct AddPostView: View {
                     Button {
                         guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                          
-                         if let existingPost = postToEdit {
-                             // 🔹 Update existing post
-                             existingPost.title = postTitle
-                             if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
-                                 existingPost.image = saveImageToDisk(imageData)
-                             }
-                         } else {
-                             // 🔹 Create new post
+                        if let existingPost = postToEdit {
+                            // Update existing post
+                            
+                            existingPost.title = postTitle
+                            if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
+                                existingPost.image = saveImageToDisk(imageData)
+                            }
+                            
+                        } else {
+                             //Create new post
                              var filename: String? = nil
                              if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
                                  filename = saveImageToDisk(imageData)
@@ -111,7 +112,6 @@ struct AddPostView: View {
                         
                     } label: {
                         Text(UIStrings.saveString)
-                            .foregroundStyle(.white)
                     }
                 }
             }
