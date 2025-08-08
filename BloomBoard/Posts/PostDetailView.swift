@@ -40,10 +40,10 @@ struct PostDetailView: View {
                         UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                     } label: {
                         Image(systemName: UIIcons.download)
-                            .font(.system(size: 24, weight: .bold))
+                            .font(.system(size: 24))
                             .foregroundStyle(.white)
                             .padding(12)
-//                            .background(.ultraThinMaterial, in: Circle())
+                            .background(.ultraThinMaterial, in: Circle())
                     }
                 }
                 
@@ -51,10 +51,10 @@ struct PostDetailView: View {
                     showEditSheet.toggle()
                 } label: {
                     Image(systemName: UIIcons.edit)
-                        .font(.system(size: 24, weight: .bold))
+                        .font(.system(size: 24))
                         .foregroundStyle(.white)
                         .padding(12)
-//                        .background(.ultraThinMaterial, in: Circle())
+                        .background(.ultraThinMaterial, in: Circle())
                 }
             }
             .frame(maxWidth: .infinity)   // centers even if only one button

@@ -13,15 +13,18 @@ struct PostItemView: View {
     
     var body: some View {
         VStack (alignment: .leading) {
-            Text(post.title)
-                .bold()
-                .font(.title3)
             
-//            Text(testPost.completedDate, format: .dateTime.day().month().year())
-//                .font(.subheadline)
-        }
-        .onTapGesture {
-            onSelect(post)
+            Button {
+                onSelect(post)
+            } label: {
+                Text(post.title)
+                    .bold()
+                    .font(.title3)
+                    .foregroundStyle(.white)
+            }
+            
+            //            Text(testPost.completedDate, format: .dateTime.day().month().year())
+            //                .font(.subheadline)
         }
     }
 }
