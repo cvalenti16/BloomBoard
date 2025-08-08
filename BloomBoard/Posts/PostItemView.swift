@@ -23,6 +23,11 @@ struct PostItemView: View {
                     .foregroundStyle(.white)
             }
             
+            if let postDate = post.postDate {
+                Text(postDate, style: .date)
+                    .foregroundStyle(.secondary)
+            }
+            
         }
     }
 }
