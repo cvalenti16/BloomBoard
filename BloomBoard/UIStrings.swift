@@ -44,6 +44,7 @@ struct UIIcons {
     static let basePlan = "list.bullet"
     static let posts = "text.bubble"
     static let download = "square.and.arrow.down"
+    static let edit = "pencil.circle"
 }
 
 

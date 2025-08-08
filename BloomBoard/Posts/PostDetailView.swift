@@ -33,12 +33,30 @@ struct PostDetailView: View {
                         .clipShape(.rect(cornerRadius: 10))
                         .padding()
                     
-                    Button {
-                        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                    } label: {
-                        Image(systemName: UIIcons.download)
-                            .foregroundStyle(.white)
+                    
+                    HStack {
+                        Button {
+                            
+                        } label: {
+                            Image(systemName: UIIcons.edit)
+                                .foregroundStyle(.white)
+                                .padding(. leading, 20)
+                        }
+                        
+                        Spacer()
+                        
+                        Button {
+                            UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                        } label: {
+                            Image(systemName: UIIcons.download)
+                                .foregroundStyle(.white)
+                                .padding(. trailing, 20)
+
+                        }
                     }
+                    
+                
+                   
                 }
                             
     //            Text(testPost.completedDate, format: .dateTime.day().month().year())
