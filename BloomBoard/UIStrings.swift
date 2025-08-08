@@ -29,6 +29,7 @@ struct PostStrings {
     static let postString = "Posts"
     static let uploadImage = "Upload Image"
     static let createPost = "Create Post"
+    static let editPost = "Edit Post"
     static let noPosts = "No Posts"
     static let downloadImage = "Download Image"
     static let deletePost = "Delete Post?"

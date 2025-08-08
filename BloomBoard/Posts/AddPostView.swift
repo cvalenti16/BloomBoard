@@ -13,12 +13,29 @@ import PhotosUI
 import SwiftData
 
 struct AddPostView: View {
+    var postToEdit: Post?
+    
     @State private var postTitle = ""
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var uiImage: UIImage? = nil
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
+    
+    
+    init(postToEdit: Post? = nil) {
+        self.postToEdit = postToEdit
+        _postTitle = State(initialValue: postToEdit?.title ?? "")
+        
+        if let filename = postToEdit?.image {
+            let url = FileManager.default
+                .urls(for: .documentDirectory, in: .userDomainMask)[0]
+                .appendingPathComponent(filename)
+            if let image = UIImage(contentsOfFile: url.path) {
+                _uiImage = State(initialValue: image)
+            }
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -58,7 +75,7 @@ struct AddPostView: View {
                     }
                 }
             }
-            .navigationTitle(PostStrings.createPost)
+            .navigationTitle(postToEdit == nil ? PostStrings.createPost : PostStrings.editPost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -73,16 +90,24 @@ struct AddPostView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-                        
-                        var filename: String? = nil
-                        
-                        if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
-                            filename = saveImageToDisk(imageData)
-                        }
-                        
-                        let newPost = Post(title: postTitle, image:filename)
-                        modelContext.insert(newPost)
-                        dismiss()
+                         
+                         if let existingPost = postToEdit {
+                             // 🔹 Update existing post
+                             existingPost.title = postTitle
+                             if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
+                                 existingPost.image = saveImageToDisk(imageData)
+                             }
+                         } else {
+                             // 🔹 Create new post
+                             var filename: String? = nil
+                             if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
+                                 filename = saveImageToDisk(imageData)
+                             }
+                             let newPost = Post(title: postTitle, image: filename)
+                             modelContext.insert(newPost)
+                         }
+                         
+                         dismiss()
                         
                     } label: {
                         Text(UIStrings.saveString)
