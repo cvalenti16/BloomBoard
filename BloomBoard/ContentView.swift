@@ -19,7 +19,7 @@ struct ContentView: View {
                 
                 Tab(UIStrings.basePlanString,
                     systemImage: UIIcons.basePlan) {
-                    CalendarMonthView()
+                    BasePlanView()
                 }
                 
                 
