@@ -56,7 +56,7 @@ struct AddPostView: View {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFit()
-                            .frame(maxHeight: 200)
+                            .frame(maxWidth: .infinity, maxHeight: 200)
                             .clipShape(.rect(cornerRadius: 10))
                             .padding(10)
                     } else {
