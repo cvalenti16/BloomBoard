@@ -59,6 +59,7 @@ struct PostDetailView: View {
                     showEditSheet.toggle()
                 } label: {
                     Text(PostStrings.edit)
+                        .foregroundStyle(.white)
                         .padding()
                         .background(.ultraThinMaterial)
                         .clipShape(.rect(cornerRadius: 10))
@@ -75,6 +76,7 @@ struct PostDetailView: View {
                     }
                 } label: {
                     Text(post.postDate == nil  ? PostStrings.post : PostStrings.unpost)
+                        .foregroundStyle(.white)
                         .padding()
                         .background(.ultraThinMaterial)
                         .clipShape(.rect(cornerRadius: 10))
