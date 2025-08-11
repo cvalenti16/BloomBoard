@@ -11,12 +11,13 @@ import SwiftData
 struct PostListView: View {
     @Environment(\.modelContext) var modelContext
     
-    @Query var posts: [Post]
+    @Query(sort: [
+        SortDescriptor(\Post.title , order: .forward),
+        SortDescriptor(\Post.creationDate, order: .reverse)
+       
+    ]) var sortedPosts: [Post]
     
-    var filteredPosts: [Post] {
-        posts.sorted { $0.title < $1.title}
-        // Might need more filtering later
-    }
+  
     
     @State private var showAddSheet = false
     @State private var postDetailPath = NavigationPath()
@@ -26,7 +27,7 @@ struct PostListView: View {
     
     var body: some View {
         NavigationStack(path: $postDetailPath) {
-            if (filteredPosts.isEmpty) {
+            if (sortedPosts.isEmpty) {
                 Button {
                     showAddSheet.toggle()
                 } label: {
@@ -40,7 +41,7 @@ struct PostListView: View {
                         .padding()
                 }
             } else {
-                List(filteredPosts) { post in
+                List(sortedPosts) { post in
                     PostItemView(post: post) { post in
                         postDetailPath.append(post)
                     }
