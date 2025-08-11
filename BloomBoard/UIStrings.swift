@@ -27,6 +27,8 @@ struct PostStrings {
     static let created = "Created"
     static let communityString = "Community"
     static let title = "Title"
+    static let drafts = "Drafts"
+    static let published = "Published"
     static let postString = "Posts"
     static let uploadImage = "Upload Image"
     static let createPost = "Create Post"
@@ -40,6 +42,7 @@ struct PostStrings {
     static let selectPostDate = "Select Post Date"
     static let postedOn = "Posted On"
     static let unpost = "Unpost"
+    static let noPublishedPosts = "No Published Posts"
 
 }
 
@@ -52,9 +55,11 @@ struct UIIcons {
     static let addIcon = "plus"
     static let trashIcon = "trash"
     static let basePlan = "list.bullet"
-    static let posts = "text.bubble"
+    static let posts = "tray"
+    static let published = "checkmark.seal.text.page"
     static let download = "square.and.arrow.down"
     static let edit = "pencil.circle"
+    static let calendar = "calendar.badge.plus"
 }
 
 

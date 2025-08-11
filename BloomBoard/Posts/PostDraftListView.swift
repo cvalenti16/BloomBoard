@@ -8,19 +8,23 @@
 import SwiftUI
 import SwiftData
 
-struct PostListView: View {
+struct PostDraftListView: View {
     @Environment(\.modelContext) var modelContext
     
-    @Query(sort: [
-        SortDescriptor(\Post.creationDate, order: .reverse)
-    ]) var sortedPosts: [Post]
     
-  
+    @Query(
+        filter: #Predicate<Post> { $0.postDate == nil }
+        ,sort: [
+            SortDescriptor(\Post.creationDate, order: .reverse)
+        ]) var sortedPosts: [Post]
     
     @State private var showAddSheet = false
     @State private var postDetailPath = NavigationPath()
     @State private var showDeleteAlert = false
     @State private var postToDelete: Post?
+    
+    @State private var postToSchedule: Post?
+    @State private var selectedPostDate = Date()
     
     
     var body: some View {
@@ -40,7 +44,7 @@ struct PostListView: View {
                 }
             } else {
                 List(sortedPosts) { post in
-                    PostItemView(post: post) { post in
+                    PostDraftItemView(post: post) { post in
                         postDetailPath.append(post)
                     }
                     .swipeActions(edge: .trailing) {
@@ -52,11 +56,18 @@ struct PostListView: View {
                                 .tint(.red)
                         }
                     }
+                    .swipeActions(edge: .trailing) {
+                        Button {
+                            postToSchedule = post
+                        } label: {
+                            Image(systemName: UIIcons.calendar)
+                                .tint(.yellow)
+                        }
+                    }
                 }
                 .navigationDestination(for: Post.self) { post in
                     PostDetailView(post: post)
                 }
-                
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -84,9 +95,8 @@ struct PostListView: View {
             AddPostView()
                 .presentationDetents([.fraction(0.60)])
         }
+        .sheet(item: $postToSchedule) { post in
+            SchedulePostView(post: post)
+        }
     }
-}
-
-#Preview {
-    PostListView()
 }

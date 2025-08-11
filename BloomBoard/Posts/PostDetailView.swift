@@ -54,71 +54,28 @@ struct PostDetailView: View {
                 }
             }
             
-            HStack {
-                Button {
-                    showEditSheet.toggle()
-                } label: {
-                    Text(PostStrings.edit)
-                        .foregroundStyle(.white)
-                        .padding()
-                        .background(.ultraThinMaterial)
-                        .clipShape(.rect(cornerRadius: 10))
-                }
+            Button {
+                showEditSheet.toggle()
+            } label: {
+                Text(PostStrings.edit)
+                    .foregroundStyle(.white)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .clipShape(.rect(cornerRadius: 10))
                 
-                Spacer()
                 
-                Button {
-                    if post.postDate != nil {
-                        post.postDate = nil
-                    } else {
-                        selectedPostDate = post.postDate ?? Date()
-                        showPostDateSheet = true
-                    }
-                } label: {
-                    Text(post.postDate == nil  ? PostStrings.post : PostStrings.unpost)
-                        .foregroundStyle(.white)
-                        .padding()
-                        .background(.ultraThinMaterial)
-                        .clipShape(.rect(cornerRadius: 10))
-                }
+                
+                
             }
-            .padding(.horizontal)
-            .padding(.top, 10)
-        }
-        .sheet(isPresented: $showEditSheet) {
-            AddPostView(postToEdit: post)
-                .presentationDetents([.fraction(0.60)])
-        }
-        .sheet(isPresented: $showPostDateSheet) {
-            VStack {
-                Text(PostStrings.selectPostDate)
-                    .font(.headline)
-                
-                DatePicker(
-                    PostStrings.postedOn,
-                    selection: $selectedPostDate,
-                    displayedComponents: .date
-                )
-                .datePickerStyle(.graphical)
-                
-                HStack {
-                    Button(UIStrings.cancelString) { showPostDateSheet = false }
-                    
-                    Spacer()
-                    
-                    Button(UIStrings.saveString) {
-                        post.postDate = selectedPostDate
-                        showPostDateSheet = false
-                    }
-                }
-                .padding(.horizontal)
+            .sheet(isPresented: $showEditSheet) {
+                AddPostView(postToEdit: post)
+                    .presentationDetents([.fraction(0.60)])
             }
-         
         }
     }
 }
-
-#Preview {
-    PostDetailView(post: Post.testPost)
-        .preferredColorScheme(.dark)
-}
+    
+    #Preview {
+        PostDetailView(post: Post.testPost)
+            .preferredColorScheme(.dark)
+    }

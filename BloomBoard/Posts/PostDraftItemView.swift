@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct PostItemView: View {
+struct PostDraftItemView: View {
     let post: Post
     let onSelect: (Post) -> Void
-    
     var body: some View {
+        
+        
         VStack (alignment: .leading) {
-            
             Button {
                 onSelect(post)
             } label: {
@@ -23,25 +23,23 @@ struct PostItemView: View {
                     .foregroundStyle(.white)
             }
             
-            HStack {
+            if let postedDate = post.postDate {
+                
+                Text("\(PostStrings.postedOn)\(Punctuation.colon)\(Punctuation.space)\(postedDate, style: .date)")
+                    .foregroundStyle(.secondary)
+            } else {
                 Text("\(PostStrings.created)\(Punctuation.colon)\(Punctuation.space)\(post.creationDate, style: .date)")
+                    .foregroundStyle(.secondary)
             }
-            .foregroundStyle(.secondary)
             
-            if let postDate = post.postDate {
-                HStack {
-                    Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
-                }
-                .foregroundStyle(.secondary)
-            }
         }
+        
     }
 }
 
 #Preview {
-    PostItemView(post: Post.testPost) { post in
+    PostDraftItemView(post: Post.testPost) { post in
         
     }
     .preferredColorScheme(.dark)
 }
-
