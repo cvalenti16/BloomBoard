@@ -24,19 +24,13 @@ struct PostItemView: View {
             }
             
             HStack {
-                Text(PostStrings.created) +
-                Text(Punctuation.colon) +
-                Text(Punctuation.space) +
-                Text(post.creationDate, style: .date)
+                Text("\(PostStrings.created)\(Punctuation.colon)\(Punctuation.space)\(post.creationDate, style: .date)")
             }
             .foregroundStyle(.secondary)
             
             if let postDate = post.postDate {
                 HStack {
-                    Text(PostStrings.posted) +
-                    Text(Punctuation.colon) +
-                    Text(Punctuation.space) +
-                    Text(postDate, style: .date)
+                    Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
                 }
                 .foregroundStyle(.secondary)
             }
@@ -50,3 +44,4 @@ struct PostItemView: View {
     }
     .preferredColorScheme(.dark)
 }
+
