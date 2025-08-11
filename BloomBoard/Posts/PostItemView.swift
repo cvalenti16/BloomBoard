@@ -23,11 +23,23 @@ struct PostItemView: View {
                     .foregroundStyle(.white)
             }
             
-            if let postDate = post.postDate {
-                Text(postDate, style: .date)
-                    .foregroundStyle(.secondary)
+            HStack {
+                Text(PostStrings.created) +
+                Text(Punctuation.colon) +
+                Text(Punctuation.space) +
+                Text(post.creationDate, style: .date)
             }
+            .foregroundStyle(.secondary)
             
+            if let postDate = post.postDate {
+                HStack {
+                    Text(PostStrings.posted) +
+                    Text(Punctuation.colon) +
+                    Text(Punctuation.space) +
+                    Text(postDate, style: .date)
+                }
+                .foregroundStyle(.secondary)
+            }
         }
     }
 }

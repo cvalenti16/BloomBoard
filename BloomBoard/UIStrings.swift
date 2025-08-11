@@ -24,6 +24,7 @@ struct UIStrings {
 }
 
 struct PostStrings {
+    static let created = "Created"
     static let communityString = "Community"
     static let title = "Title"
     static let postString = "Posts"
@@ -35,6 +36,7 @@ struct PostStrings {
     static let deletePost = "Delete Post?"
     static let edit = "Edit"
     static let post = "Post"
+    static let posted = "Posted"
     static let selectPostDate = "Select Post Date"
     static let postedOn = "Posted On"
     static let unpost = "Unpost"
@@ -43,6 +45,7 @@ struct PostStrings {
 
 struct Punctuation {
     static let colon = ":"
+    static let space = " "
 }
 
 struct UIIcons {

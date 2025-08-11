@@ -22,7 +22,7 @@ struct PostListView: View {
     @State private var postDetailPath = NavigationPath()
     @State private var showDeleteAlert = false
     @State private var postToDelete: Post?
-
+    
     
     var body: some View {
         NavigationStack(path: $postDetailPath) {
