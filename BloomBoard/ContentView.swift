@@ -7,27 +7,23 @@
 
 import SwiftUI
 
-enum MainTab: Hashable {
-    case posts
-    case create
-    case plan
-}
+//enum MainTab: Hashable {
+//    case posts
+//    case create
+//    case plan
+//}
 
 struct ContentView: View {
-    @State private var selection: MainTab = .create // start on middle tab
+//    @State private var selection: MainTab = .create // start on middle tab
     
     var body: some View {
-        TabView(selection: $selection) {
+        TabView {
             
-            Tab(PostStrings.postString, systemImage: UIIcons.posts, value: .posts) {
+            Tab(PostStrings.postString, systemImage: UIIcons.posts) {
                 PostListView()
             }
-            
-            Tab(PostStrings.createPost, systemImage: UIIcons.addIcon, value: .create) {
-                AddPostView()
-            }
-            
-            Tab(UIStrings.basePlanString, systemImage: UIIcons.basePlan, value: .plan) {
+          
+            Tab(UIStrings.basePlanString, systemImage: UIIcons.basePlan) {
                 BasePlanView()
             }
         }
