@@ -18,6 +18,7 @@ struct AddPostView: View {
     @State private var postTitle = ""
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var uiImage: UIImage? = nil
+    @State private var imageWasChanged = false
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
@@ -71,6 +72,7 @@ struct AddPostView: View {
                     Task {
                         if let data = try? await newValue?.loadTransferable(type: Data.self) {
                             uiImage = UIImage(data: data)
+                            imageWasChanged = true
                         }
                     }
                 }
@@ -94,7 +96,7 @@ struct AddPostView: View {
                             // Update existing post
                             
                             existingPost.title = postTitle
-                            if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
+                            if imageWasChanged,let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
                                 existingPost.image = saveImageToDisk(imageData)
                             }
                             
