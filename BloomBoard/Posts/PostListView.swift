@@ -12,9 +12,7 @@ struct PostListView: View {
     @Environment(\.modelContext) var modelContext
     
     @Query(sort: [
-        SortDescriptor(\Post.title , order: .forward),
         SortDescriptor(\Post.creationDate, order: .reverse)
-       
     ]) var sortedPosts: [Post]
     
   
