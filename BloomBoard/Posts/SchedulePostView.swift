@@ -18,7 +18,7 @@ struct SchedulePostView: View {
                 .font(.headline)
             
             DatePicker(
-                PostStrings.postedOn,
+                PostStrings.posted,
                 selection: $selectedPostDate,
                 displayedComponents: .date
             )
@@ -33,6 +33,7 @@ struct SchedulePostView: View {
                 if post.postDate != nil {
                     Button(PostStrings.unpost) {
                         post.postDate = nil
+                        post.performance = nil
                         dismiss()
                     }
                     Spacer()
@@ -40,6 +41,7 @@ struct SchedulePostView: View {
                 
                 Button(UIStrings.saveString) {
                     post.postDate = selectedPostDate
+                    post.performance = .unrated
                     dismiss()
                 }
             }

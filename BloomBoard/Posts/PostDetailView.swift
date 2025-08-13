@@ -40,8 +40,7 @@ struct PostDetailView: View {
                         .scaledToFit()
                         .clipShape(.rect(cornerRadius: 10))
                         .padding()
-                        .frame(maxHeight: 300)
-                    
+                       
                     Button {
                         UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                     } label: {
@@ -52,6 +51,7 @@ struct PostDetailView: View {
                             .background(.ultraThinMaterial, in: Circle())
                     }
                 }
+                .frame(maxHeight: 250)            
             }
             
             Button {
@@ -62,10 +62,6 @@ struct PostDetailView: View {
                     .padding()
                     .background(.ultraThinMaterial)
                     .clipShape(.rect(cornerRadius: 10))
-                
-                
-                
-                
             }
             .sheet(isPresented: $showEditSheet) {
                 AddPostView(postToEdit: post)
@@ -74,8 +70,8 @@ struct PostDetailView: View {
         }
     }
 }
-    
-    #Preview {
-        PostDetailView(post: Post.testPost)
-            .preferredColorScheme(.dark)
-    }
+
+#Preview {
+    PostDetailView(post: Post.testPost)
+        .preferredColorScheme(.dark)
+}

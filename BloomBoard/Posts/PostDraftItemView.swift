@@ -24,14 +24,17 @@ struct PostDraftItemView: View {
             }
             
             if let postedDate = post.postDate {
-                
-                Text("\(PostStrings.postedOn)\(Punctuation.colon)\(Punctuation.space)\(postedDate, style: .date)")
+                Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postedDate, style: .date)")
                     .foregroundStyle(.secondary)
             } else {
                 Text("\(PostStrings.created)\(Punctuation.colon)\(Punctuation.space)\(post.creationDate, style: .date)")
                     .foregroundStyle(.secondary)
             }
             
+            if let postPerformance = post.performance {
+                Text("\(PostStrings.performance)\(Punctuation.colon)\(Punctuation.space)\(postPerformance.rawValue)")
+                    .foregroundStyle(.secondary)
+            }
         }
         
     }
