@@ -13,7 +13,7 @@ struct PostPublishedListView: View {
     @Query(
         filter: #Predicate<Post> { $0.postDate != nil }
         ,sort: [
-            SortDescriptor(\Post.creationDate, order: .reverse)
+            SortDescriptor(\Post.postDate, order: .reverse)
         ]) var completedPosts: [Post]
     
     @State private var postDetailPath = NavigationPath()
@@ -47,6 +47,7 @@ struct PostPublishedListView: View {
                 .navigationDestination(for: Post.self) { post in
                     PostDetailView(post: post)
                 }
+                .navigationTitle(PostStrings.publishedPosts)
             }
         }
         .sheet(item: $postToSchedule) { post in

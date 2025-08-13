@@ -68,6 +68,7 @@ struct PostDraftListView: View {
                 .navigationDestination(for: Post.self) { post in
                     PostDetailView(post: post)
                 }
+                .navigationTitle(PostStrings.daftPosts)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {

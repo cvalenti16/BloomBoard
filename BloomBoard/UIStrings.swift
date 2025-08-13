@@ -43,6 +43,8 @@ struct PostStrings {
     static let postedOn = "Posted On"
     static let unpost = "Unpost"
     static let noPublishedPosts = "No Published Posts"
+    static let publishedPosts = "Published Posts"
+    static let daftPosts = "Draft Posts"
 
 }
 
