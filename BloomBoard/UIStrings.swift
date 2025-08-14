@@ -63,6 +63,7 @@ struct UIIcons {
     static let edit = "pencil.circle"
     static let calendar = "calendar.badge.plus"
     static let changeIcon = "arrow.triangle.2.circlepath"
+    static let x = "xmark"
 }
 
 

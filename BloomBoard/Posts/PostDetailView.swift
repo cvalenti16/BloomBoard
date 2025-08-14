@@ -35,6 +35,12 @@ struct PostDetailView: View {
                              } label: {
                                  Label("Copy", systemImage: "doc.on.doc")
                              }
+                        
+                        Button {
+                           
+                        } label: {
+                            Label("Cancel", systemImage: "xmark")
+                        }
                          }
             }
             
