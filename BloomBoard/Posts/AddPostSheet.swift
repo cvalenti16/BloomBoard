@@ -96,7 +96,7 @@ struct AddPostSheet: View {
                     Button {
                         dismiss()
                     } label: {
-                        Text(UIStrings.cancelString)
+                        Image(systemName: UIIcons.x)
                     }
                 }
                 
@@ -125,7 +125,7 @@ struct AddPostSheet: View {
                          dismiss()
                         
                     } label: {
-                        Text(UIStrings.saveString)
+                        Image(systemName: UIIcons.save)
                     }
                 }
             }
