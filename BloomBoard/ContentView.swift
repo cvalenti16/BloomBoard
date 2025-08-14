@@ -24,6 +24,11 @@ struct ContentView: View {
             Tab(PostStrings.drafts, systemImage: UIIcons.posts) {
                 PostDraftListView()
             }
+            
+            
+            Tab(PostStrings.createPost, systemImage: UIIcons.addIcon) {
+                AddPostHome()
+            }
           
             Tab(PostStrings.published, systemImage: UIIcons.published) {
                 PostPublishedListView()
