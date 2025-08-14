@@ -25,6 +25,7 @@ struct UIStrings {
 
 struct PostStrings {
     static let created = "Created"
+    static let copy = "Copy"
     static let communityString = "Community"
     static let title = "Title"
     static let drafts = "Drafts"
@@ -56,6 +57,7 @@ struct Punctuation {
 
 struct UIIcons {
     static let addIcon = "plus"
+    static let copy = "doc.on.doc"
     static let trashIcon = "trash"
     static let basePlan = "list.bullet"
     static let posts = "tray"

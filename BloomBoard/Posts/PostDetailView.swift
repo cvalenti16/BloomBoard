@@ -33,13 +33,13 @@ struct PostDetailView: View {
                              Button {
                                  UIPasteboard.general.string = post.title
                              } label: {
-                                 Label("Copy", systemImage: "doc.on.doc")
+                                 Label(PostStrings.copy, systemImage: UIIcons.copy)
                              }
                         
                         Button {
                            
                         } label: {
-                            Label("Cancel", systemImage: "xmark")
+                            Label(UIStrings.cancelString, systemImage: UIIcons.x)
                         }
                          }
             }
