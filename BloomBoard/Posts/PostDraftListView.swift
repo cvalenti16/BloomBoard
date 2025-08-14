@@ -37,6 +37,7 @@ struct PostDraftListView: View {
                         .font(.headline)
                         .padding()
                 }
+                .navigationTitle(PostStrings.daftPosts)
             } else {
                 List(sortedPosts) { post in
                     PostItemView(post: post) { post in
