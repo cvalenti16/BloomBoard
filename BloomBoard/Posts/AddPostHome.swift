@@ -84,29 +84,53 @@ struct AddPostHome: View {
                     }
                 }
                 
-                Button {
-                    
-                    guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-                    
-                    //Create new post
-                    var filename: String? = nil
-                    if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
-                        filename = saveImageToDisk(imageData)
+                HStack {
+                    Button {
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                        
+                        postTitle = ""
+                        uiImage = nil
+                        selectedImage = nil
+                        imageWasChanged = false
+                    } label: {
+                        Image(systemName: UIIcons.trashIcon)
+                            .padding()
+                            .foregroundStyle(.white)
                     }
-                    let newPost = Post(title: postTitle, image: filename)
-                    modelContext.insert(newPost)
                     
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     
-                    postTitle = ""
-                    uiImage = nil
-                    selectedImage = nil
-                    imageWasChanged = false
+                    Button {
+                        
+                        guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                        
+                        //Create new post
+                        var filename: String? = nil
+                        if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
+                            filename = saveImageToDisk(imageData)
+                        }
+                        let newPost = Post(title: postTitle, image: filename)
+                        modelContext.insert(newPost)
+                        
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                        
+                        postTitle = ""
+                        uiImage = nil
+                        selectedImage = nil
+                        imageWasChanged = false
+                        
+                    } label: {
+                        Image(systemName: UIIcons.save)
+                            .padding()
+                            .font(.system(size: 22))
+                            .foregroundStyle(.white)
+                        
+                    }
                     
-                } label: {
-                    Text(UIStrings.saveString)
-                        .padding()
+                    
                 }
+                
+                
+        
             }
             .navigationTitle(PostStrings.createPost)
             //            .navigationBarTitleDisplayMode()

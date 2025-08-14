@@ -22,7 +22,7 @@ struct ContentView: View {
             
             Tab(PostStrings.drafts, systemImage: UIIcons.posts, value: .posts) {
                           PostDraftListView()
-                      }
+                        }
 
                       Tab(PostStrings.createPost, systemImage: UIIcons.addIcon, value: .create) {
                           AddPostHome()

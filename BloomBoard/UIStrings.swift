@@ -65,6 +65,7 @@ struct UIIcons {
     static let calendar = "calendar.badge.plus"
     static let changeIcon = "arrow.triangle.2.circlepath"
     static let x = "xmark"
+    static let save = "square.and.arrow.down"
 }
 
 
