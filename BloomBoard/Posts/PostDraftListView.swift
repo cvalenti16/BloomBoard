@@ -69,16 +69,6 @@ struct PostDraftListView: View {
                     PostDetailView(post: post)
                 }
                 .navigationTitle(PostStrings.daftPosts)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            showAddSheet.toggle()
-                        } label: {
-                            Image(systemName: UIIcons.addIcon)
-                                .foregroundStyle(.white)
-                        }
-                    }
-                }
                 
                 .alert(PostStrings.deletePost, isPresented: $showDeleteAlert) {
                     Button(UIStrings.deleteString, role: .destructive) {
