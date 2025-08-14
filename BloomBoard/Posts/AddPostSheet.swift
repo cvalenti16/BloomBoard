@@ -113,28 +113,35 @@ struct AddPostSheet: View {
                         guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                          
                         if let existingPost = postToEdit {
-                            // Update existing post
                             
+                            // Update existing post
                             existingPost.title = postTitle
+                            
+                            // If the image was updated with a new image
                             if imageWasChanged,let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
+                                if let old = existingPost.image { deleteImageFromDisk(old) }
                                 existingPost.image = saveImageToDisk(imageData)
-                            } else if imageWasChanged, uiImage == nil {
-                                if let old = existingPost.image { deleteImageFromDisk(old)
+                            }
+                            
+                            // If the image was removed
+                            if imageWasChanged, uiImage == nil {
+                                if let old = existingPost.image {
+                                    deleteImageFromDisk(old)
                                 }
                                 
                                 existingPost.image = nil
                             }
-                            
                         } else {
                              //Create new post
                              var filename: String? = nil
+                            
                              if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
                                  filename = saveImageToDisk(imageData)
                              }
                              let newPost = Post(title: postTitle, image: filename)
                              modelContext.insert(newPost)
                          }
-                         
+                        
                          dismiss()
                         
                     } label: {
