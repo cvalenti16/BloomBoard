@@ -96,6 +96,8 @@ struct AddPostHome: View {
                     let newPost = Post(title: postTitle, image: filename)
                     modelContext.insert(newPost)
                     
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    
                     postTitle = ""
                     uiImage = nil
                     selectedImage = nil
