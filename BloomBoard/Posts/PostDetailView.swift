@@ -23,9 +23,16 @@ struct PostDetailView: View {
     
     var body: some View {
         VStack {
-            Text(post.title)
-                .font(.title3)
-                .textSelection(.enabled)
+            Button {
+                showEditSheet.toggle()
+            } label: {
+                Text(post.title)
+                    .font(.title3)
+                    .textSelection(.enabled)
+            }
+            
+            
+            
             
             if let postDate = post.postDate {
                 Text(postDate, format: .dateTime.day().month().year())
@@ -40,7 +47,7 @@ struct PostDetailView: View {
                         .scaledToFit()
                         .clipShape(.rect(cornerRadius: 10))
                         .padding()
-                       
+                    
                     Button {
                         UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                     } label: {
@@ -51,22 +58,16 @@ struct PostDetailView: View {
                             .background(.ultraThinMaterial, in: Circle())
                     }
                 }
-                .frame(maxHeight: 250)            
+                .frame(maxHeight: 250)
+                .sheet(isPresented: $showEditSheet) {
+                    AddPostView(postToEdit: post)
+                        .presentationDetents([.fraction(0.60)])
+                }
             }
             
-            Button {
-                showEditSheet.toggle()
-            } label: {
-                Text(PostStrings.edit)
-                    .foregroundStyle(.white)
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(.rect(cornerRadius: 10))
-            }
-            .sheet(isPresented: $showEditSheet) {
-                AddPostView(postToEdit: post)
-                    .presentationDetents([.fraction(0.60)])
-            }
+            
+            
+            
         }
     }
 }
