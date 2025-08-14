@@ -22,23 +22,16 @@ struct ContentView: View {
         TabView(selection: $selection) {
             
             Tab(PostStrings.drafts, systemImage: UIIcons.posts, value: .posts) {
-                          PostDraftListView()
-                        }
-
-                      Tab(PostStrings.createPost, systemImage: UIIcons.addIcon, value: .create) {
-                          AddPostHome()
-                      }
-
-                      Tab(PostStrings.published, systemImage: UIIcons.published, value: .plan) {
-                          PostPublishedListView()
-                      }
-            
-            Tab(UIStrings.basePlanString, systemImage: UIIcons.calendar, value: .calendar) {
-                BasePlanView()
+                PostDraftListView()
             }
             
+            Tab(PostStrings.createPost, systemImage: UIIcons.addIcon, value: .create) {
+                AddPostHome()
+            }
             
-        
+            Tab(PostStrings.published, systemImage: UIIcons.published, value: .plan) {
+                PostPublishedListView()
+            }
         }
     }
 }
