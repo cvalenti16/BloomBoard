@@ -7,32 +7,30 @@
 
 import SwiftUI
 import SwiftData
-//enum MainTab: Hashable {
-//    case posts
-//    case create
-//    case plan
-//}
+
+enum MainTab: Hashable {
+    case posts
+    case create
+    case plan
+}
 
 struct ContentView: View {
-//    @State private var selection: MainTab = .create // start on middle tab
-
-    
+    @State private var selection: MainTab = .create // start on middle tab
     
     var body: some View {
-        TabView {
+        TabView(selection: $selection) {
             
-            Tab(PostStrings.drafts, systemImage: UIIcons.posts) {
-                PostDraftListView()
-            }
-            
-            
-            Tab(PostStrings.createPost, systemImage: UIIcons.addIcon) {
-                AddPostHome()
-            }
-          
-            Tab(PostStrings.published, systemImage: UIIcons.published) {
-                PostPublishedListView()
-            }
+            Tab(PostStrings.drafts, systemImage: UIIcons.posts, value: .posts) {
+                          PostDraftListView()
+                      }
+
+                      Tab(PostStrings.createPost, systemImage: UIIcons.addIcon, value: .create) {
+                          AddPostHome()
+                      }
+
+                      Tab(PostStrings.published, systemImage: UIIcons.published, value: .plan) {
+                          PostPublishedListView()
+                      }
         }
     }
 }
