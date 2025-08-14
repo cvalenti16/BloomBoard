@@ -59,15 +59,16 @@ struct PostDetailView: View {
                     }
                 }
                 .frame(maxHeight: 250)
-                .sheet(isPresented: $showEditSheet) {
-                    AddPostView(postToEdit: post)
-                        .presentationDetents([.fraction(0.60)])
-                }
+              
             }
             
             
             
             
+        }
+        .sheet(isPresented: $showEditSheet) {
+            AddPostView(postToEdit: post)
+                .presentationDetents([.fraction(0.60)])
         }
     }
 }
