@@ -52,21 +52,39 @@ struct AddPostSheet: View {
                     .padding(.horizontal ,10)
                 
                 PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {
-                    if let uiImage {
+                    if let postImage = uiImage {
                         ZStack {
                             
-                            Image(uiImage: uiImage)
+                            Image(uiImage: postImage)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(maxWidth: .infinity, maxHeight: 200)
                                 .clipShape(.rect(cornerRadius: 10))
                                 .padding(10)
                             
-                            Image(systemName: UIIcons.changeIcon)
-                                .font(.system(size: 20))
-                                .foregroundStyle(.white)
-                                .padding(12)
-                                .background(.ultraThinMaterial, in: Circle())
+                            HStack {
+                                Button {
+                                    selectedImage = nil
+                                    uiImage = nil
+                                    imageWasChanged = true
+                                    
+                                } label: {
+                                    Image(systemName: UIIcons.trashIcon)
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(.white)
+                                        .padding(12)
+                                        .background(.ultraThinMaterial, in: Circle())
+                                }
+                                
+                                
+                                Image(systemName: UIIcons.changeIcon)
+                                    .font(.system(size: 20))
+                                    .foregroundStyle(.white)
+                                    .padding(12)
+                                    .background(.ultraThinMaterial, in: Circle())
+                            }
+                            
+               
                             
                             
                         }
@@ -110,6 +128,11 @@ struct AddPostSheet: View {
                             existingPost.title = postTitle
                             if imageWasChanged,let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
                                 existingPost.image = saveImageToDisk(imageData)
+                            } else if imageWasChanged, uiImage == nil {
+                                if let old = existingPost.image { deleteImageFromDisk(old)
+                                }
+                                
+                                existingPost.image = nil
                             }
                             
                         } else {
@@ -146,6 +169,12 @@ struct AddPostSheet: View {
             print("Error saving image to disk: \(error)")
             return nil
         }
+    }
+    
+    func deleteImageFromDisk(_ filename: String) {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(filename)
+        try? FileManager.default.removeItem(at: url)
     }
 }
 
