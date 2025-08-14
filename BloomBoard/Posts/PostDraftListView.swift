@@ -33,13 +33,8 @@ struct PostDraftListView: View {
                 Button {
                     showAddSheet.toggle()
                 } label: {
-                    Text(PostStrings.createPost)
+                    Text(PostStrings.noDrafts)
                         .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(.thinMaterial)
-                        .foregroundStyle(.white)
-                        .clipShape(.rect(cornerRadius: 10))
                         .padding()
                 }
             } else {
