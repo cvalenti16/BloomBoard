@@ -29,10 +29,14 @@ struct PostDetailView: View {
                 Text(post.title)
                     .font(.title3)
                     .textSelection(.enabled)
+                    .contextMenu { // gives a copy option on long press
+                             Button {
+                                 UIPasteboard.general.string = post.title
+                             } label: {
+                                 Label("Copy", systemImage: "doc.on.doc")
+                             }
+                         }
             }
-            
-            
-            
             
             if let postDate = post.postDate {
                 Text(postDate, format: .dateTime.day().month().year())
