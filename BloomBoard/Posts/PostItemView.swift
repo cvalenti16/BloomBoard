@@ -35,6 +35,11 @@ struct PostItemView: View {
                 Text("\(PostStrings.performance)\(Punctuation.colon)\(Punctuation.space)\(postPerformance.rawValue)")
                     .foregroundStyle(.secondary)
             }
+            
+            Image(systemName: post.image == nil ? "text.document.fill" : "photo")
+                .foregroundStyle(.secondary)
+                  
+              
         }
         
     }

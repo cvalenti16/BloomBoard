@@ -22,6 +22,7 @@ struct PostDraftListView: View {
     @State private var postDetailPath = NavigationPath()
     @State private var showDeleteAlert = false
     @State private var postToDelete: Post?
+    @State private var postToEdit: Post?
     
     @State private var postToSchedule: Post?
     @State private var selectedPostDate = Date()
@@ -41,7 +42,13 @@ struct PostDraftListView: View {
             } else {
                 List(sortedPosts) { post in
                     PostItemView(post: post) { post in
-                        postDetailPath.append(post)
+                        
+                        if post.image == nil {
+                            postToEdit = post
+                        } else {
+                            postDetailPath.append(post)
+                        }
+                   
                     }
                     .swipeActions(edge: .trailing) {
                         Button {
@@ -84,6 +91,9 @@ struct PostDraftListView: View {
         }
         .sheet(item: $postToSchedule) { post in
             SchedulePostView(post: post)
+        }
+        .sheet(item: $postToEdit) { post in
+            AddPostSheet(postToEdit: post)
         }
     }
 }
