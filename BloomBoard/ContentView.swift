@@ -12,6 +12,7 @@ enum MainTab: Hashable {
     case posts
     case create
     case plan
+    case calendar
 }
 
 struct ContentView: View {
@@ -31,6 +32,13 @@ struct ContentView: View {
                       Tab(PostStrings.published, systemImage: UIIcons.published, value: .plan) {
                           PostPublishedListView()
                       }
+            
+            Tab(UIStrings.basePlanString, systemImage: UIIcons.calendar, value: .calendar) {
+                BasePlanView()
+            }
+            
+            
+        
         }
     }
 }
