@@ -12,7 +12,7 @@ import SwiftUI
 import PhotosUI
 import SwiftData
 
-struct AddPostView: View {
+struct AddPostSheet: View {
     var postToEdit: Post?
     
     @State private var postTitle = ""
@@ -53,12 +53,24 @@ struct AddPostView: View {
                 
                 PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {
                     if let uiImage {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: .infinity, maxHeight: 200)
-                            .clipShape(.rect(cornerRadius: 10))
-                            .padding(10)
+                        ZStack {
+                            
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity, maxHeight: 200)
+                                .clipShape(.rect(cornerRadius: 10))
+                                .padding(10)
+                            
+                            Image(systemName: UIIcons.changeIcon)
+                                .font(.system(size: 20))
+                                .foregroundStyle(.white)
+                                .padding(12)
+                                .background(.ultraThinMaterial, in: Circle())
+                            
+                            
+                        }
+                      
                     } else {
                         Text(PostStrings.uploadImage)
                             .foregroundStyle(.gray)
@@ -138,6 +150,6 @@ struct AddPostView: View {
 }
 
 #Preview {
-    AddPostView()
+    AddPostSheet()
         .preferredColorScheme(.dark)
 }

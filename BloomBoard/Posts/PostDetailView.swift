@@ -67,7 +67,7 @@ struct PostDetailView: View {
             
         }
         .sheet(isPresented: $showEditSheet) {
-            AddPostView(postToEdit: post)
+            AddPostSheet(postToEdit: post)
                 .presentationDetents([.fraction(0.60)])
         }
     }

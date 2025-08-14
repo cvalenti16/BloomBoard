@@ -117,6 +117,6 @@ struct AddPostHome: View {
 }
 
 #Preview {
-    AddPostView()
+    AddPostSheet()
         .preferredColorScheme(.dark)
 }

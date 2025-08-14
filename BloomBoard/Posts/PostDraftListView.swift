@@ -93,7 +93,7 @@ struct PostDraftListView: View {
             }
         }
         .sheet(isPresented: $showAddSheet) {
-            AddPostView()
+            AddPostSheet()
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(item: $postToSchedule) { post in
