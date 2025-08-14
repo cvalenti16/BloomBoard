@@ -32,7 +32,7 @@ struct PostPublishedListView: View {
                 
             } else {
                 List(completedPosts) { post in
-                    PostDraftItemView(post: post) { post in
+                    PostItemView(post: post) { post in
                         postDetailPath.append(post)
                     }
                     .swipeActions(edge: .trailing) {

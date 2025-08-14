@@ -44,7 +44,7 @@ struct PostDraftListView: View {
                 }
             } else {
                 List(sortedPosts) { post in
-                    PostDraftItemView(post: post) { post in
+                    PostItemView(post: post) { post in
                         postDetailPath.append(post)
                     }
                     .swipeActions(edge: .trailing) {

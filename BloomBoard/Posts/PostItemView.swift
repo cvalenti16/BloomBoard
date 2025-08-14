@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PostDraftItemView: View {
+struct PostItemView: View {
     let post: Post
     let onSelect: (Post) -> Void
     var body: some View {
@@ -41,7 +41,7 @@ struct PostDraftItemView: View {
 }
 
 #Preview {
-    PostDraftItemView(post: Post.testPost) { post in
+    PostItemView(post: Post.testPost) { post in
         
     }
     .preferredColorScheme(.dark)
