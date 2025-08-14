@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct UIStrings {
     static let platformString = "Platform"
@@ -69,5 +70,17 @@ struct UIIcons {
     static let x = "xmark"
     static let save = "square.and.arrow.down"
 }
+
+extension Image {
+    func defaultIconStyle() -> some View {
+        self
+            .font(.system(size: 20))
+            .foregroundStyle(.white)
+            .padding(12)
+            .background(.ultraThinMaterial, in: Circle())
+    }
+}
+
+
 
 

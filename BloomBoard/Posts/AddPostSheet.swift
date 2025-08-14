@@ -53,6 +53,7 @@ struct AddPostSheet: View {
                 
                 PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {
                     if let postImage = uiImage {
+                        
                         ZStack {
                             
                             Image(uiImage: postImage)
@@ -70,23 +71,12 @@ struct AddPostSheet: View {
                                     
                                 } label: {
                                     Image(systemName: UIIcons.trashIcon)
-                                        .font(.system(size: 20))
-                                        .foregroundStyle(.white)
-                                        .padding(12)
-                                        .background(.ultraThinMaterial, in: Circle())
+                                        .defaultIconStyle()
                                 }
                                 
-                                
                                 Image(systemName: UIIcons.changeIcon)
-                                    .font(.system(size: 20))
-                                    .foregroundStyle(.white)
-                                    .padding(12)
-                                    .background(.ultraThinMaterial, in: Circle())
+                                    .defaultIconStyle()
                             }
-                            
-               
-                            
-                            
                         }
                       
                     } else {

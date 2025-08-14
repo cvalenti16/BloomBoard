@@ -94,8 +94,7 @@ struct AddPostHome: View {
                         imageWasChanged = false
                     } label: {
                         Image(systemName: UIIcons.trashIcon)
-                            .padding()
-                            .foregroundStyle(.white)
+                            .defaultIconStyle()
                     }
                     
                     
@@ -120,9 +119,7 @@ struct AddPostHome: View {
                         
                     } label: {
                         Image(systemName: UIIcons.save)
-                            .padding()
-                            .font(.system(size: 22))
-                            .foregroundStyle(.white)
+                            .defaultIconStyle()
                         
                     }
                     
@@ -133,7 +130,6 @@ struct AddPostHome: View {
         
             }
             .navigationTitle(PostStrings.createPost)
-            //            .navigationBarTitleDisplayMode()
         }
         
     }
