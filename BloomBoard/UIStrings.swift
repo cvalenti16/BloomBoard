@@ -48,7 +48,6 @@ struct PostStrings {
     static let publishedPosts = "Published Posts"
     static let daftPosts = "Draft Posts"
     static let performance = "Performance"
-
 }
 
 struct Punctuation {

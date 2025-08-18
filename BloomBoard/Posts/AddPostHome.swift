@@ -93,7 +93,7 @@ struct AddPostHome: View {
                         selectedImage = nil
                         imageWasChanged = false
                     } label: {
-                        Image(systemName: UIIcons.x)
+                        Image(systemName: UIIcons.trashIcon)
                             .defaultIconStyle()
                     }
                     

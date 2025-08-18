@@ -7,9 +7,12 @@
 import SwiftUI
 
 struct PostDetailView: View {
+    @Environment(\.modelContext) var modelContext
+    
     @State private var showEditSheet = false
     @State private var showPostDateSheet = false
     @State private var selectedPostDate = Date()
+    @State private var postPerformance: Post.Performance
     
     let post: Post
     
@@ -21,6 +24,12 @@ struct PostDetailView: View {
         return UIImage(contentsOfFile: url.path)
     }
     
+    init(post: Post) {
+        self.post = post
+        _postPerformance = State(initialValue: post.performance ?? Post.Performance.unrated)
+    }
+    
+    
     var body: some View {
         VStack {
             Button {
@@ -29,26 +38,38 @@ struct PostDetailView: View {
                 Text(post.title)
                     .font(.title3)
                     .textSelection(.enabled)
+                    .padding(.horizontal)
                     .contextMenu { // gives a copy option on long press
-                             Button {
-                                 UIPasteboard.general.string = post.title
-                             } label: {
-                                 Label(PostStrings.copy, systemImage: UIIcons.copy)
-                             }
+                        Button {
+                            UIPasteboard.general.string = post.title
+                        } label: {
+                            Label(PostStrings.copy, systemImage: UIIcons.copy)
+                        }
                         
                         Button {
-                           
+                            
                         } label: {
                             Label(UIStrings.cancelString, systemImage: UIIcons.x)
                         }
-                         }
+                    }
             }
             
             if let postDate = post.postDate {
                 Text(postDate, format: .dateTime.day().month().year())
                     .font(.subheadline)
+                
+                    Picker(PostStrings.performance, selection: $postPerformance) {
+                        ForEach(Post.Performance.allCases, id: \.self) { performance in
+                            Text(performance.rawValue).tag(performance)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
+                    .onChange(of: postPerformance) { oldValue, newValue in
+                        post.performance = newValue
+                        try? modelContext.save()
+                    }
             }
-            
             
             if let uiImage = loadedImage {
                 ZStack {
@@ -69,7 +90,6 @@ struct PostDetailView: View {
                                 .background(.ultraThinMaterial, in: Circle())
                         }
                         
-                        
                         Button {
                             UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                         } label: {
@@ -80,16 +100,10 @@ struct PostDetailView: View {
                                 .background(.ultraThinMaterial, in: Circle())
                         }
                     }
-                    
-                   
                 }
                 .frame(maxHeight: 250)
               
             }
-            
-            
-            
-            
         }
         .sheet(isPresented: $showEditSheet) {
             AddPostSheet(postToEdit: post)

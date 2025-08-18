@@ -28,9 +28,9 @@ class Post:Identifiable {
     
     enum Performance: String, CaseIterable,Codable {
         case unrated = "Unrated"
-        case poor = "Poor (1-999 views)"
-        case good = "Good (1K - 4,999 views)"
-        case excellent = "Excellent (5K+ views)"
+        case poor = "Poor"
+        case good = "Good"
+        case excellent = "Excellent"
     }
     
     static var testPost = Post(title: "How is my SwiftData Model?", image: "PostSampleImage")
