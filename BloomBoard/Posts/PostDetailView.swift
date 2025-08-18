@@ -55,8 +55,8 @@ struct PostDetailView: View {
             }
             
             if let postDate = post.postDate {
-                Text(postDate, format: .dateTime.day().month().year())
-                    .font(.subheadline)
+                Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
+                    .foregroundStyle(.secondary)
                 
                     Picker(PostStrings.performance, selection: $postPerformance) {
                         ForEach(Post.Performance.allCases, id: \.self) { performance in
