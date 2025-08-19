@@ -8,6 +8,7 @@ import SwiftUI
 
 struct PostDetailView: View {
     @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) private var dismiss
     
     @State private var showEditSheet = false
     @State private var showPostDateSheet = false
@@ -53,6 +54,14 @@ struct PostDetailView: View {
                         }
                     }
             }
+            
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: UIIcons.calendar)
+                    .defaultIconStyle()
+            }
+            
             
             if let postDate = post.postDate {
                 Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
