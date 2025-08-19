@@ -54,13 +54,13 @@ struct PostDetailView: View {
                         }
                     }
             }
-            
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: UIIcons.calendar)
-                    .defaultIconStyle()
-            }
+//           
+//            Button {
+//                dismiss()
+//            } label: {
+//                Image(systemName: UIIcons.calendar)
+//                    .defaultIconStyle()
+//            }
             
             
             if let postDate = post.postDate {

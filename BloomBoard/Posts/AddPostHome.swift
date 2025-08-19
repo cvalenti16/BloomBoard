@@ -4,41 +4,25 @@
 //
 //  Created by Carlos Valentin on 8/4/25.
 //
-
 import SwiftUI
 import PhotosUI
 import SwiftData
 
 struct AddPostHome: View {
-    var postToEdit: Post?
     
     @State private var postTitle = ""
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var uiImage: UIImage? = nil
     @State private var imageWasChanged = false
+    @FocusState var isTyping: Bool
     
     @Environment(\.modelContext) var modelContext
-    
-    
-    init(postToEdit: Post? = nil) {
-        self.postToEdit = postToEdit
-        _postTitle = State(initialValue: postToEdit?.title ?? "")
-        
-        if let filename = postToEdit?.image {
-            let url = FileManager.default
-                .urls(for: .documentDirectory, in: .userDomainMask)[0]
-                .appendingPathComponent(filename)
-            if let image = UIImage(contentsOfFile: url.path) {
-                _uiImage = State(initialValue: image)
-            }
-        }
-    }
     
     var body: some View {
         NavigationStack {
             VStack {
                 TextField(PostStrings.title ,text: $postTitle, axis: .vertical)
-                    .textFieldStyle(.plain)
+                    .focused($isTyping)
                     .padding(10)
                     .bold()
                 
@@ -121,14 +105,8 @@ struct AddPostHome: View {
                     } label: {
                         Image(systemName: UIIcons.save)
                             .defaultIconStyle()
-                        
                     }
-                    
-                    
                 }
-                
-                
-        
             }
             .navigationTitle(PostStrings.createPost)
         }
