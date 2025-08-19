@@ -22,7 +22,6 @@ struct PostDraftListView: View {
     @State private var postDetailPath = NavigationPath()
     @State private var showDeleteAlert = false
     @State private var postToDelete: Post?
-    @State private var postToEdit: Post?
     
     @State private var postToSchedule: Post?
     @State private var selectedPostDate = Date()
@@ -42,13 +41,7 @@ struct PostDraftListView: View {
             } else {
                 List(sortedPosts) { post in
                     PostItemView(post: post) { post in
-                        
-                        if post.image == nil {
-                            postToEdit = post
-                        } else {
-                            postDetailPath.append(post)
-                        }
-                   
+                        postDetailPath.append(post)
                     }
                     .swipeActions(edge: .trailing) {
                         Button {
@@ -76,17 +69,13 @@ struct PostDraftListView: View {
                 .alert(PostStrings.deletePost, isPresented: $showDeleteAlert) {
                     Button(UIStrings.deleteString, role: .destructive) {
                         if let post = postToDelete {
+                            
                             if let old = post.image {
                                 deleteImageFromDisk(old)
                             }
                             
                             modelContext.delete(post)
-                            
-                           
                         }
-                        
-                        
-                        
                     }
                     Button(UIStrings.cancelString, role: .cancel) {
                         postToDelete = nil
@@ -101,11 +90,6 @@ struct PostDraftListView: View {
         .sheet(item: $postToSchedule) { post in
             SchedulePostView(post: post)
         }
-        .sheet(item: $postToEdit) { post in
-            AddPostSheet(postToEdit: post)
-        }
-        
-        
     }
     
     func deleteImageFromDisk(_ filename: String) {
