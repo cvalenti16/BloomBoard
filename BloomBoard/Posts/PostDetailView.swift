@@ -111,23 +111,23 @@ struct PostDetailView: View {
                     }
                 }
                 .frame(maxHeight: 250)
-                
-                Button {
-                    if (isPosted) {
-                        post.postDate = nil
-                        post.performance = nil
-                        dismiss()
-                    } else {
-                        post.postDate = selectedPostDate
-                        post.performance = .unrated
-                        dismiss()
-                    }
-                } label: {
-                    Text(isPosted ? PostStrings.unpost : PostStrings.post)
-                        .defaultButtonStyle()
-                }
-                
             }
+            
+            Button {
+                if (isPosted) {
+                    post.postDate = nil
+                    post.performance = nil
+                    dismiss()
+                } else {
+                    post.postDate = selectedPostDate
+                    post.performance = .unrated
+                    dismiss()
+                }
+            } label: {
+                Text(isPosted ? PostStrings.unpost : PostStrings.post)
+                    .defaultButtonStyle()
+            }
+            
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
