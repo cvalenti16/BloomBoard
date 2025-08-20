@@ -34,47 +34,40 @@ struct PostDetailView: View {
         _postPerformance = State(initialValue: post.performance ?? Post.Performance.unrated)
     }
     
-    
     var body: some View {
         VStack {
-            
-            Button {
-                showEditSheet.toggle()
-            } label: {
-                Text(post.title)
-                    .font(.title3)
-                    .foregroundStyle(.text)
-                    .textSelection(.enabled)
-                    .padding(.horizontal)
-                    .contextMenu { // gives a copy option on long press
-                        Button {
-                            UIPasteboard.general.string = post.title
-                        } label: {
-                            Label(PostStrings.copy, systemImage: UIIcons.copy)
-                        }
-                        
-                        Button {
-                            
-                        } label: {
-                            Label(UIStrings.cancelString, systemImage: UIIcons.x)
-                        }
+            Text(post.title)
+                .font(.title3)
+                .foregroundStyle(.text)
+                .padding(.horizontal)
+                .contextMenu { // gives a copy option on long press
+                    Button {
+                        UIPasteboard.general.string = post.title
+                    } label: {
+                        Label(PostStrings.copy, systemImage: UIIcons.copy)
                     }
-            }
+                    
+                    Button {
+                        
+                    } label: {
+                        Label(UIStrings.cancelString, systemImage: UIIcons.x)
+                    }
+                }
             
             if let postDate = post.postDate {
                 Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
                 
-                    Picker(PostStrings.performance, selection: $postPerformance) {
-                        ForEach(Post.Performance.allCases, id: \.self) { performance in
-                            Text(performance.rawValue).tag(performance)
-                        }
+                Picker(PostStrings.performance, selection: $postPerformance) {
+                    ForEach(Post.Performance.allCases, id: \.self) { performance in
+                        Text(performance.rawValue).tag(performance)
                     }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
-                    .onChange(of: postPerformance) { oldValue, newValue in
-                        post.performance = newValue
-                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .onChange(of: postPerformance) { oldValue, newValue in
+                    post.performance = newValue
+                }
                 
             } else {
                 Button {
@@ -131,7 +124,17 @@ struct PostDetailView: View {
                     }
                 }
                 .frame(maxHeight: 250)
-              
+                
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showEditSheet.toggle()
+                } label: {
+                    Image(systemName: UIIcons.edit)
+                        .font(.system(size: 20))
+                }
             }
         }
         .sheet(isPresented: $showEditSheet) {

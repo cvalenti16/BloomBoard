@@ -63,7 +63,7 @@ struct UIIcons {
     static let posts = "tray"
     static let published = "checkmark.seal.text.page"
     static let download = "square.and.arrow.down"
-    static let edit = "pencil.circle"
+    static let edit = "pencil"
     static let calendar = "calendar.badge.plus"
     static let changeIcon = "arrow.triangle.2.circlepath"
     static let x = "xmark"
