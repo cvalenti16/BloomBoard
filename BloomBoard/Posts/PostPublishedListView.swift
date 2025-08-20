@@ -50,6 +50,7 @@ struct PostPublishedListView: View {
                 .navigationTitle(PostStrings.publishedPosts)
             }
         }
+        .tint(.text)
         .sheet(item: $postToSchedule) { post in
             SchedulePostView(post: post)
         }

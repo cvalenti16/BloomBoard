@@ -129,6 +129,7 @@ struct PostDetailView: View {
             }
             
         }
+        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -148,6 +149,7 @@ struct PostDetailView: View {
                 selectedPostDate = date
             }
         }
+        
     }
 }
 

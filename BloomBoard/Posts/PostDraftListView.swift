@@ -90,6 +90,7 @@ struct PostDraftListView: View {
         .sheet(item: $postToSchedule) { post in
             SchedulePostView(post: post)
         }
+        .tint(.text)
     }
     
     func deleteImageFromDisk(_ filename: String) {
