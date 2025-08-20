@@ -15,7 +15,7 @@ struct PostDraftListView: View {
     @Query(
         filter: #Predicate<Post> { $0.postDate == nil }
         ,sort: [
-            SortDescriptor(\Post.creationDate, order: .reverse)
+            SortDescriptor(\Post.creationDate)
         ]) var sortedPosts: [Post]
     
     @State private var showAddSheet = false
