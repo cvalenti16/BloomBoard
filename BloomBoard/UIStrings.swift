@@ -80,6 +80,19 @@ extension Image {
     }
 }
 
+extension Text {
+    func defaultButtonStyle() -> some View {
+        self
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .frame(height: 50)
+            .background(.thinMaterial)
+            .foregroundStyle(.text)
+            .clipShape(.rect(cornerRadius: 10))
+            .padding()
+    }
+}
+
 
 
 

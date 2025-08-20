@@ -17,6 +17,10 @@ struct PostDetailView: View {
     
     let post: Post
     
+    var isPosted: Bool {
+        return post.postDate != nil
+    }
+    
     var loadedImage: UIImage? {
         guard let filename = post.image else { return nil }
         let url = FileManager.default
@@ -33,11 +37,13 @@ struct PostDetailView: View {
     
     var body: some View {
         VStack {
+            
             Button {
                 showEditSheet.toggle()
             } label: {
                 Text(post.title)
                     .font(.title3)
+                    .foregroundStyle(.text)
                     .textSelection(.enabled)
                     .padding(.horizontal)
                     .contextMenu { // gives a copy option on long press
@@ -54,14 +60,6 @@ struct PostDetailView: View {
                         }
                     }
             }
-//           
-//            Button {
-//                dismiss()
-//            } label: {
-//                Image(systemName: UIIcons.calendar)
-//                    .defaultIconStyle()
-//            }
-            
             
             if let postDate = post.postDate {
                 Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
@@ -76,8 +74,30 @@ struct PostDetailView: View {
                     .padding(.horizontal)
                     .onChange(of: postPerformance) { oldValue, newValue in
                         post.performance = newValue
-                        try? modelContext.save()
                     }
+                
+            } else {
+                Button {
+                    showPostDateSheet.toggle()
+                } label : {
+                    Text("\(PostStrings.selectPostDate)\(Punctuation.colon)\(Punctuation.space)\(selectedPostDate, style: .date)")
+                        .foregroundStyle(.text)
+                }
+            }
+            
+            Button {
+                if (isPosted) {
+                    post.postDate = nil
+                    post.performance = nil
+                    dismiss()
+                } else {
+                    post.postDate = selectedPostDate
+                    post.performance = .unrated
+                    dismiss()
+                }
+            } label: {
+                Text(isPosted ? PostStrings.unpost : PostStrings.post)
+                    .defaultButtonStyle()
             }
             
             if let uiImage = loadedImage {
@@ -117,6 +137,11 @@ struct PostDetailView: View {
         .sheet(isPresented: $showEditSheet) {
             AddPostSheet(postToEdit: post)
                 .presentationDetents([.fraction(0.60)])
+        }
+        .sheet(isPresented: $showPostDateSheet) {
+            SelectPostDate(initialDate: selectedPostDate) { date in
+                selectedPostDate = date
+            }
         }
     }
 }
