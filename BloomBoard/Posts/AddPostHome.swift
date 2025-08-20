@@ -27,8 +27,8 @@ struct AddPostHome: View {
                     .bold()
                 
                 Rectangle()
-                    .foregroundStyle(.white)
-                    .frame(height: 2)
+                    .foregroundStyle(.text)
+                    .frame(height: 1.5)
                     .padding(.horizontal ,10)
                 
                 PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {

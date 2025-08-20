@@ -20,7 +20,7 @@ struct PostItemView: View {
                 Text(post.title)
                     .bold()
                     .font(.title3)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.text)
             }
             
             HStack {

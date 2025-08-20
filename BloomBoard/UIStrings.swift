@@ -75,7 +75,7 @@ extension Image {
     func defaultIconStyle() -> some View {
         self
             .font(.system(size: 20))
-            .foregroundStyle(.white)
+            .foregroundStyle(.text)
             .padding(12)
             .background(.ultraThinMaterial, in: Circle())
     }
