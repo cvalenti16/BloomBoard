@@ -35,11 +35,11 @@ struct PostDetailView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack{
             Text(post.title)
                 .font(.title3)
                 .foregroundStyle(.text)
-                .padding(.horizontal)
+                .padding()
                 .contextMenu { // gives a copy option on long press
                     Button {
                         UIPasteboard.general.string = post.title
@@ -57,6 +57,7 @@ struct PostDetailView: View {
             if let postDate = post.postDate {
                 Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
+                    .padding()
                 
                 Picker(PostStrings.performance, selection: $postPerformance) {
                     ForEach(Post.Performance.allCases, id: \.self) { performance in
@@ -64,7 +65,7 @@ struct PostDetailView: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .padding(.horizontal)
+                .padding()
                 .onChange(of: postPerformance) { oldValue, newValue in
                     post.performance = newValue
                 }
@@ -73,24 +74,10 @@ struct PostDetailView: View {
                 Button {
                     showPostDateSheet.toggle()
                 } label : {
-                    Text("\(PostStrings.selectPostDate)\(Punctuation.colon)\(Punctuation.space)\(selectedPostDate, style: .date)")
+                    Label("\(PostStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
                         .foregroundStyle(.text)
+                        .padding()
                 }
-            }
-            
-            Button {
-                if (isPosted) {
-                    post.postDate = nil
-                    post.performance = nil
-                    dismiss()
-                } else {
-                    post.postDate = selectedPostDate
-                    post.performance = .unrated
-                    dismiss()
-                }
-            } label: {
-                Text(isPosted ? PostStrings.unpost : PostStrings.post)
-                    .defaultButtonStyle()
             }
             
             if let uiImage = loadedImage {
@@ -124,6 +111,21 @@ struct PostDetailView: View {
                     }
                 }
                 .frame(maxHeight: 250)
+                
+                Button {
+                    if (isPosted) {
+                        post.postDate = nil
+                        post.performance = nil
+                        dismiss()
+                    } else {
+                        post.postDate = selectedPostDate
+                        post.performance = .unrated
+                        dismiss()
+                    }
+                } label: {
+                    Text(isPosted ? PostStrings.unpost : PostStrings.post)
+                        .defaultButtonStyle()
+                }
                 
             }
         }

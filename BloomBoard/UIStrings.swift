@@ -42,6 +42,7 @@ struct PostStrings {
     static let post = "Post"
     static let posted = "Posted"
     static let selectPostDate = "Select Post Date"
+    static let postDate = "Post Date"
     static let unpost = "Unpost"
     static let noPublishedPosts = "No Published Posts"
     static let noDrafts = "No Draft Posts"
