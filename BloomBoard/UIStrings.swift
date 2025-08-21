@@ -62,7 +62,7 @@ struct UIIcons {
     static let trashIcon = "trash"
     static let basePlan = "list.bullet"
     static let posts = "tray"
-    static let published = "checkmark.seal.text.page"
+    static let published = "paperplane.fill"
     static let download = "square.and.arrow.down"
     static let edit = "pencil"
     static let calendar = "calendar.badge.plus"

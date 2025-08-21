@@ -9,12 +9,10 @@ import PhotosUI
 import SwiftData
 
 struct AddPostHome: View {
-    
     @State private var postTitle = ""
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var uiImage: UIImage? = nil
     @State private var imageWasChanged = false
-    @FocusState var isTyping: Bool
     
     @Environment(\.modelContext) var modelContext
     
@@ -22,14 +20,13 @@ struct AddPostHome: View {
         NavigationStack {
             VStack {
                 TextField(PostStrings.title ,text: $postTitle, axis: .vertical)
-                    .focused($isTyping)
-                    .padding(10)
+                    .padding(.horizontal)
                     .bold()
                 
                 Rectangle()
                     .foregroundStyle(.text)
                     .frame(height: 1.5)
-                    .padding(.horizontal ,10)
+                    .padding(.horizontal)
                 
                 PhotosPicker(selection:$selectedImage, matching: .images, photoLibrary: .shared()) {
                     if let uiImage {
