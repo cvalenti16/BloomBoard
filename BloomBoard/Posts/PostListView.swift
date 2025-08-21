@@ -8,38 +8,30 @@
 import SwiftUI
 import SwiftData
 
-struct PostDraftListView: View {
+struct PostListView: View {
     @Environment(\.modelContext) var modelContext
-    
-    
-    @Query(
-        filter: #Predicate<Post> { $0.postDate == nil }
-        ,sort: [
-            SortDescriptor(\Post.creationDate)
-        ]) var sortedPosts: [Post]
     
     @State private var showAddSheet = false
     @State private var postDetailPath = NavigationPath()
     @State private var showDeleteAlert = false
     @State private var postToDelete: Post?
+    @State private var postToEdit: Post?
     
-    @State private var postToSchedule: Post?
-    @State private var selectedPostDate = Date()
-    
+    let posts: [Post]
+    let isDrafts: Bool
     
     var body: some View {
         NavigationStack(path: $postDetailPath) {
-            if (sortedPosts.isEmpty) {
+            if (posts.isEmpty) {
                 Button {
                     showAddSheet.toggle()
                 } label: {
-                    Text(PostStrings.noDrafts)
-                        .font(.headline)
-                        .padding()
+                    Text(isDrafts ? PostStrings.noDrafts : PostStrings.noPublishedPosts)
+                        .defaultButtonStyle()
                 }
-                .navigationTitle(PostStrings.daftPosts)
+                .navigationTitle(PostStrings.draftPosts)
             } else {
-                List(sortedPosts) { post in
+                List(posts) { post in
                     PostItemView(post: post) { post in
                         postDetailPath.append(post)
                     }
@@ -54,9 +46,9 @@ struct PostDraftListView: View {
                     }
                     .swipeActions(edge: .trailing) {
                         Button {
-                            postToSchedule = post
+                            postToEdit = post
                         } label: {
-                            Image(systemName: UIIcons.calendar)
+                            Image(systemName: UIIcons.edit)
                                 .tint(.yellow)
                         }
                     }
@@ -64,7 +56,7 @@ struct PostDraftListView: View {
                 .navigationDestination(for: Post.self) { post in
                     PostDetailView(post: post)
                 }
-                .navigationTitle(PostStrings.daftPosts)
+                .navigationTitle(isDrafts ? PostStrings.draftPosts : PostStrings.publishedPosts)
                 
                 .alert(PostStrings.deletePost, isPresented: $showDeleteAlert) {
                     Button(UIStrings.deleteString, role: .destructive) {
@@ -75,6 +67,7 @@ struct PostDraftListView: View {
                             }
                             
                             modelContext.delete(post)
+                            postToDelete = nil
                         }
                     }
                     Button(UIStrings.cancelString, role: .cancel) {
@@ -87,8 +80,9 @@ struct PostDraftListView: View {
             AddPostSheet()
                 .presentationDetents([.fraction(0.60)])
         }
-        .sheet(item: $postToSchedule) { post in
-            SchedulePostView(post: post)
+        .sheet(item: $postToEdit) { post in
+            AddPostSheet(postToEdit: post)
+                .presentationDetents([.fraction(0.60)])
         }
         .tint(.text)
     }

@@ -18,6 +18,18 @@ enum MainTab: Hashable {
 struct ContentView: View {
     @State private var selection: MainTab = .create // start on middle tab
     
+    @Query(
+        filter: #Predicate<Post> { $0.postDate == nil }
+        ,sort: [
+            SortDescriptor(\Post.creationDate)
+        ]) var draftPosts: [Post]
+    
+    @Query(
+        filter: #Predicate<Post> { $0.postDate != nil }
+        ,sort: [
+            SortDescriptor(\Post.postDate, order: .reverse)
+        ]) var publishedPosts: [Post]
+    
 //    @Query(
 //        filter: #Predicate<Post> { $0.image != nil }
 //    ) var postsWithImages: [Post]
@@ -26,7 +38,7 @@ struct ContentView: View {
         TabView(selection: $selection) {
             
             Tab(PostStrings.drafts, systemImage: UIIcons.posts, value: .posts) {
-                PostDraftListView()
+                PostListView(posts: draftPosts, isDrafts: true)
             }
             
             Tab(PostStrings.createPost, systemImage: UIIcons.addIcon, value: .create) {
@@ -34,7 +46,7 @@ struct ContentView: View {
             }
             
             Tab(PostStrings.published, systemImage: UIIcons.published, value: .plan) {
-                PostPublishedListView()
+                PostListView(posts: publishedPosts, isDrafts: false)
             }
         }
 //        .onAppear {

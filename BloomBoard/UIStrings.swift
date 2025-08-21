@@ -47,7 +47,7 @@ struct PostStrings {
     static let noPublishedPosts = "No Published Posts"
     static let noDrafts = "No Draft Posts"
     static let publishedPosts = "Published Posts"
-    static let daftPosts = "Draft Posts"
+    static let draftPosts = "Draft Posts"
     static let performance = "Performance"
 }
 
