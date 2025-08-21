@@ -58,6 +58,7 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showAddPostSheet) {
             AddPostSheet()
+                .presentationDetents([.fraction(0.75)])
         }
         
 //        .onAppear {

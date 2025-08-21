@@ -12,7 +12,6 @@ struct PostItemView: View {
     let onSelect: (Post) -> Void
     var body: some View {
         
-        
         VStack (alignment: .leading) {
             Button {
                 onSelect(post)
