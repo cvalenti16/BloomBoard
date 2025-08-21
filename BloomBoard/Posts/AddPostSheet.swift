@@ -105,6 +105,7 @@ struct AddPostSheet: View {
                         dismiss()
                     } label: {
                         Image(systemName: UIIcons.x)
+                            .foregroundStyle(.text)
                     }
                 }
                 
@@ -146,6 +147,7 @@ struct AddPostSheet: View {
                         
                     } label: {
                         Image(systemName: UIIcons.save)
+                            .foregroundStyle(.text)
                     }
                 }
             }

@@ -9,14 +9,14 @@ import SwiftUI
 import SwiftData
 
 enum MainTab: Hashable {
-    case posts
+    case drafts
     case create
-    case plan
-    case calendar
+    case published
 }
 
 struct ContentView: View {
-    @State private var selection: MainTab = .create // start on middle tab
+    @State private var selection: MainTab = .drafts // start in left tab
+    @State var showAddPostSheet = false
     
     @Query(
         filter: #Predicate<Post> { $0.postDate == nil }
@@ -37,18 +37,29 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $selection) {
             
-            Tab(PostStrings.drafts, systemImage: UIIcons.posts, value: .posts) {
+            Tab(PostStrings.drafts, systemImage: UIIcons.posts, value: .drafts) {
                 PostListView(posts: draftPosts, isDrafts: true)
             }
             
             Tab(PostStrings.createPost, systemImage: UIIcons.addIcon, value: .create) {
-                AddPostHome()
+                Text("")
             }
             
-            Tab(PostStrings.published, systemImage: UIIcons.published, value: .plan) {
+            Tab(PostStrings.published, systemImage: UIIcons.published, value: .published) {
                 PostListView(posts: publishedPosts, isDrafts: false)
             }
         }
+        .onChange(of: selection) { oldValue, newValue in
+            if selection == .create {
+                showAddPostSheet.toggle()
+                selection = oldValue
+            }
+           
+        }
+        .sheet(isPresented: $showAddPostSheet) {
+            AddPostSheet()
+        }
+        
 //        .onAppear {
 //            for posts in postsWithImages {
 //                print(posts.image ?? "")
