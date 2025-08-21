@@ -64,6 +64,9 @@ struct AddPostSheet: View {
                                 .padding(10)
                             
                             HStack {
+                                Image(systemName: UIIcons.changeIcon)
+                                    .defaultIconStyle()
+                                
                                 Button {
                                     selectedImage = nil
                                     uiImage = nil
@@ -73,9 +76,6 @@ struct AddPostSheet: View {
                                     Image(systemName: UIIcons.trashIcon)
                                         .defaultIconStyle()
                                 }
-                                
-                                Image(systemName: UIIcons.changeIcon)
-                                    .defaultIconStyle()
                             }
                         }
                       

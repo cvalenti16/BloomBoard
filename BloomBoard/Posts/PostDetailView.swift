@@ -87,27 +87,13 @@ struct PostDetailView: View {
                         .clipShape(.rect(cornerRadius: 10))
                         .padding()
                     
-                    HStack {
-                        Button {
-                            showEditSheet.toggle()
-                        } label: {
-                            Image(systemName: UIIcons.changeIcon)
-                                .font(.system(size: 20))
-                                .foregroundStyle(.white)
-                                .padding(12)
-                                .background(.ultraThinMaterial, in: Circle())
-                        }
-                        
-                        Button {
-                            UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                        } label: {
-                            Image(systemName: UIIcons.download)
-                                .font(.system(size: 20))
-                                .foregroundStyle(.white)
-                                .padding(12)
-                                .background(.ultraThinMaterial, in: Circle())
-                        }
+                    Button {
+                        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                    } label: {
+                        Image(systemName: UIIcons.download)
+                            .defaultIconStyle()
                     }
+                    
                 }
                 .frame(maxHeight: 250)
             }
