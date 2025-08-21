@@ -57,7 +57,6 @@ struct PostDetailView: View {
             if let postDate = post.postDate {
                 Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
-                    .padding()
                 
                 Picker(PostStrings.performance, selection: $postPerformance) {
                     ForEach(Post.Performance.allCases, id: \.self) { performance in

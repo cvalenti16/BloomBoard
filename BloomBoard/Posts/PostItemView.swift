@@ -42,12 +42,7 @@ struct PostItemView: View {
                 Text("\(PostStrings.performance)\(Punctuation.colon)\(Punctuation.space)\(postPerformance.rawValue)")
                     .foregroundStyle(.secondary)
             }
-            
-            
-            
-            
         }
-        
     }
 }
 
