@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import SwiftUI
 
 @Model
 class Post:Identifiable {
@@ -31,6 +32,19 @@ class Post:Identifiable {
         case poor = "Poor"
         case good = "Good"
         case excellent = "Excellent"
+        
+        var color: Color {
+            switch self {
+            case .unrated:
+                return .gray 
+            case .poor:
+                return .red
+            case .good:
+                return .green
+            case .excellent:
+                return .yellow
+            }
+        }
     }
     
     static var testPost = Post(title: "How is my SwiftData Model?", image: "PostSampleImage")

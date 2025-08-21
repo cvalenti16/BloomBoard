@@ -37,9 +37,11 @@ struct PostItemView: View {
                 
             }
             
-            if let postPerformance = post.performance {
-                Text("\(PostStrings.performance)\(Punctuation.colon)\(Punctuation.space)\(postPerformance.rawValue)")
-                    .foregroundStyle(.secondary)
+            if let postPerformance = post.performance{
+                Text((postPerformance.rawValue))
+                    .padding(5)
+                    .background(post.performance?.color.opacity(0.5))
+                    .clipShape(.rect(cornerRadius: 10))
             }
         }
     }
