@@ -47,7 +47,7 @@ struct AddPostSheet: View {
                     .bold()
                 
                 Rectangle()
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.text)
                     .frame(height: 2)
                     .padding(.horizontal ,10)
                 

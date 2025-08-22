@@ -23,13 +23,19 @@ struct PostListView: View {
     var body: some View {
         NavigationStack(path: $postDetailPath) {
             if (posts.isEmpty) {
-                Button {
-                    showAddSheet.toggle()
-                } label: {
-                    Text(isDrafts ? PostStrings.noDrafts : PostStrings.noPublishedPosts)
-                        .defaultButtonStyle()
+                Text(isDrafts ? PostStrings.noDrafts : PostStrings.noPublishedPosts)
+                    .font(.title3)
+                    .bold()
+                    .navigationTitle(isDrafts ? PostStrings.draftPosts: PostStrings.publishedPosts)
+                
+                if(isDrafts) {
+                    Button {
+                        showAddSheet.toggle()
+                    } label: {
+                        Text(PostStrings.createPost)
+                            .defaultButtonStyle()
+                    }
                 }
-                .navigationTitle(PostStrings.draftPosts)
             } else {
                 List(posts) { post in
                     PostItemView(post: post) { post in
