@@ -8,26 +8,9 @@
 import Foundation
 import SwiftUI
 
-struct UIStrings {
-    static let platformString = "Platform"
-    static let postType = "Post Type"
-    static let day = "Day"
-    static let addBasePost = "Add Base Post"
-    static let cancelString = "Cancel"
-    static let saveString = "Save"
-    static let basePlanEmpty = "Build Your Base Plan"
-    static let startString = "Start"
-    static let removeBasePost = "Remove Base Post"
-    static let deleteString = "Delete"
-    static let editBasePost = "Edit Base Post"
-    static let basePlanString = "Base Plan"
-    static let postDate = "Post Date"
-}
-
 struct PostStrings {
     static let created = "Created"
     static let copy = "Copy"
-    static let communityString = "Community"
     static let title = "Title"
     static let drafts = "Drafts"
     static let published = "Published"
@@ -35,7 +18,6 @@ struct PostStrings {
     static let uploadImage = "Upload Image"
     static let createPost = "Create Post"
     static let editPost = "Edit Post"
-    static let noPosts = "No Posts"
     static let downloadImage = "Download Image"
     static let deletePost = "Delete Post?"
     static let edit = "Edit"
@@ -55,6 +37,13 @@ struct Punctuation {
     static let colon = ":"
     static let space = " "
 }
+
+struct UIStrings {
+    static let cancelString = "Cancel"
+    static let saveString = "Save"
+    static let deleteString = "Delete"
+}
+
 
 struct UIIcons {
     static let addIcon = "plus"

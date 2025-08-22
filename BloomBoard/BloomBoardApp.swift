@@ -14,6 +14,6 @@ struct BloomBoardApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [SocialPost.self, Post.self])
+        .modelContainer(for: Post.self)
     }
 }
