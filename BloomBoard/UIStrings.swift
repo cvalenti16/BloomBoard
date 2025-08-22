@@ -32,7 +32,9 @@ struct PostStrings {
     static let draftPosts = "Draft Posts"
     static let performance = "Performance"
 }
-
+struct errorMessages {
+    static let emptyTitle = "Please Enter Title"
+}
 struct Punctuation {
     static let colon = ":"
     static let space = " "
@@ -80,6 +82,16 @@ extension Text {
             .foregroundStyle(.text)
             .clipShape(.rect(cornerRadius: 10))
             .padding()
+    }
+}
+
+
+extension Text {
+    func defaultErrorStyle() -> some View {
+        self
+            .font(.system(size: 12))
+            .foregroundStyle(.text)
+            
     }
 }
 

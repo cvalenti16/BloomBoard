@@ -23,6 +23,7 @@ struct AddPostSheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     
+    @State private var errorMessage: String?
     
     init(postToEdit: Post? = nil) {
         self.postToEdit = postToEdit
@@ -87,6 +88,9 @@ struct AddPostSheet: View {
                             .clipShape(.rect(cornerRadius: 10))
                             .padding(10)
                     }
+                    
+                   
+                    
                 }
                 .onChange(of: selectedImage) {oldValue, newValue in
                     Task {
@@ -96,6 +100,12 @@ struct AddPostSheet: View {
                         }
                     }
                 }
+                
+                if let error = errorMessage {
+                    Text(error)
+                        .defaultErrorStyle()
+                }
+              
             }
             .navigationTitle(postToEdit == nil ? PostStrings.createPost : PostStrings.editPost)
             .navigationBarTitleDisplayMode(.inline)
@@ -111,7 +121,11 @@ struct AddPostSheet: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                        guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                            errorMessage = errorMessages.emptyTitle
+                            return
+                            
+                        }
                          
                         if let existingPost = postToEdit {
                             
