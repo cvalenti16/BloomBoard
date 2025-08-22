@@ -40,9 +40,9 @@ class Post:Identifiable {
             case .poor:
                 return .red
             case .good:
-                return .green
-            case .excellent:
                 return .yellow
+            case .excellent:
+                return .green
             }
         }
     }
