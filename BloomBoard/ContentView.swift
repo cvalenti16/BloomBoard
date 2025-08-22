@@ -52,7 +52,7 @@ struct ContentView: View {
         .onChange(of: selection) { oldValue, newValue in
             if selection == .create {
                 showAddPostSheet.toggle()
-                selection = oldValue
+                selection = .drafts
             }
            
         }
