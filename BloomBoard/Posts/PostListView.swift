@@ -23,19 +23,32 @@ struct PostListView: View {
     var body: some View {
         NavigationStack(path: $postDetailPath) {
             if (posts.isEmpty) {
-                Text(isDrafts ? PostStrings.noDrafts : PostStrings.noPublishedPosts)
-                    .font(.title3)
-                    .bold()
-                    .navigationTitle(isDrafts ? PostStrings.draftPosts: PostStrings.publishedPosts)
                 
-                if(isDrafts) {
-                    Button {
-                        showAddSheet.toggle()
-                    } label: {
-                        Text(PostStrings.createPost)
-                            .defaultButtonStyle()
+                    Text(isDrafts ? PostStrings.noDrafts : PostStrings.noPublishedPosts)
+                        .font(.title3)
+                        .bold()
+                        .navigationTitle(isDrafts ? PostStrings.draftPosts: PostStrings.publishedPosts)
+                        .toolbar {
+                            if (isDrafts) {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    Button {
+                                        showAddSheet.toggle()
+                                    } label: {
+                                        Image(systemName: UIIcons.addIcon)
+                                    }
+                                }
+                                
+                            }
+                        }
+                    
+                    if(isDrafts) {
+                        Button {
+                            showAddSheet.toggle()
+                        } label: {
+                            Text(PostStrings.createPost)
+                                .defaultButtonStyle()
+                        }
                     }
-                }
             } else {
                 List(posts) { post in
                     PostItemView(post: post) { post in
@@ -62,7 +75,22 @@ struct PostListView: View {
                 .navigationDestination(for: Post.self) { post in
                     PostDetailView(post: post)
                 }
+          
+                
                 .navigationTitle(isDrafts ? PostStrings.draftPosts : PostStrings.publishedPosts)
+                .toolbar {
+                    if (isDrafts) {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                showAddSheet.toggle()
+                            } label: {
+                                Image(systemName: UIIcons.addIcon)
+                            }
+                        }
+                        
+                    }
+                }
+             
                 
                 .alert(PostStrings.deletePost, isPresented: $showDeleteAlert) {
                     Button(UIStrings.deleteString, role: .destructive) {
@@ -82,6 +110,8 @@ struct PostListView: View {
                 }
             }
         }
+        
+       
         .sheet(isPresented: $showAddSheet) {
             AddPostSheet()
                 .presentationDetents([.fraction(0.60)])
@@ -91,6 +121,7 @@ struct PostListView: View {
                 .presentationDetents([.fraction(0.60)])
         }
         .tint(.text)
+      
     }
     
     func deleteImageFromDisk(_ filename: String) {
