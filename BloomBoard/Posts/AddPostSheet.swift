@@ -5,9 +5,6 @@
 //  Created by Carlos Valentin on 8/4/25.
 //
 
-
-
-
 import SwiftUI
 import PhotosUI
 import SwiftData
@@ -113,7 +110,7 @@ struct AddPostSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                            errorMessage = errorMessages.emptyTitle
+                            errorMessage = ErrorMessages.emptyTitle
                             return
                             
                         }
@@ -133,16 +130,32 @@ struct AddPostSheet: View {
                                 existingPost.image = nil
                             }
                             
+                            do {
+                                try modelContext.save()
+                                dismiss()
+                            } catch {
+                                print(error)
+                                errorMessage = ErrorMessages.savedFailed
+                            }
+                            
                         } else {
                              //Create new post
                             let newPost = Post(title: postTitle)
+                            
                             if let imageData = uiImage?.pngData() {
                                 newPost.image = imageData
                              }
-                             modelContext.insert(newPost)
+                            
+                            do {
+                                modelContext.insert(newPost)
+                                try modelContext.save()
+                            } catch {
+                                print(error)
+                                errorMessage = ErrorMessages.savedFailed
+                            }
+                            dismiss()
                          }
                         
-                         dismiss()
                         
                     } label: {
                         Image(systemName: UIIcons.save)

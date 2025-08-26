@@ -22,11 +22,8 @@ struct PostDetailView: View {
     }
     
     var loadedImage: UIImage? {
-        guard let filename = post.image else { return nil }
-        let url = FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent(filename)
-        return UIImage(contentsOfFile: url.path)
+        guard let imageData = post.image else { return nil }
+        return UIImage(data: imageData)
     }
     
     init(post: Post) {

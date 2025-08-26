@@ -23,15 +23,25 @@ struct ContentView: View {
             SortDescriptor(\Post.postDate, order: .reverse)
         ]) var publishedPosts: [Post]
     
+    @Query var samplePosts: [Post]
     var body: some View {
         TabView() {
             
             Tab(PostStrings.drafts, systemImage: UIIcons.posts) {
-                PostListView(posts: draftPosts, isDrafts: true)
+                PostListView(posts: samplePosts, isDrafts: true)
             }
             
             Tab(PostStrings.published, systemImage: UIIcons.published) {
                 PostListView(posts: publishedPosts, isDrafts: false)
+            }
+        }
+        .onAppear {
+            if draftPosts.isEmpty {
+                print("Is empty")
+            }
+            
+            for post in draftPosts {
+                print(post.title)
             }
         }
        
