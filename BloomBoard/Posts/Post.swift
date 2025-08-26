@@ -13,12 +13,12 @@ import SwiftUI
 class Post:Identifiable {
     @Attribute(.unique) var id = UUID().description
     var title: String
-    var image:String?
+    @Attribute(.externalStorage) var image: Data?
     var postDate: Date?
     var creationDate: Date
     var performance: Performance?
     
-    init(id: String = UUID().description, title: String, image: String? = nil, completedDate: Date? = nil, performance: Performance? = nil) {
+    init(id: String = UUID().description, title: String, image: Data? = nil, completedDate: Date? = nil, performance: Performance? = nil) {
         self.id = id
         self.title = title
         self.image = image
@@ -47,7 +47,7 @@ class Post:Identifiable {
         }
     }
     
-    static var testPost = Post(title: "How is my SwiftData Model?", image: "PostSampleImage")
+    static var testPost = Post(title: "How is my SwiftData Model?", image: UIImage(named: "sampleImage")?.pngData())
 
 }
 
