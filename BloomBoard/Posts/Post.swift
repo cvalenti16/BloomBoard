@@ -29,20 +29,20 @@ class Post:Identifiable {
     
     enum Performance: String, CaseIterable,Codable {
         case unrated = "Unrated"
-        case poor = "Poor"
-        case good = "Good"
-        case excellent = "Excellent"
+        case bronze = "Bronze"
+        case silver = "Silver"
+        case gold = "Gold"
         
         var color: Color {
             switch self {
             case .unrated:
-                return .gray 
-            case .poor:
-                return .red
-            case .good:
+                return .clear
+            case .bronze:
+                return .brown
+            case .silver:
+                return .gray
+            case .gold:
                 return .yellow
-            case .excellent:
-                return .green
             }
         }
     }
