@@ -18,11 +18,11 @@ class Post:Identifiable {
     var creationDate: Date
     var performance: Performance?
     
-    init(id: String = UUID().description, title: String, image: Data? = nil, completedDate: Date? = nil, performance: Performance? = nil) {
+    init(id: String = UUID().description, title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil) {
         self.id = id
         self.title = title
         self.image = image
-        self.postDate = completedDate
+        self.postDate = postDate
         self.creationDate = Date()
         self.performance = performance
     }
