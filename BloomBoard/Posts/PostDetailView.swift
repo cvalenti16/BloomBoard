@@ -96,15 +96,23 @@ struct PostDetailView: View {
             }
             
             Button {
-                if (isPosted) {
-                    post.postDate = nil
-                    post.performance = nil
-                    dismiss()
-                } else {
-                    post.postDate = selectedPostDate
-                    post.performance = .unrated
-                    dismiss()
-                }
+                if isPosted {
+                      post.postDate = nil
+                      post.performance = nil
+                  } else {
+                      post.postDate = selectedPostDate
+                      post.performance = .unrated
+                  }
+                  
+                  do {
+                      try modelContext.save()
+                      dismiss()
+
+                  } catch {
+                      print("Failed to save post changes: \(error)")
+                  }
+                  
+             
             } label: {
                 Text(isPosted ? PostStrings.unpost : PostStrings.post)
                     .defaultButtonStyle()

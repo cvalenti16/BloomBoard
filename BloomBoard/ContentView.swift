@@ -28,20 +28,11 @@ struct ContentView: View {
         TabView() {
             
             Tab(PostStrings.drafts, systemImage: UIIcons.posts) {
-                PostListView(posts: samplePosts, isDrafts: true)
+                PostListView(posts: draftPosts, isDrafts: true)
             }
             
             Tab(PostStrings.published, systemImage: UIIcons.published) {
                 PostListView(posts: publishedPosts, isDrafts: false)
-            }
-        }
-        .onAppear {
-            if draftPosts.isEmpty {
-                print("Is empty")
-            }
-            
-            for post in draftPosts {
-                print(post.title)
             }
         }
        
