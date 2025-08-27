@@ -36,13 +36,13 @@ class Post:Identifiable {
         var color: Color {
             switch self {
             case .unrated:
-                return .gray 
+                return .clear
             case .poor:
-                return .red
+                return .brown
             case .good:
-                return .yellow
+                return .gray
             case .excellent:
-                return .green
+                return .yellow
             }
         }
     }
