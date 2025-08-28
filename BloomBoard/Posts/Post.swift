@@ -29,23 +29,25 @@ class Post:Identifiable {
     
     enum Performance: String, CaseIterable,Codable {
         case unrated = "Unrated"
-        case bronze = "Bronze"
-        case silver = "Silver"
-        case gold = "Gold"
+        case poor = "Poor"
+        case good = "Good"
+        case excellent = "Excellent"
         
         var color: Color {
             switch self {
             case .unrated:
                 return .clear
-            case .bronze:
+            case .poor:
                 return .brown
-            case .silver:
+            case .good:
                 return .gray
-            case .gold:
+            case .excellent:
                 return .yellow
             }
         }
     }
+    
+    
     
     static var testPost = Post(title: "How is my SwiftData Model?", image: UIImage(named: "sampleImage")?.pngData())
 
