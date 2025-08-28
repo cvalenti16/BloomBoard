@@ -93,6 +93,19 @@ struct PostDetailView: View {
                     
                 }
                 .frame(maxHeight: 250)
+            } else {
+                Button {
+                    showEditSheet.toggle()
+                } label: {
+                    Text(PostStrings.uploadImage)
+                        .foregroundStyle(.gray)
+                        .frame(maxWidth: .infinity, maxHeight: 200)
+                        .background(.ultraThinMaterial)
+                        .clipShape(.rect(cornerRadius: 10))
+                        .padding(10)
+                }
+                
+        
             }
             
             Button {
