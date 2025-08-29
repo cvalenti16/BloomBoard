@@ -25,6 +25,12 @@ struct AddPostSheet: View {
     init(postToEdit: Post? = nil) {
         self.postToEdit = postToEdit
         _postTitle = State(initialValue: postToEdit?.title ?? "")
+        // Convert stored Data? to UIImage
+        if let data = postToEdit?.image {
+            _uiImage = State(initialValue: UIImage(data: data))
+        } else {
+            _uiImage = State(initialValue: nil)
+        }
     }
     
     var body: some View {
