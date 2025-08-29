@@ -95,11 +95,6 @@ struct PostListView: View {
                 .alert(PostStrings.deletePost, isPresented: $showDeleteAlert) {
                     Button(UIStrings.deleteString, role: .destructive) {
                         if let post = postToDelete {
-                            
-                            if let old = post.image {
-                                deleteImageFromDisk(old)
-                            }
-                            
                             modelContext.delete(post)
                             postToDelete = nil
                         }
@@ -122,11 +117,5 @@ struct PostListView: View {
         }
         .tint(.text)
       
-    }
-    
-    func deleteImageFromDisk(_ filename: String) {
-        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent(filename)
-        try? FileManager.default.removeItem(at: url)
     }
 }

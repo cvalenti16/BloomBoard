@@ -32,8 +32,9 @@ struct PostStrings {
     static let draftPosts = "Draft Posts"
     static let performance = "Performance"
 }
-struct errorMessages {
+struct ErrorMessages {
     static let emptyTitle = "Please Enter Title"
+    static let savedFailed = "Failed to save, please try again"
 }
 struct Punctuation {
     static let colon = ":"

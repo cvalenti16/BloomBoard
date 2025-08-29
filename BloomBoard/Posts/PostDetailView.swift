@@ -22,11 +22,8 @@ struct PostDetailView: View {
     }
     
     var loadedImage: UIImage? {
-        guard let filename = post.image else { return nil }
-        let url = FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent(filename)
-        return UIImage(contentsOfFile: url.path)
+        guard let imageData = post.image else { return nil }
+        return UIImage(data: imageData)
     }
     
     init(post: Post) {
@@ -87,27 +84,56 @@ struct PostDetailView: View {
                         .clipShape(.rect(cornerRadius: 10))
                         .padding()
                     
-                    Button {
-                        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                    } label: {
-                        Image(systemName: UIIcons.download)
-                            .defaultIconStyle()
+                    HStack {
+                        Button {
+                            showEditSheet.toggle()
+                        } label: {
+                            Image(systemName: UIIcons.changeIcon)
+                                .defaultIconStyle()
+                        }
+                        
+                        Button {
+                            UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                        } label: {
+                            Image(systemName: UIIcons.download)
+                                .defaultIconStyle()
+                        }
                     }
-                    
                 }
                 .frame(maxHeight: 250)
+            } else {
+                Button {
+                    showEditSheet.toggle()
+                } label: {
+                    Text(PostStrings.uploadImage)
+                        .foregroundStyle(.gray)
+                        .frame(maxWidth: .infinity, maxHeight: 200)
+                        .background(.ultraThinMaterial)
+                        .clipShape(.rect(cornerRadius: 10))
+                        .padding(10)
+                }
+                
+        
             }
             
             Button {
-                if (isPosted) {
-                    post.postDate = nil
-                    post.performance = nil
-                    dismiss()
-                } else {
-                    post.postDate = selectedPostDate
-                    post.performance = .unrated
-                    dismiss()
-                }
+                if isPosted {
+                      post.postDate = nil
+                      post.performance = nil
+                  } else {
+                      post.postDate = selectedPostDate
+                      post.performance = .unrated
+                  }
+                  
+                  do {
+                      try modelContext.save()
+                      dismiss()
+
+                  } catch {
+                      print("Failed to save post changes: \(error)")
+                  }
+                  
+             
             } label: {
                 Text(isPosted ? PostStrings.unpost : PostStrings.post)
                     .defaultButtonStyle()

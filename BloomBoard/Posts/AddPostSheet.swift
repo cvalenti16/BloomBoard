@@ -5,9 +5,6 @@
 //  Created by Carlos Valentin on 8/4/25.
 //
 
-
-
-
 import SwiftUI
 import PhotosUI
 import SwiftData
@@ -28,14 +25,11 @@ struct AddPostSheet: View {
     init(postToEdit: Post? = nil) {
         self.postToEdit = postToEdit
         _postTitle = State(initialValue: postToEdit?.title ?? "")
-        
-        if let filename = postToEdit?.image {
-            let url = FileManager.default
-                .urls(for: .documentDirectory, in: .userDomainMask)[0]
-                .appendingPathComponent(filename)
-            if let image = UIImage(contentsOfFile: url.path) {
-                _uiImage = State(initialValue: image)
-            }
+        // Convert stored Data? to UIImage
+        if let data = postToEdit?.image {
+            _uiImage = State(initialValue: UIImage(data: data))
+        } else {
+            _uiImage = State(initialValue: nil)
         }
     }
     
@@ -95,8 +89,10 @@ struct AddPostSheet: View {
                 .onChange(of: selectedImage) {oldValue, newValue in
                     Task {
                         if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                            uiImage = UIImage(data: data)
-                            imageWasChanged = true
+                            await MainActor.run {
+                                uiImage = UIImage(data: data)
+                                imageWasChanged = true
+                            }
                         }
                     }
                 }
@@ -122,7 +118,7 @@ struct AddPostSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                            errorMessage = errorMessages.emptyTitle
+                            errorMessage = ErrorMessages.emptyTitle
                             return
                             
                         }
@@ -133,31 +129,41 @@ struct AddPostSheet: View {
                             existingPost.title = postTitle
                             
                             // If the image was updated with a new image
-                            if imageWasChanged,let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
-                                if let old = existingPost.image { deleteImageFromDisk(old) }
-                                existingPost.image = saveImageToDisk(imageData)
+                            if imageWasChanged,let imageData = uiImage?.pngData() {
+                                existingPost.image = imageData
                             }
                             
                             // If the image was removed
                             if imageWasChanged, uiImage == nil {
-                                if let old = existingPost.image {
-                                    deleteImageFromDisk(old)
-                                }
-                                
                                 existingPost.image = nil
                             }
+                            
+                            do {
+                                try modelContext.save()
+                                dismiss()
+                            } catch {
+                                print(error)
+                                errorMessage = ErrorMessages.savedFailed
+                            }
+                            
                         } else {
                              //Create new post
-                             var filename: String? = nil
+                            let newPost = Post(title: postTitle)
                             
-                             if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
-                                 filename = saveImageToDisk(imageData)
+                            if let imageData = uiImage?.pngData() {
+                                newPost.image = imageData
                              }
-                             let newPost = Post(title: postTitle, image: filename)
-                             modelContext.insert(newPost)
+                            
+                            do {
+                                modelContext.insert(newPost)
+                                try modelContext.save()
+                            } catch {
+                                print(error)
+                                errorMessage = ErrorMessages.savedFailed
+                            }
+                            dismiss()
                          }
                         
-                         dismiss()
                         
                     } label: {
                         Image(systemName: UIIcons.save)
@@ -168,26 +174,6 @@ struct AddPostSheet: View {
 
         }
 
-    }
-    
-    func saveImageToDisk(_ data: Data) -> String? {
-        let filename = UUID().uuidString + ".jpg"
-        let url = FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent(filename)
-        do {
-            try data.write(to: url)
-            return filename
-        } catch {
-            print("Error saving image to disk: \(error)")
-            return nil
-        }
-    }
-    
-    func deleteImageFromDisk(_ filename: String) {
-        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent(filename)
-        try? FileManager.default.removeItem(at: url)
     }
 }
 
