@@ -84,13 +84,21 @@ struct PostDetailView: View {
                         .clipShape(.rect(cornerRadius: 10))
                         .padding()
                     
-                    Button {
-                        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                    } label: {
-                        Image(systemName: UIIcons.download)
-                            .defaultIconStyle()
+                    HStack {
+                        Button {
+                            showEditSheet.toggle()
+                        } label: {
+                            Image(systemName: UIIcons.changeIcon)
+                                .defaultIconStyle()
+                        }
+                        
+                        Button {
+                            UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                        } label: {
+                            Image(systemName: UIIcons.download)
+                                .defaultIconStyle()
+                        }
                     }
-                    
                 }
                 .frame(maxHeight: 250)
             } else {
