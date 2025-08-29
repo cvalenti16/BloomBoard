@@ -89,8 +89,10 @@ struct AddPostSheet: View {
                 .onChange(of: selectedImage) {oldValue, newValue in
                     Task {
                         if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                            uiImage = UIImage(data: data)
-                            imageWasChanged = true
+                            await MainActor.run {
+                                uiImage = UIImage(data: data)
+                                imageWasChanged = true
+                            }
                         }
                     }
                 }
