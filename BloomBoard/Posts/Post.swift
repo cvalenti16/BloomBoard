@@ -10,15 +10,15 @@ import SwiftData
 import SwiftUI
 
 @Model
-class Post:Identifiable {
-    @Attribute(.unique) var id = UUID().description
+class Post: Identifiable {
+    @Attribute(.unique) var id: UUID = UUID()
     var title: String
     @Attribute(.externalStorage) var image: Data?
     var postDate: Date?
     var creationDate: Date
     var performance: Performance?
     
-    init(id: String = UUID().description, title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil) {
+    init(id: UUID = UUID(), title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil) {
         self.id = id
         self.title = title
         self.image = image
@@ -27,7 +27,7 @@ class Post:Identifiable {
         self.performance = performance
     }
     
-    enum Performance: String, CaseIterable,Codable {
+    enum Performance: String, CaseIterable, Codable {
         case unrated = "Unrated"
         case poor = "Poor"
         case good = "Good"
@@ -47,10 +47,5 @@ class Post:Identifiable {
         }
     }
     
-    
-    
     static var testPost = Post(title: "How is my SwiftData Model?", image: UIImage(named: "sampleImage")?.pngData())
-
 }
-
-
