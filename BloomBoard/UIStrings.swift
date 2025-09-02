@@ -14,13 +14,10 @@ struct PostStrings {
     static let title = "Title"
     static let drafts = "Drafts"
     static let published = "Published"
-    static let postString = "Posts"
     static let uploadImage = "Upload Image"
     static let createPost = "Create Post"
     static let editPost = "Edit Post"
-    static let downloadImage = "Download Image"
     static let deletePost = "Delete Post?"
-    static let edit = "Edit"
     static let post = "Post"
     static let posted = "Posted"
     static let selectPostDate = "Select Post Date"
@@ -33,7 +30,7 @@ struct PostStrings {
     static let performance = "Performance"
 }
 struct ErrorMessages {
-    static let emptyTitle = "Please Enter Title"
+    static let emptyTitle = "Please a Enter Title"
     static let savedFailed = "Failed to save, please try again"
 }
 struct Punctuation {
