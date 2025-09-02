@@ -129,7 +129,7 @@ struct AddPostSheet: View {
                             existingPost.title = postTitle
                             
                             // If the image was updated with a new image
-                            if imageWasChanged,let imageData = uiImage?.pngData() {
+                            if imageWasChanged, let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
                                 existingPost.image = imageData
                             }
                             
@@ -150,18 +150,18 @@ struct AddPostSheet: View {
                              //Create new post
                             let newPost = Post(title: postTitle)
                             
-                            if let imageData = uiImage?.pngData() {
+                            if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
                                 newPost.image = imageData
                              }
                             
                             do {
                                 modelContext.insert(newPost)
                                 try modelContext.save()
+                                dismiss()
                             } catch {
                                 print(error)
                                 errorMessage = ErrorMessages.savedFailed
                             }
-                            dismiss()
                          }
                         
                         
