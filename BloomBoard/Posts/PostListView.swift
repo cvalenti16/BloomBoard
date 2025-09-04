@@ -12,16 +12,15 @@ struct PostListView: View {
     @Environment(\.modelContext) var modelContext
     
     @State private var showAddSheet = false
-    @State private var postDetailPath = NavigationPath()
-    @State private var showDeleteAlert = false
-    @State private var postToDelete: Post?
-    @State private var postToEdit: Post?
+    
+    @State private var state = PostListState()
+
     
     let posts: [Post]
     let isDrafts: Bool
     
     var body: some View {
-        NavigationStack(path: $postDetailPath) {
+        NavigationStack(path: $state.postDetailPath) {
             if (posts.isEmpty) {
                 EmptyListView(isDrafts: isDrafts, showAddSheet: $showAddSheet)
                     .navigationTitle(isDrafts ? PostStrings.draftPosts: PostStrings.publishedPosts)
@@ -39,7 +38,8 @@ struct PostListView: View {
                     }
                 
             } else {
-                PopulatedListView(posts: posts, postDetailPath: $postDetailPath, postToDelete: $postToDelete, postToEdit: $postToEdit, showDeleteAlert: $showDeleteAlert)
+                PopulatedListView(posts: posts)
+                    .environment(state)
                     .navigationDestination(for: Post.self) { post in
                         PostDetailView(post: post)
                     }
@@ -56,15 +56,15 @@ struct PostListView: View {
                             
                         }
                     }
-                    .alert(PostStrings.deletePost, isPresented: $showDeleteAlert) {
+                    .alert(PostStrings.deletePost, isPresented: $state.showDeleteAlert) {
                         Button(UIStrings.deleteString, role: .destructive) {
-                            if let post = postToDelete {
+                            if let post = state.postToDelete {
                                 modelContext.delete(post)
-                                postToDelete = nil
+                                state.postToDelete = nil
                             }
                         }
                         Button(UIStrings.cancelString, role: .cancel) {
-                            postToDelete = nil
+                            state.postToDelete = nil
                         }
                     }
             }
@@ -73,7 +73,7 @@ struct PostListView: View {
             AddPostSheet()
                 .presentationDetents([.fraction(0.60)])
         }
-        .sheet(item: $postToEdit) { post in
+        .sheet(item: $state.postToEdit) { post in
             AddPostSheet(postToEdit: post)
                 .presentationDetents([.fraction(0.60)])
         }
@@ -107,21 +107,19 @@ private struct EmptyListView: View {
 
 private struct PopulatedListView: View {
     let posts: [Post]
-    @Binding var postDetailPath: NavigationPath
-    @Binding var postToDelete: Post?
-    @Binding var postToEdit: Post?
-    @Binding var showDeleteAlert: Bool
+    
+    @Environment(PostListState.self) var state
     
     var body: some View {
         List(posts) { post in
             
             PostItemView(post: post) { post in
-                postDetailPath.append(post)
+                state.postDetailPath.append(post)
             }
             .swipeActions(edge: .trailing) {
                 Button {
-                    postToDelete = post
-                    showDeleteAlert.toggle()
+                    state.postToDelete = post
+                    state.showDeleteAlert.toggle()
                 } label: {
                     Image(systemName: UIIcons.trashIcon)
                         .tint(.red)
@@ -129,7 +127,7 @@ private struct PopulatedListView: View {
             }
             .swipeActions(edge: .trailing) {
                 Button {
-                    postToEdit = post
+                    state.postToEdit = post
                 } label: {
                     Image(systemName: UIIcons.edit)
                         .tint(.yellow)
@@ -141,3 +139,12 @@ private struct PopulatedListView: View {
         
     }
 }
+
+@Observable
+private class PostListState {
+    var postDetailPath = NavigationPath()
+    var postToDelete: Post?
+    var postToEdit: Post?
+    var showDeleteAlert = false
+}
+
