@@ -53,6 +53,18 @@ struct PostListView: View {
                             state.postToDelete = nil
                         }
                     }
+                    .toolbar {
+                        if (isDrafts) {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button {
+                                    showAddSheet.toggle()
+                                } label: {
+                                    Image(systemName: UIIcons.addIcon)
+                                }
+                            }
+                            
+                        }
+                    }
             }
         }
         .sheet(isPresented: $showAddSheet) {
