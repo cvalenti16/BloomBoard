@@ -28,7 +28,7 @@ struct ContentView: View {
         TabView() {
             
             Tab(PostStrings.drafts, systemImage: UIIcons.posts) {
-                PostListView(posts: draftPosts, isDrafts: true)
+                PostListView(posts: draftPosts,  isDrafts: true)
             }
             
             Tab(PostStrings.published, systemImage: UIIcons.published) {

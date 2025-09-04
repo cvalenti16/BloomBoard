@@ -23,92 +23,52 @@ struct PostListView: View {
     var body: some View {
         NavigationStack(path: $postDetailPath) {
             if (posts.isEmpty) {
-                VStack {
-                    Text(isDrafts ? PostStrings.noDrafts : PostStrings.noPublishedPosts)
-                        .font(.title3)
-                        .bold()
-                    
-                    
-                    if(isDrafts) {
-                        Button {
-                            showAddSheet.toggle()
-                        } label: {
-                            Text(PostStrings.createPost)
-                                .defaultButtonStyle()
-                        }
-                    }
-                }
-                .navigationTitle(isDrafts ? PostStrings.draftPosts: PostStrings.publishedPosts)
-                .toolbar {
-                    if (isDrafts) {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                showAddSheet.toggle()
-                            } label: {
-                                Image(systemName: UIIcons.addIcon)
+                EmptyListView(isDrafts: isDrafts, showAddSheet: $showAddSheet)
+                    .navigationTitle(isDrafts ? PostStrings.draftPosts: PostStrings.publishedPosts)
+                    .toolbar {
+                        if (isDrafts) {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button {
+                                    showAddSheet.toggle()
+                                } label: {
+                                    Image(systemName: UIIcons.addIcon)
+                                }
                             }
+                            
                         }
-                        
                     }
-                }
+                
             } else {
-                List(posts) { post in
-                    PostItemView(post: post) { post in
-                        postDetailPath.append(post)
+                PopulatedListView(posts: posts, postDetailPath: $postDetailPath, postToDelete: $postToDelete, postToEdit: $postToEdit, showDeleteAlert: $showDeleteAlert)
+                    .navigationDestination(for: Post.self) { post in
+                        PostDetailView(post: post)
                     }
-                    .swipeActions(edge: .trailing) {
-                        Button {
-                            postToDelete = post
-                            showDeleteAlert.toggle()
-                        } label: {
-                            Image(systemName: UIIcons.trashIcon)
-                                .tint(.red)
+                    .navigationTitle(isDrafts ? PostStrings.draftPosts : PostStrings.publishedPosts)
+                    .toolbar {
+                        if (isDrafts) {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button {
+                                    showAddSheet.toggle()
+                                } label: {
+                                    Image(systemName: UIIcons.addIcon)
+                                }
+                            }
+                            
                         }
                     }
-                    .swipeActions(edge: .trailing) {
-                        Button {
-                            postToEdit = post
-                        } label: {
-                            Image(systemName: UIIcons.edit)
-                                .tint(.yellow)
-                        }
-                    }
-                }
-                .navigationDestination(for: Post.self) { post in
-                    PostDetailView(post: post)
-                }
-          
-                
-                .navigationTitle(isDrafts ? PostStrings.draftPosts : PostStrings.publishedPosts)
-                .toolbar {
-                    if (isDrafts) {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                showAddSheet.toggle()
-                            } label: {
-                                Image(systemName: UIIcons.addIcon)
+                    .alert(PostStrings.deletePost, isPresented: $showDeleteAlert) {
+                        Button(UIStrings.deleteString, role: .destructive) {
+                            if let post = postToDelete {
+                                modelContext.delete(post)
+                                postToDelete = nil
                             }
                         }
-                        
-                    }
-                }
-             
-                
-                .alert(PostStrings.deletePost, isPresented: $showDeleteAlert) {
-                    Button(UIStrings.deleteString, role: .destructive) {
-                        if let post = postToDelete {
-                            modelContext.delete(post)
+                        Button(UIStrings.cancelString, role: .cancel) {
                             postToDelete = nil
                         }
                     }
-                    Button(UIStrings.cancelString, role: .cancel) {
-                        postToDelete = nil
-                    }
-                }
             }
         }
-        
-       
         .sheet(isPresented: $showAddSheet) {
             AddPostSheet()
                 .presentationDetents([.fraction(0.60)])
@@ -118,6 +78,66 @@ struct PostListView: View {
                 .presentationDetents([.fraction(0.60)])
         }
         .tint(.text)
-      
+        
+    }
+}
+
+private struct EmptyListView: View {
+    let isDrafts: Bool
+    @Binding var showAddSheet: Bool
+    
+    var body: some View {
+        VStack {
+            Text(isDrafts ? PostStrings.noDrafts : PostStrings.noPublishedPosts)
+                .font(.title3)
+                .bold()
+            
+            if(isDrafts) {
+                Button {
+                    showAddSheet.toggle()
+                } label: {
+                    Text(PostStrings.createPost)
+                        .defaultButtonStyle()
+                }
+            }
+        }
+    }
+}
+
+
+private struct PopulatedListView: View {
+    let posts: [Post]
+    @Binding var postDetailPath: NavigationPath
+    @Binding var postToDelete: Post?
+    @Binding var postToEdit: Post?
+    @Binding var showDeleteAlert: Bool
+    
+    var body: some View {
+        List(posts) { post in
+            
+            PostItemView(post: post) { post in
+                postDetailPath.append(post)
+            }
+            .swipeActions(edge: .trailing) {
+                Button {
+                    postToDelete = post
+                    showDeleteAlert.toggle()
+                } label: {
+                    Image(systemName: UIIcons.trashIcon)
+                        .tint(.red)
+                }
+            }
+            .swipeActions(edge: .trailing) {
+                Button {
+                    postToEdit = post
+                } label: {
+                    Image(systemName: UIIcons.edit)
+                        .tint(.yellow)
+                }
+            }
+        }
+        .animation(.default, value: posts)
+
+        
     }
 }
