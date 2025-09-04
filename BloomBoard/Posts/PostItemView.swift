@@ -20,6 +20,8 @@ struct PostItemView: View {
                     .bold()
                     .font(.title3)
                     .foregroundStyle(.text)
+                    .lineLimit(2)
+                    .truncationMode(.tail)
             }
             
             HStack {
