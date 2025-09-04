@@ -122,8 +122,7 @@ private struct PopulatedListView: View {
                     Image(systemName: UIIcons.trashIcon)
                         .tint(.red)
                 }
-            }
-            .swipeActions(edge: .trailing) {
+                
                 Button {
                     state.postToEdit = post
                 } label: {
