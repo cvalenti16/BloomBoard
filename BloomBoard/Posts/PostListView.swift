@@ -12,9 +12,7 @@ struct PostListView: View {
     @Environment(\.modelContext) var modelContext
     
     @State private var showAddSheet = false
-    
     @State private var state = PostListState()
-
     
     let posts: [Post]
     let isDrafts: Bool
