@@ -19,52 +19,40 @@ struct PostListView: View {
     
     var body: some View {
         NavigationStack(path: $state.postDetailPath) {
-            if (posts.isEmpty) {
-                EmptyListView(isDrafts: isDrafts, showAddSheet: $showAddSheet)
-                    .navigationTitle(isDrafts ? PostStrings.draftPosts: PostStrings.publishedPosts)
-                    .toolbar {
-                        if (isDrafts) {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button {
-                                    showAddSheet.toggle()
-                                } label: {
-                                    Image(systemName: UIIcons.addIcon)
+            Group {
+                if (posts.isEmpty) {
+                    EmptyListView(isDrafts: isDrafts, showAddSheet: $showAddSheet)
+                } else {
+                    PopulatedListView(posts: posts)
+                        .environment(state)
+                        .navigationDestination(for: Post.self) { post in
+                            PostDetailView(post: post)
+                        }
+                        .alert(PostStrings.deletePost, isPresented: $state.showDeleteAlert) {
+                            Button(UIStrings.deleteString, role: .destructive) {
+                                if let post = state.postToDelete {
+                                    modelContext.delete(post)
+                                    state.postToDelete = nil
                                 }
                             }
-                            
-                        }
-                    }
-                
-            } else {
-                PopulatedListView(posts: posts)
-                    .environment(state)
-                    .navigationDestination(for: Post.self) { post in
-                        PostDetailView(post: post)
-                    }
-                    .navigationTitle(isDrafts ? PostStrings.draftPosts : PostStrings.publishedPosts)
-                    .alert(PostStrings.deletePost, isPresented: $state.showDeleteAlert) {
-                        Button(UIStrings.deleteString, role: .destructive) {
-                            if let post = state.postToDelete {
-                                modelContext.delete(post)
+                            Button(UIStrings.cancelString, role: .cancel) {
                                 state.postToDelete = nil
                             }
                         }
-                        Button(UIStrings.cancelString, role: .cancel) {
-                            state.postToDelete = nil
+                }
+            }
+            .navigationTitle(isDrafts ? PostStrings.draftPosts: PostStrings.publishedPosts)
+            .toolbar {
+                if (isDrafts) {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showAddSheet.toggle()
+                        } label: {
+                            Image(systemName: UIIcons.addIcon)
                         }
                     }
-                    .toolbar {
-                        if (isDrafts) {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button {
-                                    showAddSheet.toggle()
-                                } label: {
-                                    Image(systemName: UIIcons.addIcon)
-                                }
-                            }
-                            
-                        }
-                    }
+                    
+                }
             }
         }
         .sheet(isPresented: $showAddSheet) {
@@ -76,11 +64,8 @@ struct PostListView: View {
                 .presentationDetents([.fraction(0.60)])
         }
         .tint(.text)
-        
     }
 }
-
-
 
 private struct EmptyListView: View {
     let isDrafts: Bool
@@ -103,7 +88,6 @@ private struct EmptyListView: View {
         }
     }
 }
-
 
 private struct PopulatedListView: View {
     let posts: [Post]
@@ -134,8 +118,6 @@ private struct PopulatedListView: View {
             }
         }
         .animation(.default, value: posts)
-
-        
     }
 }
 
