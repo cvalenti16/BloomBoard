@@ -42,18 +42,6 @@ struct PostListView: View {
                         PostDetailView(post: post)
                     }
                     .navigationTitle(isDrafts ? PostStrings.draftPosts : PostStrings.publishedPosts)
-                    .toolbar {
-                        if (isDrafts) {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button {
-                                    showAddSheet.toggle()
-                                } label: {
-                                    Image(systemName: UIIcons.addIcon)
-                                }
-                            }
-                            
-                        }
-                    }
                     .alert(PostStrings.deletePost, isPresented: $state.showDeleteAlert) {
                         Button(UIStrings.deleteString, role: .destructive) {
                             if let post = state.postToDelete {
@@ -79,6 +67,8 @@ struct PostListView: View {
         
     }
 }
+
+
 
 private struct EmptyListView: View {
     let isDrafts: Bool
