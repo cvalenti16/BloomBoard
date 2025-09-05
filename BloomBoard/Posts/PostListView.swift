@@ -130,7 +130,6 @@ private struct PopulatedListView: View {
                 }
             }
         }
-        .animation(.default, value: posts)
     }
 }
 
