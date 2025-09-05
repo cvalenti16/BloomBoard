@@ -10,6 +10,7 @@ import SwiftData
 
 struct PostListView: View {
     @Environment(\.modelContext) var modelContext
+    @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
     @State private var showAddSheet = false
     @State private var state = PostListState()
@@ -51,7 +52,18 @@ struct PostListView: View {
                             Image(systemName: UIIcons.addIcon)
                         }
                     }
-                    
+                }
+                
+                //Theme toggle
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        switch selectedAppearance {
+                        case .dark: selectedAppearance = .light
+                        case .light: selectedAppearance = .dark
+                        }
+                    } label: {
+                        Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
+                    }
                 }
             }
         }
@@ -66,7 +78,6 @@ struct PostListView: View {
         .tint(.text)
     }
 }
-
 private struct EmptyListView: View {
     let isDrafts: Bool
     @Binding var showAddSheet: Bool

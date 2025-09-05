@@ -58,6 +58,8 @@ struct UIIcons {
     static let changeIcon = "arrow.triangle.2.circlepath"
     static let x = "xmark"
     static let save = "square.and.arrow.down"
+    static let moon = "moon.fill"
+    static let sun = "sun.max"
 }
 
 extension Image {
