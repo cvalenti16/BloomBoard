@@ -23,7 +23,6 @@ struct ContentView: View {
             SortDescriptor(\Post.postDate, order: .reverse)
         ]) var publishedPosts: [Post]
     
-    @Query var samplePosts: [Post]
     var body: some View {
         TabView() {
             
