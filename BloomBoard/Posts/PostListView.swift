@@ -50,6 +50,7 @@ struct PostListView: View {
                             showAddSheet.toggle()
                         } label: {
                             Image(systemName: UIIcons.addIcon)
+
                         }
                     }
                 }
@@ -63,6 +64,7 @@ struct PostListView: View {
                         }
                     } label: {
                         Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
+                            .symbolEffect(.bounce, value: selectedAppearance)
                     }
                 }
             }
