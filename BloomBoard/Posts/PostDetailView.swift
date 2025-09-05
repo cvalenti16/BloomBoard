@@ -105,7 +105,7 @@ struct PostDetailView: View {
                 Button {
                     showEditSheet.toggle()
                 } label: {
-                    Text(PostStrings.uploadImage)
+                    Image(systemName: "square.and.arrow.up")
                         .foregroundStyle(.gray)
                         .frame(maxWidth: .infinity, maxHeight: 200)
                         .background(.ultraThinMaterial)
