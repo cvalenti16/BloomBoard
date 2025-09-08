@@ -151,10 +151,6 @@ struct PostDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $showEditSheet) {
-            AddPostSheet(postToEdit: post)
-                .presentationDetents([.fraction(0.60)])
-        }
         .sheet(isPresented: $showPostDateSheet) {
             SelectPostDate(initialDate: selectedPostDate) { date in
                 selectedPostDate = date

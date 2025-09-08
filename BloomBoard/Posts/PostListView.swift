@@ -73,10 +73,6 @@ struct PostListView: View {
             AddPostSheet()
                 .presentationDetents([.fraction(0.60)])
         }
-        .sheet(item: $state.postToEdit) { post in
-            AddPostSheet(postToEdit: post)
-                .presentationDetents([.fraction(0.60)])
-        }
         .tint(.text)
     }
 }
@@ -120,13 +116,6 @@ private struct PopulatedListView: View {
                 } label: {
                     Image(systemName: UIIcons.trashIcon)
                         .tint(.red)
-                }
-                
-                Button {
-                    state.postToEdit = post
-                } label: {
-                    Image(systemName: UIIcons.edit)
-                        .tint(.yellow)
                 }
             }
         }
