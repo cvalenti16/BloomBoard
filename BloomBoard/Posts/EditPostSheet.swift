@@ -14,16 +14,13 @@ struct EditPostSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     
-    @State private var selectedImage: PhotosPickerItem? = nil
-    @State private var uiImage: UIImage? = nil
-    @State private var imageWasChanged = false
-    @State private var errorMessage: String? = nil
+    @State private var imageProperties = ImageProperties()
     
     init(post: Post) {
         self.post = post
 
         if let data = post.image {
-            _uiImage = State(initialValue: UIImage(data: data))
+            imageProperties.uiImage = UIImage(data: data)
         }
     }
 
@@ -42,30 +39,12 @@ struct EditPostSheet: View {
                     .padding(.horizontal, 10)
                 
                 // Image picker
-                PhotosPicker(selection: $selectedImage, matching: .images, photoLibrary: .shared()) {
-                    if let postImage = uiImage {
-                        ZStack {
-                            Image(uiImage: postImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: .infinity, maxHeight: 200)
-                                .clipShape(.rect(cornerRadius: 10))
-                                .padding(10)
-                            
-                            HStack {
-                                Image(systemName: UIIcons.changeIcon)
-                                    .defaultIconStyle()
-                                
-                                Button {
-                                    selectedImage = nil
-                                    uiImage = nil
-                                    imageWasChanged = true
-                                } label: {
-                                    Image(systemName: UIIcons.trashIcon)
-                                        .defaultIconStyle()
-                                }
-                            }
-                        }
+                PhotosPicker(selection: $imageProperties.selectedImage, matching: .images, photoLibrary: .shared()) {
+                    if imageProperties.uiImage != nil {
+                        
+                        ImagePreview()
+                            .environment(imageProperties)
+                        
                     } else {
                         Text(PostStrings.uploadImage)
                             .foregroundStyle(.gray)
@@ -75,18 +54,18 @@ struct EditPostSheet: View {
                             .padding(10)
                     }
                 }
-                .onChange(of: selectedImage) { oldValue, newValue in
+                .onChange(of: imageProperties.selectedImage) { oldValue, newValue in
                     Task {
                         if let data = try? await newValue?.loadTransferable(type: Data.self) {
                             await MainActor.run {
-                                uiImage = UIImage(data: data)
-                                imageWasChanged = true
+                                imageProperties.uiImage = UIImage(data: data)
+                                imageProperties.imageWasChanged = true
                             }
                         }
                     }
                 }
                 
-                if let error = errorMessage {
+                if let error = imageProperties.errorMessage {
                     Text(error)
                         .defaultErrorStyle()
                 }
@@ -108,8 +87,8 @@ struct EditPostSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         // update image if changed
-                        if imageWasChanged {
-                            if let imageData = uiImage?.jpegData(compressionQuality: 0.8) {
+                        if imageProperties.imageWasChanged {
+                            if let imageData = imageProperties.uiImage?.jpegData(compressionQuality: 0.8) {
                                 post.image = imageData
                             } else {
                                 post.image = nil
@@ -119,7 +98,7 @@ struct EditPostSheet: View {
                             try modelContext.save()
                             dismiss()
                         } catch {
-                            errorMessage = ErrorMessages.savedFailed
+                            imageProperties.errorMessage = ErrorMessages.savedFailed
                             print(error)
                         }
                     } label: {
@@ -131,6 +110,53 @@ struct EditPostSheet: View {
         }
     }
 }
+
+private struct ImagePreview: View {
+    @Environment(ImageProperties.self) var imageProperties
+    var body: some View {
+        if let image = imageProperties.uiImage {
+            
+            ZStack {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: 200)
+                    .clipShape(.rect(cornerRadius: 10))
+                    .padding(10)
+                
+                HStack {
+                    Image(systemName: UIIcons.changeIcon)
+                        .defaultIconStyle()
+                    
+                    Button {
+                        imageProperties.selectedImage = nil
+                        imageProperties.uiImage = nil
+                        imageProperties.imageWasChanged = true
+                    } label: {
+                        Image(systemName: UIIcons.trashIcon)
+                            .defaultIconStyle()
+                    }
+                }
+            }
+        } else {
+            Text(PostStrings.uploadImage)
+                .foregroundStyle(.gray)
+                .frame(maxWidth: .infinity, maxHeight: 200)
+                .background(.ultraThinMaterial)
+                .clipShape(.rect(cornerRadius: 10))
+                .padding(10)
+        }
+    }
+}
+
+@Observable
+private class ImageProperties {
+    var selectedImage: PhotosPickerItem? = nil
+    var uiImage: UIImage? = nil
+    var imageWasChanged = false
+    var errorMessage: String? = nil
+}
+
 
 #Preview {
     EditPostSheet(post: .testPost)
