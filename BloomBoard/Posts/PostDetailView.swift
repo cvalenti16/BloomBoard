@@ -10,7 +10,7 @@ struct PostDetailView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    @State private var showEditTitleSheet = false
+    @State private var showEditPostSheet = false
     @State private var showPostDateSheet = false
     @State private var selectedPostDate = Date()
     @State private var postPerformance: Post.Performance
@@ -39,15 +39,15 @@ struct PostDetailView: View {
                 .padding()
                 .contextMenu { // gives a copy option on long press
                     Button {
-                        UIPasteboard.general.string = post.title
+                        showEditPostSheet.toggle()
                     } label: {
-                        Label(PostStrings.copy, systemImage: UIIcons.copy)
+                        Label(UIStrings.editString, systemImage: UIIcons.edit)
                     }
                     
                     Button {
-                        showEditTitleSheet.toggle()
+                        UIPasteboard.general.string = post.title
                     } label: {
-                        Label(UIStrings.editString, systemImage: UIIcons.edit)
+                        Label(PostStrings.copy, systemImage: UIIcons.copy)
                     }
                     
                     Button {
@@ -91,6 +91,13 @@ struct PostDetailView: View {
                         .padding()
                     
                     HStack {
+                        Button {
+                            showEditPostSheet.toggle()
+                        } label: {
+                            Image(systemName: UIIcons.changeIcon)
+                                .defaultIconStyle()
+                        }
+                        
                         
                         Button {
                             UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
@@ -103,7 +110,7 @@ struct PostDetailView: View {
                 .frame(maxHeight: 250)
             } else {
                 Button {
-                    
+                    showEditPostSheet.toggle()
                 } label: {
                     Image(systemName: "square.and.arrow.up")
                         .foregroundStyle(.gray)
@@ -144,8 +151,9 @@ struct PostDetailView: View {
                 selectedPostDate = date
             }
         }
-        .sheet(isPresented: $showEditTitleSheet) {
-            PostTitleEdit(post: post)
+        .sheet(isPresented: $showEditPostSheet) {
+            EditPostSheet(post: post)
+                .presentationDetents([.fraction(0.60)])
         }
         
     }
