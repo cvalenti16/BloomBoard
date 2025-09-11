@@ -1,5 +1,5 @@
 //
-//  PostTitleEdit.swift
+//  EditPostSheet.swift
 //  BloomBoard
 //
 //  Created by Carlos Valentin on 9/11/25.
@@ -15,9 +15,11 @@ struct EditPostSheet: View {
     @Environment(\.modelContext) private var modelContext
     
     @State private var imageProperties = ImageProperties()
+    @State private var draftTitle: String
     
     init(post: Post) {
         self.post = post
+        _draftTitle = State(initialValue: post.title) // stage title in local state
 
         if let data = post.image {
             imageProperties.uiImage = UIImage(data: data)
@@ -27,8 +29,8 @@ struct EditPostSheet: View {
     var body: some View {
         NavigationStack {
             VStack {
-                // Title field
-                TextField("Enter title", text: $post.title, axis: .vertical)
+                // Title field (local state)
+                TextField("Enter title", text: $draftTitle, axis: .vertical)
                     .textFieldStyle(.plain)
                     .padding(10)
                     .bold()
@@ -41,10 +43,8 @@ struct EditPostSheet: View {
                 // Image picker
                 PhotosPicker(selection: $imageProperties.selectedImage, matching: .images, photoLibrary: .shared()) {
                     if imageProperties.uiImage != nil {
-                        
                         ImagePreview()
                             .environment(imageProperties)
-                        
                     } else {
                         Text(PostStrings.uploadImage)
                             .foregroundStyle(.gray)
@@ -86,6 +86,9 @@ struct EditPostSheet: View {
                 // Save
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
+                        // commit staged title
+                        post.title = draftTitle
+                        
                         // update image if changed
                         if imageProperties.imageWasChanged {
                             if let imageData = imageProperties.uiImage?.jpegData(compressionQuality: 0.8) {
@@ -115,7 +118,6 @@ private struct ImagePreview: View {
     @Environment(ImageProperties.self) var imageProperties
     var body: some View {
         if let image = imageProperties.uiImage {
-            
             ZStack {
                 Image(uiImage: image)
                     .resizable()
@@ -156,7 +158,6 @@ private class ImageProperties {
     var imageWasChanged = false
     var errorMessage: String? = nil
 }
-
 
 #Preview {
     EditPostSheet(post: .testPost)
