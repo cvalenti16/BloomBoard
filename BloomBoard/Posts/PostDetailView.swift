@@ -10,7 +10,7 @@ struct PostDetailView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    @State private var showEditSheet = false
+    @State private var showEditTitleSheet = false
     @State private var showPostDateSheet = false
     @State private var selectedPostDate = Date()
     @State private var postPerformance: Post.Performance
@@ -42,6 +42,12 @@ struct PostDetailView: View {
                         UIPasteboard.general.string = post.title
                     } label: {
                         Label(PostStrings.copy, systemImage: UIIcons.copy)
+                    }
+                    
+                    Button {
+                        showEditTitleSheet.toggle()
+                    } label: {
+                        Label(UIStrings.editString, systemImage: UIIcons.edit)
                     }
                     
                     Button {
@@ -85,12 +91,6 @@ struct PostDetailView: View {
                         .padding()
                     
                     HStack {
-                        Button {
-                            showEditSheet.toggle()
-                        } label: {
-                            Image(systemName: UIIcons.changeIcon)
-                                .defaultIconStyle()
-                        }
                         
                         Button {
                             UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
@@ -103,7 +103,7 @@ struct PostDetailView: View {
                 .frame(maxHeight: 250)
             } else {
                 Button {
-                    showEditSheet.toggle()
+                    
                 } label: {
                     Image(systemName: "square.and.arrow.up")
                         .foregroundStyle(.gray)
@@ -112,8 +112,6 @@ struct PostDetailView: View {
                         .clipShape(.rect(cornerRadius: 10))
                         .padding(10)
                 }
-                
-        
             }
             
             Button {
@@ -141,20 +139,13 @@ struct PostDetailView: View {
             
         }
         .toolbarBackground(.visible, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showEditSheet.toggle()
-                } label: {
-                    Image(systemName: UIIcons.edit)
-                        .font(.system(size: 20))
-                }
-            }
-        }
         .sheet(isPresented: $showPostDateSheet) {
             SelectPostDate(initialDate: selectedPostDate) { date in
                 selectedPostDate = date
             }
+        }
+        .sheet(isPresented: $showEditTitleSheet) {
+            PostTitleEdit(post: post)
         }
         
     }

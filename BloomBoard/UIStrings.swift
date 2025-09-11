@@ -42,6 +42,7 @@ struct UIStrings {
     static let cancelString = "Cancel"
     static let saveString = "Save"
     static let deleteString = "Delete"
+    static let editString = "Edit"
 }
 
 
