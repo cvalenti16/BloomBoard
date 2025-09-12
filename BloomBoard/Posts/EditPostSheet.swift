@@ -64,15 +64,14 @@ struct EditPostSheet: View {
                     Text(error)
                         .defaultErrorStyle()
                 }
-                
-                Spacer()
             }
             .navigationTitle("Edit Post")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                // Cancel
                 ToolbarItem(placement: .cancellationAction) {
-                    Button { dismiss() } label: {
+                    Button {
+                        dismiss()
+                    } label: {
                         Image(systemName: UIIcons.x)
                             .foregroundStyle(.text)
                     }
@@ -81,7 +80,12 @@ struct EditPostSheet: View {
                 // Save
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        // commit staged title
+                        guard !draftTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                            imageProperties.errorMessage = ErrorMessages.emptyTitle
+                            return
+                        }
+                        
+                        
                         post.title = draftTitle
                         
                         // update image if changed
@@ -92,13 +96,14 @@ struct EditPostSheet: View {
                                 post.image = nil
                             }
                         }
+                        
                         do {
                             try modelContext.save()
                             dismiss()
                         } catch {
                             imageProperties.errorMessage = ErrorMessages.savedFailed
-                            print(error)
                         }
+                        
                     } label: {
                         Image(systemName: UIIcons.save)
                             .foregroundStyle(.text)

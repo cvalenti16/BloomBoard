@@ -118,6 +118,7 @@ struct AddPostSheet: View {
                             modelContext.insert(newPost)
                             try modelContext.save()
                             dismiss()
+                            
                         } catch {
                             errorMessage = ErrorMessages.savedFailed
                         }
