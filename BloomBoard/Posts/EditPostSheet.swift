@@ -114,6 +114,62 @@ struct EditPostSheet: View {
     }
 }
 
+//MARK: Toolbar CRUD Actions
+private struct EditPostToolbar: ToolbarContent {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Environment(ImageProperties.self) var imageProperties
+
+    
+    var body: some ToolbarContent {
+        
+        ToolbarItem(placement: .cancellationAction) {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: UIIcons.x)
+                    .foregroundStyle(.text)
+            }
+        }
+        
+//        
+//        // Save
+//        ToolbarItem(placement: .confirmationAction) {
+//            Button {
+//                guard !draftTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+//                    imageProperties.errorMessage = ErrorMessages.emptyTitle
+//                    return
+//                }
+//                
+//                
+//                post.title = draftTitle
+//                
+//                // update image if changed
+//                if imageProperties.imageWasChanged {
+//                    if let imageData = imageProperties.uiImage?.jpegData(compressionQuality: 0.8) {
+//                        post.image = imageData
+//                    } else {
+//                        post.image = nil
+//                    }
+//                }
+//                
+//                do {
+//                    try modelContext.save()
+//                    dismiss()
+//                } catch {
+//                    imageProperties.errorMessage = ErrorMessages.savedFailed
+//                }
+//                
+//            } label: {
+//                Image(systemName: UIIcons.save)
+//                    .foregroundStyle(.text)
+//            }
+//        }
+        
+    }
+    
+}
+
 private struct ImagePreview: View {
     @Environment(ImageProperties.self) var imageProperties
     var body: some View {
@@ -153,6 +209,11 @@ private class ImageProperties {
     var uiImage: UIImage? = nil
     var imageWasChanged = false
     var errorMessage: String? = nil
+}
+
+@Observable
+private class PostProperties {
+    
 }
 
 #Preview {
