@@ -19,7 +19,7 @@ struct EditPostSheet: View {
     
     init(post: Post) {
         self.post = post
-        _draftTitle = State(initialValue: post.title) // stage title in local state
+        _draftTitle = State(initialValue: post.title)
 
         if let data = post.image {
             imageProperties.uiImage = UIImage(data: data)
@@ -29,8 +29,7 @@ struct EditPostSheet: View {
     var body: some View {
         NavigationStack {
             VStack {
-                // Title field (local state)
-                TextField("Enter title", text: $draftTitle, axis: .vertical)
+                TextField(PostStrings.enterTitle, text: $draftTitle, axis: .vertical)
                     .textFieldStyle(.plain)
                     .padding(10)
                     .bold()
@@ -40,18 +39,14 @@ struct EditPostSheet: View {
                     .frame(height: 2)
                     .padding(.horizontal, 10)
                 
-                // Image picker
+                // MARK: Image Picker
                 PhotosPicker(selection: $imageProperties.selectedImage, matching: .images, photoLibrary: .shared()) {
                     if imageProperties.uiImage != nil {
                         ImagePreview()
                             .environment(imageProperties)
                     } else {
                         Text(PostStrings.uploadImage)
-                            .foregroundStyle(.gray)
-                            .frame(maxWidth: .infinity, maxHeight: 200)
-                            .background(.ultraThinMaterial)
-                            .clipShape(.rect(cornerRadius: 10))
-                            .padding(10)
+                            .defaultUploadImageStyle()
                     }
                 }
                 .onChange(of: imageProperties.selectedImage) { oldValue, newValue in
@@ -142,11 +137,7 @@ private struct ImagePreview: View {
             }
         } else {
             Text(PostStrings.uploadImage)
-                .foregroundStyle(.gray)
-                .frame(maxWidth: .infinity, maxHeight: 200)
-                .background(.ultraThinMaterial)
-                .clipShape(.rect(cornerRadius: 10))
-                .padding(10)
+                .defaultUploadImageStyle()
         }
     }
 }

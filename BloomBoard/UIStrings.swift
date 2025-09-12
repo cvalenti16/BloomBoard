@@ -28,6 +28,7 @@ struct PostStrings {
     static let publishedPosts = "Published Posts"
     static let draftPosts = "Draft Posts"
     static let performance = "Performance"
+    static let enterTitle = "Enter Title"
 }
 struct ErrorMessages {
     static let emptyTitle = "Please a Enter Title"
@@ -92,7 +93,17 @@ extension Text {
         self
             .font(.system(size: 12))
             .foregroundStyle(.text)
-            
+    }
+}
+
+extension Text {
+    func defaultUploadImageStyle() -> some View {
+        self
+            .foregroundStyle(.gray)
+            .frame(maxWidth: .infinity, maxHeight: 200)
+            .background(.ultraThinMaterial)
+            .clipShape(.rect(cornerRadius: 10))
+            .padding(10)
     }
 }
 
