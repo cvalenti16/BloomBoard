@@ -62,7 +62,7 @@ struct EditPostSheet: View {
                 
                 if let error = imageProperties.errorMessage {
                     Text(error)
-                        .defaultErrorStyle()
+                        .defaultMessageStyle()
                 }
             }
             .navigationTitle(PostStrings.editPost)
@@ -100,7 +100,7 @@ private struct EditPostToolbar: ToolbarContent {
         ToolbarItem(placement: .confirmationAction) {
             Button {
                 guard !draftTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                    imageProperties.errorMessage = ErrorMessages.emptyTitle
+                    imageProperties.errorMessage = FeedbackMessages.emptyTitle
                     return
                 }
                 
@@ -115,7 +115,7 @@ private struct EditPostToolbar: ToolbarContent {
                     try modelContext.save()
                     dismiss()
                 } catch {
-                    imageProperties.errorMessage = ErrorMessages.savedFailed
+                    imageProperties.errorMessage = FeedbackMessages.savedFailed
                 }
                 
             } label: {

@@ -30,9 +30,11 @@ struct PostStrings {
     static let performance = "Performance"
     static let enterTitle = "Enter Title"
 }
-struct ErrorMessages {
+struct FeedbackMessages {
     static let emptyTitle = "Please a Enter Title"
     static let savedFailed = "Failed to save, please try again"
+    static let copySucceeded = "Copied to clipboard"
+    static let downloadSucceeded = "Downloaded"
 }
 struct Punctuation {
     static let colon = ":"
@@ -89,7 +91,7 @@ extension Text {
 
 
 extension Text {
-    func defaultErrorStyle() -> some View {
+    func defaultMessageStyle() -> some View {
         self
             .font(.system(size: 12))
             .foregroundStyle(.text)

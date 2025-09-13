@@ -83,7 +83,7 @@ struct AddPostSheet: View {
                 
                 if let error = errorMessage {
                     Text(error)
-                        .defaultErrorStyle()
+                        .defaultMessageStyle()
                 }
                 
             }
@@ -102,7 +102,7 @@ struct AddPostSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                            errorMessage = ErrorMessages.emptyTitle
+                            errorMessage = FeedbackMessages.emptyTitle
                             return
                             
                         }
@@ -120,7 +120,7 @@ struct AddPostSheet: View {
                             dismiss()
                             
                         } catch {
-                            errorMessage = ErrorMessages.savedFailed
+                            errorMessage = FeedbackMessages.savedFailed
                         }
                     } label: {
                         Image(systemName: UIIcons.save)
