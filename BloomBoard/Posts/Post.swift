@@ -29,7 +29,7 @@ class Post: Identifiable {
     
     enum Performance: String, CaseIterable, Codable {
         case unrated = "Unrated"
-        case poor = "Poor"
+        case decent = "Decent"
         case good = "Good"
         case excellent = "Excellent"
         
@@ -37,7 +37,7 @@ class Post: Identifiable {
             switch self {
             case .unrated:
                 return .clear
-            case .poor:
+            case .decent:
                 return .brown
             case .good:
                 return .gray
