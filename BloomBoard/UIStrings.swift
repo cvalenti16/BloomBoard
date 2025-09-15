@@ -33,7 +33,7 @@ struct PostStrings {
 struct FeedbackMessages {
     static let emptyTitle = "Please a Enter Title"
     static let savedFailed = "Failed to save, please try again"
-    static let copySucceeded = "Copied to clipboard"
+    static let copySucceeded = "Copied"
     static let downloadSucceeded = "Downloaded"
 }
 struct Punctuation {

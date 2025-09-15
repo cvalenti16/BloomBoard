@@ -41,18 +41,6 @@ struct PostDetailView: View {
                 .foregroundStyle(.text)
                 .padding(10)
             
-            Button {
-                UIPasteboard.general.string = post.title
-                userFeedback = FeedbackMessages.copySucceeded
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    userFeedback = nil
-                }
-                
-            } label: {
-                Image(systemName: "document.on.document")
-            }
-            
             if let postDate = post.postDate {
                 Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
@@ -154,11 +142,30 @@ struct PostDetailView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showEditPostSheet.toggle()
-                } label: {
-                    Image(systemName: UIIcons.edit)
+                HStack {
+                    Button {
+                        UIPasteboard.general.string = post.title
+                        userFeedback = FeedbackMessages.copySucceeded
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            userFeedback = nil
+                        }
+                        
+                    } label: {
+                        Image(systemName: "document.on.document")
+                    }
+                    
+                    
+                    Button {
+                        showEditPostSheet.toggle()
+                    } label: {
+                        Image(systemName: UIIcons.edit)
+                    }
+                    
+                    
+                    
                 }
+               
             }
         }
         .sheet(isPresented: $showPostDateSheet) {
