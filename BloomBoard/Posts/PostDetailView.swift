@@ -196,22 +196,21 @@ private struct PostDetailToolbar: ToolbarContent {
     @Environment(PostProperties.self) var postProperties
     
     var body: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            HStack {
-                Button {
-                    UIPasteboard.general.string = postProperties.post.title
-                    
-                    postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
-                    
-                } label: {
-                    Image(systemName: UIIcons.copy)
-                }
+        ToolbarItem {
+            Button(PostStrings.copy, systemImage: UIIcons.copy) {
+                UIPasteboard.general.string = postProperties.post.title
+                postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
+            }
+        }
+        
+        if #available(iOS 26.0, *) {
+            ToolbarSpacer(.fixed)
+        }
+        
+        ToolbarItem {
+            Button(UIStrings.editString, systemImage: UIIcons.edit) {
+                postProperties.showEditPostSheet.toggle()
                 
-                Button {
-                    postProperties.showEditPostSheet.toggle()
-                } label: {
-                    Image(systemName: UIIcons.edit)
-                }
             }
         }
     }
