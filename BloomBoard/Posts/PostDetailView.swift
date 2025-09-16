@@ -9,58 +9,50 @@ import SwiftUI
 struct PostDetailView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
-    
-    @State private var showEditPostSheet = false
-    @State private var showPostDateSheet = false
-    @State private var selectedPostDate = Date()
+    @State private var postProperties: PostProperties
     @State private var postPerformance: Post.Performance
     
-    @State private var userFeedback: String? = nil
-    
-    let post: Post
-    
     var isPosted: Bool {
-        return post.postDate != nil
+        return postProperties.post.postDate != nil
     }
     
     var loadedImage: UIImage? {
-        guard let imageData = post.image else { return nil }
+        guard let imageData = postProperties.post.image else { return nil }
         return UIImage(data: imageData)
     }
     
     init(post: Post) {
         _postProperties = State(initialValue: PostProperties(post: post))
+        _postPerformance = State(initialValue: post.performance ?? Post.Performance.unrated)
     }
     
     var body: some View {
         VStack{
-            Text(post.title)
+            Text(postProperties.post.title)
                 .font(.title3)
                 .foregroundStyle(.text)
                 .padding(10)
             
             PostStatusView(
                 postPerformance: $postPerformance,
-                showPostDateSheet: $showPostDateSheet,
-                selectedPostDate: $selectedPostDate,
-                post: post
             )
+            .environment(postProperties)
+            
             
             UIImageView(
                 loadedImage: loadedImage,
-                showEditPostSheet: $showEditPostSheet,
-                userFeedback: $userFeedback
             )
+            .environment(postProperties)
             
             PostButton(
-                selectedPostDate: $selectedPostDate,
-                post: post,
                 isPosted: isPosted
             )
+            .environment(postProperties)
             
-            Text(userFeedback ?? "")
+            
+            Text(postProperties.userFeedback ?? "")
                 .defaultMessageStyle()
-                .animation(.easeInOut, value: userFeedback)
+                .animation(.easeInOut, value: postProperties.userFeedback)
             
         }
         .toolbarBackground(.visible, for: .navigationBar)
@@ -68,32 +60,29 @@ struct PostDetailView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 HStack {
                     Button {
-                        UIPasteboard.general.string = post.title
-                        userFeedback = FeedbackMessages.copySucceeded
+                        UIPasteboard.general.string = postProperties.post.title
                         
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            userFeedback = nil
-                        }
+                        postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
                         
                     } label: {
                         Image(systemName: UIIcons.copy)
                     }
                     
                     Button {
-                        showEditPostSheet.toggle()
+                        postProperties.showEditPostSheet.toggle()
                     } label: {
                         Image(systemName: UIIcons.edit)
                     }
                 }
             }
         }
-        .sheet(isPresented: $showPostDateSheet) {
-            SelectPostDate(initialDate: selectedPostDate) { date in
-                selectedPostDate = date
+        .sheet(isPresented: $postProperties.showPostDateSheet) {
+            SelectPostDate(initialDate: postProperties.selectedPostDate) { date in
+                postProperties.selectedPostDate = date
             }
         }
-        .sheet(isPresented: $showEditPostSheet) {
-            EditPostSheet(post: post)
+        .sheet(isPresented: $postProperties.showEditPostSheet) {
+            EditPostSheet(post: postProperties.post)
                 .presentationDetents([.fraction(0.60)])
         }
     }
@@ -102,23 +91,23 @@ struct PostDetailView: View {
 private struct PostButton: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(PostProperties.self) var postProperties
     
-    @Binding var selectedPostDate: Date
-    var post: Post
     let isPosted: Bool
     
     var body: some View {
         Button {
             if isPosted {
-                post.postDate = nil
-                post.performance = nil
+                postProperties.post.postDate = nil
+                postProperties.post.performance = nil
             } else {
-                post.postDate = selectedPostDate
-                post.performance = .unrated
+                postProperties.post.postDate = postProperties.selectedPostDate
+                postProperties.post.performance = .unrated
             }
             
             try? modelContext.save()
             dismiss()
+            
         } label: {
             Text(isPosted ? PostStrings.unpost : PostStrings.post)
                 .defaultButtonStyle()
@@ -127,10 +116,8 @@ private struct PostButton: View {
 }
 
 private struct UIImageView: View {
+    @Environment(PostProperties.self) var postProperties
     var loadedImage: UIImage?
-    @Binding var showEditPostSheet: Bool
-    @Binding var userFeedback: String?
-    
     
     var body: some View {
         if let uiImage = loadedImage {
@@ -143,7 +130,7 @@ private struct UIImageView: View {
                 
                 HStack {
                     Button {
-                        showEditPostSheet.toggle()
+                        postProperties.showEditPostSheet.toggle()
                     } label: {
                         Image(systemName: UIIcons.changeIcon)
                             .defaultIconStyle()
@@ -152,11 +139,8 @@ private struct UIImageView: View {
                     
                     Button {
                         UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                        userFeedback = FeedbackMessages.downloadSucceeded
                         
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            userFeedback = nil
-                        }
+                        postProperties.showFeedback(message: FeedbackMessages.downloadSucceeded)
                         
                     } label: {
                         Image(systemName: UIIcons.download)
@@ -167,9 +151,9 @@ private struct UIImageView: View {
             .frame(maxHeight: 250)
         } else {
             Button {
-                showEditPostSheet.toggle()
+                postProperties.showEditPostSheet.toggle()
             } label: {
-                Image(systemName: "square.and.arrow.up")
+                Image(systemName: UIIcons.upload)
                     .foregroundStyle(.gray)
                     .frame(maxWidth: .infinity, maxHeight: 200)
                     .background(.ultraThinMaterial)
@@ -181,14 +165,12 @@ private struct UIImageView: View {
 }
 
 private struct PostStatusView: View {
+    @Environment(PostProperties.self) var postProperties
     @Binding var postPerformance: Post.Performance
-    @Binding var showPostDateSheet: Bool
-    @Binding var selectedPostDate: Date
-    var post: Post
     
     var body: some View {
         VStack {
-            if let postDate = post.postDate {
+            if let postDate = postProperties.post.postDate {
                 Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
                 
@@ -200,13 +182,14 @@ private struct PostStatusView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal, 10)
-                .onChange(of: postPerformance) { oldValue, newValue in post.performance = newValue }
-                
+                .onChange(of: postPerformance) { _, newValue in
+                    postProperties.post.performance = newValue
+                }
             } else {
                 Button {
-                    showPostDateSheet.toggle()
+                    postProperties.showPostDateSheet.toggle()
                 } label : {
-                    Label("\(PostStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
+                    Label("\(PostStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(postProperties.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
                         .foregroundStyle(.text)
                         .padding()
                 }
@@ -215,6 +198,25 @@ private struct PostStatusView: View {
     }
 }
 
+@Observable
+class PostProperties {
+    var post: Post
+    var showEditPostSheet = false
+    var showPostDateSheet = false
+    var selectedPostDate = Date()
+    var userFeedback: String? = nil
+    
+    init(post: Post) {
+        self.post = post
+    }
+    
+    func showFeedback(message: String, duration: TimeInterval = 1) {
+        userFeedback = message
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            self.userFeedback = nil
+        }
+    }
+}
 
 #Preview {
     PostDetailView(post: Post.testPost)

@@ -64,6 +64,7 @@ struct UIIcons {
     static let save = "square.and.arrow.down"
     static let moon = "moon.fill"
     static let sun = "sun.max"
+    static let upload = "square.and.arrow.up"
 }
 
 extension Image {
