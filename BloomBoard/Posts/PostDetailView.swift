@@ -47,73 +47,17 @@ struct PostDetailView: View {
                 post: post
             )
             
-            if let uiImage = loadedImage {
-                ZStack {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(.rect(cornerRadius: 10))
-                        .padding()
-                    
-                    HStack {
-                        Button {
-                            showEditPostSheet.toggle()
-                        } label: {
-                            Image(systemName: UIIcons.changeIcon)
-                                .defaultIconStyle()
-                        }
-                        
-                        
-                        Button {
-                            UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                            userFeedback = FeedbackMessages.downloadSucceeded
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                userFeedback = nil
-                            }
-                            
-                        } label: {
-                            Image(systemName: UIIcons.download)
-                                .defaultIconStyle()
-                        }
-                    }
-                }
-                .frame(maxHeight: 250)
-            } else {
-                Button {
-                    showEditPostSheet.toggle()
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                        .foregroundStyle(.gray)
-                        .frame(maxWidth: .infinity, maxHeight: 200)
-                        .background(.ultraThinMaterial)
-                        .clipShape(.rect(cornerRadius: 10))
-                        .padding(10)
-                }
-            }
+            UIImageView(
+                loadedImage: loadedImage,
+                showEditPostSheet: $showEditPostSheet,
+                userFeedback: $userFeedback
+            )
             
-            Button {
-                if isPosted {
-                    post.postDate = nil
-                    post.performance = nil
-                } else {
-                    post.postDate = selectedPostDate
-                    post.performance = .unrated
-                }
-                
-                do {
-                    try modelContext.save()
-                    dismiss()
-                    
-                } catch {
-                    print("Failed to save post changes: \(error)")
-                }
-                
-                
-            } label: {
-                Text(isPosted ? PostStrings.unpost : PostStrings.post)
-                    .defaultButtonStyle()
-            }
+            PostButton(
+                selectedPostDate: $selectedPostDate,
+                post: post,
+                isPosted: isPosted
+            )
             
             Text(userFeedback ?? "")
                 .defaultMessageStyle()
@@ -133,20 +77,15 @@ struct PostDetailView: View {
                         }
                         
                     } label: {
-                        Image(systemName: "document.on.document")
+                        Image(systemName: UIIcons.copy)
                     }
-                    
                     
                     Button {
                         showEditPostSheet.toggle()
                     } label: {
                         Image(systemName: UIIcons.edit)
                     }
-                    
-                    
-                    
                 }
-                
             }
         }
         .sheet(isPresented: $showPostDateSheet) {
@@ -158,8 +97,87 @@ struct PostDetailView: View {
             EditPostSheet(post: post)
                 .presentationDetents([.fraction(0.60)])
         }
-        
-        
+    }
+}
+
+private struct PostButton: View {
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) private var dismiss
+    
+    @Binding var selectedPostDate: Date
+    var post: Post
+    let isPosted: Bool
+    
+    var body: some View {
+        Button {
+            if isPosted {
+                post.postDate = nil
+                post.performance = nil
+            } else {
+                post.postDate = selectedPostDate
+                post.performance = .unrated
+            }
+            
+            try? modelContext.save()
+            dismiss()
+        } label: {
+            Text(isPosted ? PostStrings.unpost : PostStrings.post)
+                .defaultButtonStyle()
+        }
+    }
+}
+
+private struct UIImageView: View {
+    var loadedImage: UIImage?
+    @Binding var showEditPostSheet: Bool
+    @Binding var userFeedback: String?
+    
+    
+    var body: some View {
+        if let uiImage = loadedImage {
+            ZStack {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(.rect(cornerRadius: 10))
+                    .padding()
+                
+                HStack {
+                    Button {
+                        showEditPostSheet.toggle()
+                    } label: {
+                        Image(systemName: UIIcons.changeIcon)
+                            .defaultIconStyle()
+                    }
+                    
+                    
+                    Button {
+                        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                        userFeedback = FeedbackMessages.downloadSucceeded
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            userFeedback = nil
+                        }
+                        
+                    } label: {
+                        Image(systemName: UIIcons.download)
+                            .defaultIconStyle()
+                    }
+                }
+            }
+            .frame(maxHeight: 250)
+        } else {
+            Button {
+                showEditPostSheet.toggle()
+            } label: {
+                Image(systemName: "square.and.arrow.up")
+                    .foregroundStyle(.gray)
+                    .frame(maxWidth: .infinity, maxHeight: 200)
+                    .background(.ultraThinMaterial)
+                    .clipShape(.rect(cornerRadius: 10))
+                    .padding(10)
+            }
+        }
     }
 }
 
@@ -168,7 +186,7 @@ private struct PostStatusView: View {
     @Binding var showPostDateSheet: Bool
     @Binding var selectedPostDate: Date
     var post: Post
-
+    
     var body: some View {
         VStack {
             if let postDate = post.postDate {
