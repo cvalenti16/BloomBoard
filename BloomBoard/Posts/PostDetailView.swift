@@ -35,36 +35,17 @@ struct PostDetailView: View {
     
     var body: some View {
         VStack{
-            
             Text(post.title)
                 .font(.title3)
                 .foregroundStyle(.text)
                 .padding(10)
             
-            if let postDate = post.postDate {
-                Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
-                    .foregroundStyle(.secondary)
-                
-                Picker(PostStrings.performance, selection: $postPerformance) {
-                    ForEach(Post.Performance.allCases, id: \.self) { performance in
-                        Text(performance.rawValue).tag(performance)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal,10)
-                .onChange(of: postPerformance) { oldValue, newValue in
-                    post.performance = newValue
-                }
-                
-            } else {
-                Button {
-                    showPostDateSheet.toggle()
-                } label : {
-                    Label("\(PostStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
-                        .foregroundStyle(.text)
-                        .padding()
-                }
-            }
+            PostStatusView(
+                postPerformance: $postPerformance,
+                showPostDateSheet: $showPostDateSheet,
+                selectedPostDate: $selectedPostDate,
+                post: post
+            )
             
             if let uiImage = loadedImage {
                 ZStack {
@@ -134,9 +115,9 @@ struct PostDetailView: View {
                     .defaultButtonStyle()
             }
             
-                Text(userFeedback ?? "")
-                    .defaultMessageStyle()
-                    .animation(.easeInOut, value: userFeedback)
+            Text(userFeedback ?? "")
+                .defaultMessageStyle()
+                .animation(.easeInOut, value: userFeedback)
             
         }
         .toolbarBackground(.visible, for: .navigationBar)
@@ -165,7 +146,7 @@ struct PostDetailView: View {
                     
                     
                 }
-               
+                
             }
         }
         .sheet(isPresented: $showPostDateSheet) {
@@ -182,7 +163,44 @@ struct PostDetailView: View {
     }
 }
 
+private struct PostStatusView: View {
+    @Binding var postPerformance: Post.Performance
+    @Binding var showPostDateSheet: Bool
+    @Binding var selectedPostDate: Date
+    var post: Post
+
+    var body: some View {
+        VStack {
+            if let postDate = post.postDate {
+                Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
+                    .foregroundStyle(.secondary)
+                
+                
+                Picker(PostStrings.performance, selection: $postPerformance) {
+                    ForEach(Post.Performance.allCases, id: \.self) { performance in
+                        Text(performance.rawValue).tag(performance)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 10)
+                .onChange(of: postPerformance) { oldValue, newValue in post.performance = newValue }
+                
+            } else {
+                Button {
+                    showPostDateSheet.toggle()
+                } label : {
+                    Label("\(PostStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
+                        .foregroundStyle(.text)
+                        .padding()
+                }
+            }
+        }
+    }
+}
+
+
 #Preview {
     PostDetailView(post: Post.testPost)
         .preferredColorScheme(.dark)
 }
+
