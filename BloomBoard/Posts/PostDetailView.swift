@@ -29,8 +29,7 @@ struct PostDetailView: View {
     }
     
     init(post: Post) {
-        self.post = post
-        _postPerformance = State(initialValue: post.performance ?? Post.Performance.unrated)
+        _postProperties = State(initialValue: PostProperties(post: post))
     }
     
     var body: some View {
