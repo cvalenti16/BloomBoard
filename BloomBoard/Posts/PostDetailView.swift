@@ -33,7 +33,7 @@ struct PostDetailView: View {
                 .foregroundStyle(.text)
                 .padding(10)
             
-            PostStatusView(
+            PostDateView(
                 postPerformance: $postPerformance,
             )
             .environment(postProperties)
@@ -57,23 +57,8 @@ struct PostDetailView: View {
         }
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                HStack {
-                    Button {
-                        UIPasteboard.general.string = postProperties.post.title
-                        
-                        postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
-                        
-                    } label: {
-                        Image(systemName: UIIcons.copy)
-                    }
-                    
-                    Button {
-                        postProperties.showEditPostSheet.toggle()
-                    } label: {
-                        Image(systemName: UIIcons.edit)
-                    }
-                }
+            Group {
+                PostDetailToolbar()
             }
         }
         .sheet(isPresented: $postProperties.showPostDateSheet) {
@@ -85,36 +70,48 @@ struct PostDetailView: View {
             EditPostSheet(post: postProperties.post)
                 .presentationDetents([.fraction(0.60)])
         }
+        .environment(postProperties)
     }
 }
 
-private struct PostButton: View {
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.dismiss) private var dismiss
+
+// MARK: PostDate View
+private struct PostDateView: View {
     @Environment(PostProperties.self) var postProperties
-    
-    let isPosted: Bool
+    @Binding var postPerformance: Post.Performance
     
     var body: some View {
-        Button {
-            if isPosted {
-                postProperties.post.postDate = nil
-                postProperties.post.performance = nil
+        VStack {
+            if let postDate = postProperties.post.postDate {
+                Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
+                    .foregroundStyle(.secondary)
+                
+                
+                Picker(PostStrings.performance, selection: $postPerformance) {
+                    ForEach(Post.Performance.allCases, id: \.self) { performance in
+                        Text(performance.rawValue).tag(performance)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 10)
+                .onChange(of: postPerformance) { _, newValue in
+                    postProperties.post.performance = newValue
+                }
             } else {
-                postProperties.post.postDate = postProperties.selectedPostDate
-                postProperties.post.performance = .unrated
+                Button {
+                    postProperties.showPostDateSheet.toggle()
+                } label : {
+                    Label("\(PostStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(postProperties.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
+                        .foregroundStyle(.text)
+                        .padding()
+                }
             }
-            
-            try? modelContext.save()
-            dismiss()
-            
-        } label: {
-            Text(isPosted ? PostStrings.unpost : PostStrings.post)
-                .defaultButtonStyle()
         }
     }
 }
 
+
+//Mark: UIImageView
 private struct UIImageView: View {
     @Environment(PostProperties.self) var postProperties
     var loadedImage: UIImage?
@@ -164,34 +161,56 @@ private struct UIImageView: View {
     }
 }
 
-private struct PostStatusView: View {
+
+// MARK: Post Button
+private struct PostButton: View {
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Environment(PostProperties.self) var postProperties
-    @Binding var postPerformance: Post.Performance
+    
+    let isPosted: Bool
     
     var body: some View {
-        VStack {
-            if let postDate = postProperties.post.postDate {
-                Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
-                    .foregroundStyle(.secondary)
-                
-                
-                Picker(PostStrings.performance, selection: $postPerformance) {
-                    ForEach(Post.Performance.allCases, id: \.self) { performance in
-                        Text(performance.rawValue).tag(performance)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, 10)
-                .onChange(of: postPerformance) { _, newValue in
-                    postProperties.post.performance = newValue
-                }
+        Button {
+            if isPosted {
+                postProperties.post.postDate = nil
+                postProperties.post.performance = nil
             } else {
+                postProperties.post.postDate = postProperties.selectedPostDate
+                postProperties.post.performance = .unrated
+            }
+            
+            try? modelContext.save()
+            dismiss()
+            
+        } label: {
+            Text(isPosted ? PostStrings.unpost : PostStrings.post)
+                .defaultButtonStyle()
+        }
+    }
+}
+
+
+//MARK: Toolbar
+private struct PostDetailToolbar: ToolbarContent {
+    @Environment(PostProperties.self) var postProperties
+    
+    var body: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            HStack {
                 Button {
-                    postProperties.showPostDateSheet.toggle()
-                } label : {
-                    Label("\(PostStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(postProperties.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
-                        .foregroundStyle(.text)
-                        .padding()
+                    UIPasteboard.general.string = postProperties.post.title
+                    
+                    postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
+                    
+                } label: {
+                    Image(systemName: UIIcons.copy)
+                }
+                
+                Button {
+                    postProperties.showEditPostSheet.toggle()
+                } label: {
+                    Image(systemName: UIIcons.edit)
                 }
             }
         }
