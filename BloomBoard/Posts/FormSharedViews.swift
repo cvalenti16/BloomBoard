@@ -86,7 +86,6 @@ struct PostSheetToolbar: ToolbarContent {
                 
             } label: {
                 Image(systemName: UIIcons.save)
-                    .defaultIconStyle()
             }
         }
     }
