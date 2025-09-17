@@ -69,103 +69,12 @@ struct EditPostSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 Group {
-                    EditPostToolbar(draftTitle: draftTitle, post: post)
+                    PostSheetToolbar(postTitle: draftTitle, post: post, isEditing: true)
                 }
             }
         }
         .environment(imageProperties)
     }
-}
-
-
-//MARK: Toolbar CRUD Actions
-private struct EditPostToolbar: ToolbarContent {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @Environment(ImageProperties.self) var imageProperties
-    
-    var draftTitle: String
-    var post: Post
-
-    var body: some ToolbarContent {
-        ToolbarItem(placement: .cancellationAction) {
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: UIIcons.x)
-                    .foregroundStyle(.text)
-            }
-        }
-        
-        ToolbarItem(placement: .confirmationAction) {
-            Button {
-                guard !draftTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                    imageProperties.errorMessage = FeedbackMessages.emptyTitle
-                    return
-                }
-                
-                post.title = draftTitle
-                
-                // update image if changed
-                if imageProperties.imageWasChanged {
-                    post.image = imageProperties.uiImage?.jpegData(compressionQuality: 0.8)
-                }
-                
-                do {
-                    try modelContext.save()
-                    dismiss()
-                } catch {
-                    imageProperties.errorMessage = FeedbackMessages.savedFailed
-                }
-                
-            } label: {
-                Image(systemName: UIIcons.save)
-                    .defaultIconStyle()
-            }
-        }
-    }
-    
-}
-
-private struct ImagePreview: View {
-    @Environment(ImageProperties.self) var imageProperties
-    var body: some View {
-        if let image = imageProperties.uiImage {
-            ZStack {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: .infinity, maxHeight: 200)
-                    .clipShape(.rect(cornerRadius: 10))
-                    .padding(10)
-                
-                HStack {
-                    Image(systemName: UIIcons.changeIcon)
-                        .defaultIconStyle()
-                    
-                    Button {
-                        imageProperties.selectedImage = nil
-                        imageProperties.uiImage = nil
-                        imageProperties.imageWasChanged = true
-                    } label: {
-                        Image(systemName: UIIcons.trashIcon)
-                            .defaultIconStyle()
-                    }
-                }
-            }
-        } else {
-            Text(PostStrings.uploadImage)
-                .defaultUploadImageStyle()
-        }
-    }
-}
-
-@Observable
-private class ImageProperties {
-    var selectedImage: PhotosPickerItem? = nil
-    var uiImage: UIImage? = nil
-    var imageWasChanged = false
-    var errorMessage: String? = nil
 }
 
 #Preview {
