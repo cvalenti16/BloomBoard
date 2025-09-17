@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 
-struct EditPostSheet: View {
+struct FormEditPost: View {
     @Bindable var post: Post
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -78,6 +78,6 @@ struct EditPostSheet: View {
 }
 
 #Preview {
-    EditPostSheet(post: .testPost)
+    FormEditPost(post: .testPost)
         .preferredColorScheme(.dark)
 }

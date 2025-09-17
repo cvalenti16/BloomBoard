@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 import SwiftData
 
-struct AddPostSheet: View {
+struct FormAddPost: View {
     @State private var postTitle = ""
     @State private var imageProperties = ImageProperties()
     
@@ -70,6 +70,6 @@ struct AddPostSheet: View {
 
 
 #Preview {
-    AddPostSheet()
+    FormAddPost()
         .preferredColorScheme(.dark)
 }

@@ -70,7 +70,7 @@ struct PostListView: View {
             }
         }
         .sheet(isPresented: $showAddSheet) {
-            AddPostSheet()
+            FormAddPost()
                 .presentationDetents([.fraction(0.60)])
         }
         .tint(.text)
