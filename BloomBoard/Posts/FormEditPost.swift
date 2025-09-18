@@ -11,8 +11,6 @@ import PhotosUI
 
 struct FormEditPost: View {
     @Bindable var post: Post
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
     
     @State private var imageProperties = ImageProperties()
     @State private var draftTitle: String

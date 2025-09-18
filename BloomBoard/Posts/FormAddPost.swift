@@ -13,10 +13,6 @@ struct FormAddPost: View {
     @State private var postTitle = ""
     @State private var imageProperties = ImageProperties()
     
-    @Environment(\.dismiss) var dismiss
-    @Environment(\.modelContext) var modelContext
-    
-    
     var body: some View {
         NavigationStack {
             VStack {
