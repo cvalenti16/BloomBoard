@@ -27,7 +27,7 @@ struct FormEditPost: View {
     var body: some View {
         NavigationStack {
             VStack {
-                TextField(PostStrings.enterTitle, text: $draftTitle, axis: .vertical)
+                TextField(UIStrings.enterTitle, text: $draftTitle, axis: .vertical)
                     .textFieldStyle(.plain)
                     .padding(10)
                     .bold()
@@ -43,7 +43,7 @@ struct FormEditPost: View {
                         ImagePreview()
                             .environment(imageProperties)
                     } else {
-                        Text(PostStrings.uploadImage)
+                        Text(UIStrings.uploadImage)
                             .defaultUploadImageStyle()
                     }
                 }
@@ -63,7 +63,7 @@ struct FormEditPost: View {
                         .defaultMessageStyle()
                 }
             }
-            .navigationTitle(PostStrings.editPost)
+            .navigationTitle(UIStrings.editPost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 Group {

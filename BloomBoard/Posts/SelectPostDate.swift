@@ -22,11 +22,11 @@ struct SelectPostDate: View {
     
     var body: some View {
         VStack {
-            Text(PostStrings.selectPostDate)
+            Text(UIStrings.selectPostDate)
                 .font(.headline)
             
             DatePicker(
-                PostStrings.posted,
+                UIStrings.posted,
                 selection: $selectedDate,
                 displayedComponents: .date
             )

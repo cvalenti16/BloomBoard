@@ -16,7 +16,7 @@ struct FormAddPost: View {
     var body: some View {
         NavigationStack {
             VStack {
-                TextField(PostStrings.title ,text: $postTitle, axis: .vertical)
+                TextField(UIStrings.title ,text: $postTitle, axis: .vertical)
                     .textFieldStyle(.plain)
                     .padding(10)
                     .bold()
@@ -31,7 +31,7 @@ struct FormAddPost: View {
                         ImagePreview()
                             .environment(imageProperties)
                     } else {
-                        Text(PostStrings.uploadImage)
+                        Text(UIStrings.uploadImage)
                             .defaultUploadImageStyle()
                     }
                 }
@@ -52,7 +52,7 @@ struct FormAddPost: View {
                 }
                 
             }
-            .navigationTitle(PostStrings.createPost)
+            .navigationTitle(UIStrings.createPost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 Group {

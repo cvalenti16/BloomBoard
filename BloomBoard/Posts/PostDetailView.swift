@@ -83,11 +83,11 @@ private struct PostDateView: View {
     var body: some View {
         VStack {
             if let postDate = postProperties.post.postDate {
-                Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
+                Text("\(UIStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
                 
                 
-                Picker(PostStrings.performance, selection: $postPerformance) {
+                Picker(UIStrings.performance, selection: $postPerformance) {
                     ForEach(Post.Performance.allCases, id: \.self) { performance in
                         Text(performance.rawValue).tag(performance)
                     }
@@ -101,7 +101,7 @@ private struct PostDateView: View {
                 Button {
                     postProperties.showPostDateSheet.toggle()
                 } label : {
-                    Label("\(PostStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(postProperties.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
+                    Label("\(UIStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(postProperties.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
                         .foregroundStyle(.text)
                         .padding()
                 }
@@ -184,7 +184,7 @@ private struct PostButton: View {
             dismiss()
             
         } label: {
-            Text(isPosted ? PostStrings.unpost : PostStrings.post)
+            Text(isPosted ? UIStrings.unpost : UIStrings.post)
                 .defaultButtonStyle()
         }
     }
@@ -197,7 +197,7 @@ private struct PostDetailToolbar: ToolbarContent {
     
     var body: some ToolbarContent {
         ToolbarItem {
-            Button(PostStrings.copy, systemImage: UIIcons.copy) {
+            Button(UIStrings.copy, systemImage: UIIcons.copy) {
                 UIPasteboard.general.string = postProperties.post.title
                 postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
             }

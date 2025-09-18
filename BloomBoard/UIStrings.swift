@@ -8,7 +8,22 @@
 import Foundation
 import SwiftUI
 
-struct PostStrings {
+struct FeedbackMessages {
+    static let emptyTitle = "Please a Enter Title"
+    static let savedFailed = "Failed to save, please try again"
+    static let copySucceeded = "Copied"
+    static let downloadSucceeded = "Downloaded"
+}
+struct Punctuation {
+    static let colon = ":"
+    static let space = " "
+}
+
+struct UIStrings {
+    static let cancelString = "Cancel"
+    static let saveString = "Save"
+    static let deleteString = "Delete"
+    static let editString = "Edit"
     static let created = "Created"
     static let copy = "Copy"
     static let title = "Title"
@@ -29,23 +44,6 @@ struct PostStrings {
     static let draftPosts = "Draft Posts"
     static let performance = "Performance"
     static let enterTitle = "Enter Title"
-}
-struct FeedbackMessages {
-    static let emptyTitle = "Please a Enter Title"
-    static let savedFailed = "Failed to save, please try again"
-    static let copySucceeded = "Copied"
-    static let downloadSucceeded = "Downloaded"
-}
-struct Punctuation {
-    static let colon = ":"
-    static let space = " "
-}
-
-struct UIStrings {
-    static let cancelString = "Cancel"
-    static let saveString = "Save"
-    static let deleteString = "Delete"
-    static let editString = "Edit"
 }
 
 

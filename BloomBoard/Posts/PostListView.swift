@@ -29,7 +29,7 @@ struct PostListView: View {
                         .navigationDestination(for: Post.self) { post in
                             PostDetailView(post: post)
                         }
-                        .alert(PostStrings.deletePost, isPresented: $state.showDeleteAlert) {
+                        .alert(UIStrings.deletePost, isPresented: $state.showDeleteAlert) {
                             Button(UIStrings.deleteString, role: .destructive) {
                                 if let post = state.postToDelete {
                                     modelContext.delete(post)
@@ -42,7 +42,7 @@ struct PostListView: View {
                         }
                 }
             }
-            .navigationTitle(isDrafts ? PostStrings.draftPosts: PostStrings.publishedPosts)
+            .navigationTitle(isDrafts ? UIStrings.draftPosts: UIStrings.publishedPosts)
             .toolbar {
                 if (isDrafts) {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -82,7 +82,7 @@ private struct EmptyListView: View {
     
     var body: some View {
         VStack {
-            Text(isDrafts ? PostStrings.noDrafts : PostStrings.noPublishedPosts)
+            Text(isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts)
                 .font(.title3)
                 .bold()
             
@@ -90,7 +90,7 @@ private struct EmptyListView: View {
                 Button {
                     showAddSheet.toggle()
                 } label: {
-                    Text(PostStrings.createPost)
+                    Text(UIStrings.createPost)
                         .defaultButtonStyle()
                 }
             }

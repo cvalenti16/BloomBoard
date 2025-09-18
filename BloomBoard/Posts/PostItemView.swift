@@ -27,10 +27,10 @@ struct PostItemView: View {
             HStack {
                 
                 if let postedDate = post.postDate {
-                    Text("\(PostStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postedDate, style: .date)")
+                    Text("\(UIStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postedDate, style: .date)")
                         .foregroundStyle(.secondary)
                 } else {
-                    Text("\(PostStrings.created)\(Punctuation.colon)\(Punctuation.space)\(post.creationDate, style: .date)")
+                    Text("\(UIStrings.created)\(Punctuation.colon)\(Punctuation.space)\(post.creationDate, style: .date)")
                         .foregroundStyle(.secondary)
                 }
                 

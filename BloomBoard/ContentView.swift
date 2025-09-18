@@ -26,11 +26,11 @@ struct ContentView: View {
     var body: some View {
         TabView() {
             
-            Tab(PostStrings.drafts, systemImage: UIIcons.posts) {
+            Tab(UIStrings.drafts, systemImage: UIIcons.posts) {
                 PostListView(posts: draftPosts,  isDrafts: true)
             }
             
-            Tab(PostStrings.published, systemImage: UIIcons.published) {
+            Tab(UIStrings.published, systemImage: UIIcons.published) {
                 PostListView(posts: publishedPosts, isDrafts: false)
             }
         }

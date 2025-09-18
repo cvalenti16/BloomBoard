@@ -45,7 +45,7 @@ struct ImagePreview: View {
                 }
             }
         } else {
-            Text(PostStrings.uploadImage)
+            Text(UIStrings.uploadImage)
                 .defaultUploadImageStyle()
         }
     }
