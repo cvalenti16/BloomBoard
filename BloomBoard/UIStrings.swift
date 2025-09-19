@@ -35,7 +35,7 @@ struct UIStrings {
     static let editPost = "Edit Post"
     static let deletePost = "Delete Post?"
     static let post = "Post"
-    static let posted = "Posted"
+    static let posted = "Posted: "
     static let selectPostDate = "Select Post Date"
     static let postDate = "Post Date"
     static let unpost = "Unpost"
