@@ -13,7 +13,7 @@ struct PostListView: View {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
     @State private var showAddSheet = false
-    @State private var state = PostListState()
+    @State private var state = PostListProperties()
     
     let posts: [Post]
     let isDrafts: Bool
@@ -101,7 +101,7 @@ private struct EmptyListView: View {
 private struct PopulatedListView: View {
     let posts: [Post]
     
-    @Environment(PostListState.self) var state
+    @Environment(PostListProperties.self) var state
     
     var body: some View {
         List(posts) { post in
@@ -122,8 +122,9 @@ private struct PopulatedListView: View {
     }
 }
 
+
 @Observable
-private class PostListState {
+private class PostListProperties {
     var postDetailPath = NavigationPath()
     var postToDelete: Post?
     var postToEdit: Post?
