@@ -38,6 +38,18 @@ struct PostItemView: View {
                     .foregroundStyle(.secondary)
                 
             }
+            .font(.system(size: 14))
+            
+            
+            if let medias = post.socialMedias, !medias.isEmpty {
+                let sortedMedias = medias.map { $0.rawValue}.sorted()
+                
+                Text("\(UIStrings.platforms)\(sortedMedias.joined(separator: ", "))")
+                    .foregroundStyle(.secondary)
+                    .font(.system(size: 14))
+
+    
+            }
             
             if let postPerformance = post.performance{
                 Text((postPerformance.rawValue))

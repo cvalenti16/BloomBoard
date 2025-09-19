@@ -31,8 +31,7 @@ struct PostDetailView: View {
             Text(postProperties.post.title)
                 .font(.title3)
                 .foregroundStyle(.text)
-                .padding(10)
-            
+
             PostDateView(
                 postPerformance: $postPerformance,
             )
@@ -116,6 +115,7 @@ private struct PostDateView: View {
             if let postDate = postProperties.post.postDate {
                 Text("\(UIStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
+                    .font(.system(size: 14))
                 
                 
                 Picker(UIStrings.performance, selection: $postPerformance) {
@@ -141,81 +141,6 @@ private struct PostDateView: View {
     }
 }
 
-// MARK: Social Media
-private struct SocialMediaSummary: View {
-    @Environment(PostProperties.self) var postProperties
-    
-    var body: some View {
-        Button {
-            postProperties.showSocialMediaSheet.toggle()
-        } label: {
-            Label(summaryText, systemImage: UIIcons.socialMedia)
-                .foregroundStyle(.text)
-                .padding(.horizontal,10)
-        }
-    }
-    
-    private var summaryText: String {
-        guard let medias = postProperties.post.socialMedias,
-              !medias.isEmpty else {
-            return UIStrings.selectPlatforms
-        }
-        
-        let names = medias.map { $0.rawValue }
-        return UIStrings.postedOn + names.joined(separator: ", ")
-    }
-}
-
-
-private struct SocialMediaChecklist: View {
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.dismiss) var dismiss
-    @Environment(PostProperties.self) var postProperties
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            
-            Text(UIStrings.selectPlatforms)
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.horizontal, 10)
-            
-            ForEach(SocialMedias.allCases, id: \.self) { platform in
-                Toggle(platform.rawValue, isOn: Binding(
-                        get: {
-                            postProperties.post.socialMedias?.contains(platform) ?? false
-                        },
-                        set: { isOn in
-                            updateSocialMedias(for: platform, isOn: isOn)
-                        }
-                ))
-                .padding(.horizontal, 10)
-            }
-            
-            Button {
-                dismiss()
-            } label: {
-                Text(UIStrings.close)
-                    .defaultButtonStyle()
-            }
-        }
-    }
-    
-    private func updateSocialMedias(for platform: SocialMedias, isOn: Bool) {
-        var current = postProperties.post.socialMedias ?? []
-        
-        if isOn {
-            if !current.contains(platform) {
-                current.append(platform)
-            }
-        } else {
-            current.removeAll { $0 == platform }
-        }
-        
-        postProperties.post.socialMedias = current
-        try? modelContext.save()
-    }
-}
 
 //Mark: UIImageView
 private struct UIImageView: View {
@@ -264,6 +189,84 @@ private struct UIImageView: View {
                     .padding(10)
             }
         }
+    }
+}
+
+
+// MARK: Social Media
+private struct SocialMediaSummary: View {
+    @Environment(PostProperties.self) var postProperties
+    
+    var body: some View {
+        Button {
+            postProperties.showSocialMediaSheet.toggle()
+        } label: {
+            Label(summaryText, systemImage: UIIcons.socialMedia)
+                .font(.system(size: 14))
+                .padding(.horizontal,10)
+        }
+    }
+    
+    private var summaryText: String {
+        guard let medias = postProperties.post.socialMedias,
+              !medias.isEmpty else {
+            return UIStrings.selectPlatforms
+        }
+        
+        let names = medias.map { $0.rawValue }
+        return UIStrings.postedOn + names.joined(separator: ", ")
+    }
+}
+
+
+private struct SocialMediaChecklist: View {
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) var dismiss
+    @Environment(PostProperties.self) var postProperties
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            
+            Text(UIStrings.selectPlatforms)
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 10)
+
+            
+            ForEach(SocialMedias.allCases, id: \.self) { platform in
+                Toggle(platform.rawValue, isOn: Binding(
+                        get: {
+                            postProperties.post.socialMedias?.contains(platform) ?? false
+                        },
+                        set: { isOn in
+                            updateSocialMedias(for: platform, isOn: isOn)
+                        }
+                ))
+                .padding(.horizontal, 10)
+            }
+            
+            Button {
+                dismiss()
+            } label: {
+                Text(UIStrings.close)
+                    .defaultButtonStyle()
+            }
+        }
+    }
+    
+    private func updateSocialMedias(for platform: SocialMedias, isOn: Bool) {
+        var current = postProperties.post.socialMedias ?? []
+        
+        if isOn {
+            if !current.contains(platform) {
+                current.append(platform)
+            }
+        } else {
+            current.removeAll { $0 == platform }
+        }
+        
+        postProperties.post.socialMedias = current
+        try? modelContext.save()
     }
 }
 
