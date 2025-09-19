@@ -47,7 +47,7 @@ enum Performance: String, CaseIterable, Codable {
         case .decent:
             return .brown
         case .good:
-            return .green
+            return .teal
         case .excellent:
             return .yellow
         }
