@@ -44,6 +44,11 @@ struct PostDetailView: View {
             )
             .environment(postProperties)
             
+            if(isPosted) {
+                SocialMediaSummary()
+                    .environment(postProperties)
+            }
+            
             PostButton(
                 isPosted: isPosted
             )
@@ -70,7 +75,33 @@ struct PostDetailView: View {
             FormEditPost(post: postProperties.post)
                 .presentationDetents([.fraction(0.60)])
         }
+        .sheet(isPresented: $postProperties.showSocialMediaSheet) {
+            SocialMediaChecklist()
+                .presentationDetents([.fraction(0.60)])
+        }
         .environment(postProperties)
+    }
+}
+
+// MARK: PostProperties
+@Observable
+class PostProperties {
+    var post: Post
+    var showEditPostSheet = false
+    var showPostDateSheet = false
+    var showSocialMediaSheet = false
+    var selectedPostDate = Date()
+    var userFeedback: String? = nil
+    
+    init(post: Post) {
+        self.post = post
+    }
+    
+    func showFeedback(message: String, duration: TimeInterval = 1) {
+        userFeedback = message
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            self.userFeedback = nil
+        }
     }
 }
 
@@ -110,6 +141,81 @@ private struct PostDateView: View {
     }
 }
 
+// MARK: Social Media
+private struct SocialMediaSummary: View {
+    @Environment(PostProperties.self) var postProperties
+    
+    var body: some View {
+        Button {
+            postProperties.showSocialMediaSheet.toggle()
+        } label: {
+            Label(summaryText, systemImage: UIIcons.socialMedia)
+                .foregroundStyle(.text)
+                .padding(.horizontal,10)
+        }
+    }
+    
+    private var summaryText: String {
+        guard let medias = postProperties.post.socialMedias,
+              !medias.isEmpty else {
+            return UIStrings.selectPlatforms
+        }
+        
+        let names = medias.map { $0.rawValue }
+        return UIStrings.postedOn + names.joined(separator: ", ")
+    }
+}
+
+
+private struct SocialMediaChecklist: View {
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) var dismiss
+    @Environment(PostProperties.self) var postProperties
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            
+            Text(UIStrings.selectPlatforms)
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 10)
+            
+            ForEach(SocialMedias.allCases, id: \.self) { platform in
+                Toggle(platform.rawValue, isOn: Binding(
+                        get: {
+                            postProperties.post.socialMedias?.contains(platform) ?? false
+                        },
+                        set: { isOn in
+                            updateSocialMedias(for: platform, isOn: isOn)
+                        }
+                ))
+                .padding(.horizontal, 10)
+            }
+            
+            Button {
+                dismiss()
+            } label: {
+                Text(UIStrings.close)
+                    .defaultButtonStyle()
+            }
+        }
+    }
+    
+    private func updateSocialMedias(for platform: SocialMedias, isOn: Bool) {
+        var current = postProperties.post.socialMedias ?? []
+        
+        if isOn {
+            if !current.contains(platform) {
+                current.append(platform)
+            }
+        } else {
+            current.removeAll { $0 == platform }
+        }
+        
+        postProperties.post.socialMedias = current
+        try? modelContext.save()
+    }
+}
 
 //Mark: UIImageView
 private struct UIImageView: View {
@@ -161,7 +267,6 @@ private struct UIImageView: View {
     }
 }
 
-
 // MARK: Post Button
 private struct PostButton: View {
     @Environment(\.modelContext) var modelContext
@@ -212,26 +317,6 @@ private struct PostDetailToolbar: ToolbarContent {
                 postProperties.showEditPostSheet.toggle()
                 
             }
-        }
-    }
-}
-
-@Observable
-class PostProperties {
-    var post: Post
-    var showEditPostSheet = false
-    var showPostDateSheet = false
-    var selectedPostDate = Date()
-    var userFeedback: String? = nil
-    
-    init(post: Post) {
-        self.post = post
-    }
-    
-    func showFeedback(message: String, duration: TimeInterval = 1) {
-        userFeedback = message
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            self.userFeedback = nil
         }
     }
 }

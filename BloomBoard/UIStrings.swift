@@ -26,6 +26,7 @@ struct UIStrings {
     static let editString = "Edit"
     static let created = "Created"
     static let copy = "Copy"
+    static let close = "Close"
     static let title = "Title"
     static let drafts = "Drafts"
     static let published = "Published"
@@ -44,6 +45,8 @@ struct UIStrings {
     static let draftPosts = "Draft Posts"
     static let performance = "Performance"
     static let enterTitle = "Enter Title"
+    static let postedOn = "Posted on: "
+    static let selectPlatforms = "Select Platforms"
 }
 
 
@@ -63,6 +66,7 @@ struct UIIcons {
     static let moon = "moon.fill"
     static let sun = "sun.max"
     static let upload = "square.and.arrow.up"
+    static let socialMedia = "network"
 }
 
 extension Image {
