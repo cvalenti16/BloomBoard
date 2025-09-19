@@ -10,7 +10,7 @@ struct PostDetailView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var postProperties: PostProperties
-    @State private var postPerformance: Post.Performance
+    @State private var postPerformance: Performance
     
     var isPosted: Bool {
         return postProperties.post.postDate != nil
@@ -23,7 +23,7 @@ struct PostDetailView: View {
     
     init(post: Post) {
         _postProperties = State(initialValue: PostProperties(post: post))
-        _postPerformance = State(initialValue: post.performance ?? Post.Performance.unrated)
+        _postPerformance = State(initialValue: post.performance ?? Performance.unrated)
     }
     
     var body: some View {
@@ -78,7 +78,7 @@ struct PostDetailView: View {
 // MARK: PostDate View
 private struct PostDateView: View {
     @Environment(PostProperties.self) var postProperties
-    @Binding var postPerformance: Post.Performance
+    @Binding var postPerformance: Performance
     
     var body: some View {
         VStack {
@@ -88,7 +88,7 @@ private struct PostDateView: View {
                 
                 
                 Picker(UIStrings.performance, selection: $postPerformance) {
-                    ForEach(Post.Performance.allCases, id: \.self) { performance in
+                    ForEach(Performance.allCases, id: \.self) { performance in
                         Text(performance.rawValue).tag(performance)
                     }
                 }

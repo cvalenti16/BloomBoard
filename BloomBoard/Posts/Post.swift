@@ -27,25 +27,26 @@ class Post: Identifiable {
         self.performance = performance
     }
     
-    enum Performance: String, CaseIterable, Codable {
-        case unrated = "Unrated"
-        case decent = "Decent"
-        case good = "Good"
-        case excellent = "Excellent"
-        
-        var color: Color {
-            switch self {
-            case .unrated:
-                return .clear
-            case .decent:
-                return .brown
-            case .good:
-                return .gray
-            case .excellent:
-                return .yellow
-            }
+    static var testPost = Post(title: "How is my SwiftData Model?", image: UIImage(named: "sampleImage")?.pngData())
+}
+
+
+enum Performance: String, CaseIterable, Codable {
+    case unrated = "Unrated"
+    case decent = "Decent"
+    case good = "Good"
+    case excellent = "Excellent"
+    
+    var color: Color {
+        switch self {
+        case .unrated:
+            return .clear
+        case .decent:
+            return .brown
+        case .good:
+            return .gray
+        case .excellent:
+            return .yellow
         }
     }
-    
-    static var testPost = Post(title: "How is my SwiftData Model?", image: UIImage(named: "sampleImage")?.pngData())
 }
