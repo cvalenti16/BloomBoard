@@ -43,11 +43,11 @@ enum Performance: String, CaseIterable, Codable {
     var color: Color {
         switch self {
         case .unrated:
-            return .clear
+            return .gray
         case .decent:
             return .brown
         case .good:
-            return .gray
+            return .green
         case .excellent:
             return .yellow
         }
