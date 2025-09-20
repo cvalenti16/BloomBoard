@@ -335,7 +335,7 @@ private struct PostAlert: ViewModifier {
                 }
                 
                 Button(UIStrings.cancelString, role: .cancel) {
-                    dismiss()
+                    showPostSheet.toggle()
                 }
             }
     }
