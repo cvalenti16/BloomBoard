@@ -31,6 +31,7 @@ struct PostDetailView: View {
             Text(postProperties.post.title)
                 .font(.title3)
                 .foregroundStyle(.text)
+                .padding(5)
 
             PostDateView(
                 postPerformance: $postPerformance,
@@ -213,7 +214,7 @@ private struct SocialMediaSummary: View {
             return UIStrings.selectPlatforms
         }
         
-        let names = medias.map { $0.rawValue }
+        let names = medias.map { $0.rawValue }.sorted()
         return UIStrings.postedOn + names.joined(separator: ", ")
     }
 }
@@ -243,6 +244,7 @@ private struct SocialMediaChecklist: View {
                         }
                 ))
                 .padding(.horizontal, 10)
+                .scaleEffect(0.90)
             }
             
             Button {

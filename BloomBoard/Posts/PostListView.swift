@@ -13,31 +13,31 @@ struct PostListView: View {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
     @State private var showAddSheet = false
-    @State private var state = PostListProperties()
+    @State private var postListProperties = PostListProperties()
     
     let posts: [Post]
     let isDrafts: Bool
     
     var body: some View {
-        NavigationStack(path: $state.postDetailPath) {
+        NavigationStack(path: $postListProperties.postDetailPath) {
             Group {
                 if (posts.isEmpty) {
                     EmptyListView(isDrafts: isDrafts, showAddSheet: $showAddSheet)
                 } else {
                     PopulatedListView(posts: posts)
-                        .environment(state)
+                        .environment(postListProperties)
                         .navigationDestination(for: Post.self) { post in
                             PostDetailView(post: post)
                         }
-                        .alert(UIStrings.deletePost, isPresented: $state.showDeleteAlert) {
+                        .alert(UIStrings.deletePost, isPresented: $postListProperties.showDeleteAlert) {
                             Button(UIStrings.deleteString, role: .destructive) {
-                                if let post = state.postToDelete {
+                                if let post = postListProperties.postToDelete {
                                     modelContext.delete(post)
-                                    state.postToDelete = nil
+                                    postListProperties.postToDelete = nil
                                 }
                             }
                             Button(UIStrings.cancelString, role: .cancel) {
-                                state.postToDelete = nil
+                                postListProperties.postToDelete = nil
                             }
                         }
                 }
