@@ -34,6 +34,8 @@ struct UIStrings {
     static let createPost = "Create Post"
     static let editPost = "Edit Post"
     static let deletePost = "Delete Post?"
+    static let confirmUnpost = "Do you want to unpost?"
+    static let confirmPost = "Do you want to post?"
     static let post = "Post"
     static let posted = "Posted: "
     static let selectPostDate = "Select Post Date"
@@ -48,6 +50,7 @@ struct UIStrings {
     static let postedOn = "Posted On: "
     static let selectPlatforms = "Select Platforms"
     static let platforms = "Platforms: "
+    static let confirm = "Confirm"
 }
 
 

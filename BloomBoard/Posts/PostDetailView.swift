@@ -32,7 +32,7 @@ struct PostDetailView: View {
                 .font(.title3)
                 .foregroundStyle(.text)
                 .padding(5)
-
+            
             PostDateView(
                 postPerformance: $postPerformance,
             )
@@ -79,6 +79,7 @@ struct PostDetailView: View {
             SocialMediaChecklist()
                 .presentationDetents([.fraction(0.60)])
         }
+        .postAlert(showPostSheet: $postProperties.showPostSheet, isPosted: isPosted)
         .environment(postProperties)
     }
 }
@@ -89,6 +90,7 @@ class PostProperties {
     var post: Post
     var showEditPostSheet = false
     var showPostDateSheet = false
+    var showPostSheet = false
     var showSocialMediaSheet = false
     var selectedPostDate = Date()
     var userFeedback: String? = nil
@@ -232,16 +234,16 @@ private struct SocialMediaChecklist: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.horizontal, 10)
-
+            
             
             ForEach(SocialMedias.allCases, id: \.self) { platform in
                 Toggle(platform.rawValue, isOn: Binding(
-                        get: {
-                            postProperties.post.socialMedias?.contains(platform) ?? false
-                        },
-                        set: { isOn in
-                            updateSocialMedias(for: platform, isOn: isOn)
-                        }
+                    get: {
+                        postProperties.post.socialMedias?.contains(platform) ?? false
+                    },
+                    set: { isOn in
+                        updateSocialMedias(for: platform, isOn: isOn)
+                    }
                 ))
                 .padding(.horizontal, 10)
                 .scaleEffect(0.90)
@@ -274,25 +276,13 @@ private struct SocialMediaChecklist: View {
 
 // MARK: Post Button
 private struct PostButton: View {
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.dismiss) private var dismiss
     @Environment(PostProperties.self) var postProperties
     
     let isPosted: Bool
     
     var body: some View {
         Button {
-            if isPosted {
-                postProperties.post.postDate = nil
-                postProperties.post.performance = nil
-            } else {
-                postProperties.post.postDate = postProperties.selectedPostDate
-                postProperties.post.performance = .unrated
-            }
-            
-            try? modelContext.save()
-            dismiss()
-            
+            postProperties.showPostSheet.toggle()
         } label: {
             Text(isPosted ? UIStrings.unpost : UIStrings.post)
                 .defaultButtonStyle()
@@ -325,6 +315,50 @@ private struct PostDetailToolbar: ToolbarContent {
         }
     }
 }
+
+// MARK: Post Alert
+private struct PostAlert: ViewModifier {
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) private var dismiss
+    @Environment(PostProperties.self) var postProperties
+    @Binding var showPostSheet: Bool
+    let isPosted: Bool
+    
+    func body(content: Content) -> some View {
+        content
+            .alert(isPosted ? UIStrings.confirmUnpost : UIStrings.confirmPost,
+                   isPresented: $showPostSheet) {
+                Button(UIStrings.confirm) {
+                    if isPosted {
+                        postProperties.post.postDate = nil
+                        postProperties.post.performance = nil
+                    } else {
+                        postProperties.post.postDate = postProperties.selectedPostDate
+                        postProperties.post.performance = .unrated
+                    }
+                    try? modelContext.save()
+                    dismiss()
+                }
+                
+                Button(UIStrings.cancelString, role: .cancel) {
+                    dismiss()
+                }
+            }
+    }
+}
+
+private extension View {
+    func postAlert(showPostSheet: Binding<Bool>, isPosted: Bool) -> some View { self.modifier(
+        PostAlert(
+            showPostSheet: showPostSheet,
+            isPosted: isPosted
+        ))
+    }
+}
+
+
+
+
 
 #Preview {
     PostDetailView(post: Post.testPost)
