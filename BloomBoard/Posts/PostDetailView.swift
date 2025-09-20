@@ -7,8 +7,6 @@
 import SwiftUI
 
 struct PostDetailView: View {
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.dismiss) private var dismiss
     @State private var postProperties: PostProperties
     @State private var postPerformance: Performance
     
@@ -36,23 +34,19 @@ struct PostDetailView: View {
             PostDateView(
                 postPerformance: $postPerformance,
             )
-            .environment(postProperties)
             
             
             UIImageView(
                 loadedImage: loadedImage,
             )
-            .environment(postProperties)
             
             if(isPosted) {
                 SocialMediaSummary()
-                    .environment(postProperties)
             }
             
             PostButton(
                 isPosted: isPosted
             )
-            .environment(postProperties)
             
             
             Text(postProperties.userFeedback ?? "")
