@@ -326,6 +326,7 @@ private struct PostAlert: ViewModifier {
                     if isPosted {
                         postProperties.post.postDate = nil
                         postProperties.post.performance = nil
+                        postProperties.post.socialMedias = nil
                     } else {
                         postProperties.post.postDate = postProperties.selectedPostDate
                         postProperties.post.performance = .unrated
