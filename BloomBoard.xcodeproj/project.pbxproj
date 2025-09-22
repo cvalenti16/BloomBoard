@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		83EEB8CD2E81E30A00435A75 /* BloomBoard.icon in Resources */ = {isa = PBXBuildFile; fileRef = 83EEB8CC2E81E30A00435A75 /* BloomBoard.icon */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		8398D1B92E25A93600C927F5 /* BloomBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BloomBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		83EEB8CC2E81E30A00435A75 /* BloomBoard.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = BloomBoard.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -47,6 +52,7 @@
 			children = (
 				833DCF232E131A8B00CE88FA /* BloomBoard */,
 				8398D1B92E25A93600C927F5 /* BloomBoard.app */,
+				83EEB8CC2E81E30A00435A75 /* BloomBoard.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,6 +120,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83EEB8CD2E81E30A00435A75 /* BloomBoard.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,8 +263,9 @@
 		833DCF2D2E131A8C00CE88FA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = BloomBoard;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6D3LAGVQ5R;
@@ -287,8 +295,9 @@
 		833DCF2E2E131A8C00CE88FA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = BloomBoard;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6D3LAGVQ5R;
