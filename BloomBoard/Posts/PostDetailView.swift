@@ -110,7 +110,7 @@ private struct PostDateView: View {
     var body: some View {
         VStack {
             if let postDate = postProperties.post.postDate {
-                Text("\(UIStrings.posted)\(Punctuation.colon)\(Punctuation.space)\(postDate, style: .date)")
+                Text("\(UIStrings.posted)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
                     .font(.system(size: 14))
                 
