@@ -9,7 +9,6 @@ import SwiftUI
 import SwiftData
 
 struct PostListView: View {
-    @Environment(\.modelContext) var modelContext
     @State private var postListProperties = PostListProperties()
     
     let posts: [Post]
@@ -24,25 +23,14 @@ struct PostListView: View {
                     PopulatedListView(posts: posts)
                         .navigationDestination(for: Post.self) { post in
                             PostDetailView(post: post)
-                        }
-                        .alert(UIStrings.deletePost, isPresented: $postListProperties.showDeleteAlert) {
-                            Button(UIStrings.deleteString, role: .destructive) {
-                                if let post = postListProperties.postToDelete {
-                                    modelContext.delete(post)
-                                    postListProperties.postToDelete = nil
-                                }
-                            }
-                            Button(UIStrings.cancelString, role: .cancel) {
-                                postListProperties.postToDelete = nil
-                            }
-                        }
+                        }.postDeleteAlert(
+                            showDeleteAlert: $postListProperties.showDeleteAlert
+                        )
                 }
             }
             .navigationTitle(isDrafts ? UIStrings.draftPosts: UIStrings.publishedPosts)
             .toolbar {
-                Group {
-                    PostListToolbar(isDrafts: isDrafts)
-                }
+                PostListToolbar(isDrafts: isDrafts)
             }
         }
         .sheet(isPresented: $postListProperties.showAddSheet) {
@@ -54,13 +42,13 @@ struct PostListView: View {
         })
         .tint(.text)
         .environment(postListProperties)
-
+        
     }
 }
 private struct EmptyListView: View {
     let isDrafts: Bool
     @Environment(PostListProperties.self) var postListProperties
-
+    
     var body: some View {
         VStack {
             Text(isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts)
@@ -81,7 +69,7 @@ private struct EmptyListView: View {
 
 private struct PopulatedListView: View {
     let posts: [Post]
-
+    
     @Environment(PostListProperties.self) var postListProperties
     
     var body: some View {
@@ -103,6 +91,34 @@ private struct PopulatedListView: View {
     }
 }
 
+// MARK: Delete Alert
+private struct PostDeleteAlert: ViewModifier {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(PostListProperties.self) private var postListProperties
+    @Binding var showDeleteAlert: Bool
+    
+    
+    func body(content: Content) -> some View {
+        content.alert(UIStrings.deletePost, isPresented: $showDeleteAlert) {
+            Button(UIStrings.deleteString, role: .destructive) {
+                if let post = postListProperties.postToDelete {
+                    modelContext.delete(post)
+                    postListProperties.postToDelete = nil
+                }
+            }
+            Button(UIStrings.cancelString, role: .cancel) {
+                postListProperties.postToDelete = nil
+            }
+        }
+    }
+}
+
+private extension View {
+    func postDeleteAlert(showDeleteAlert: Binding<Bool>) -> some View {
+        self.modifier(PostDeleteAlert(showDeleteAlert: showDeleteAlert))
+    }
+}
+
 // MARK: Toolbar
 private struct PostListToolbar: ToolbarContent {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
@@ -110,7 +126,7 @@ private struct PostListToolbar: ToolbarContent {
     @Environment(PostListProperties.self) var postListProperties
     
     let isDrafts: Bool
-
+    
     var body: some ToolbarContent {
         if isDrafts {
             ToolbarItem(placement: .topBarLeading) {
@@ -182,10 +198,6 @@ private struct SocialMediaDefaultPicker: View {
         }
     }
 }
-
-
-
-
 
 @Observable
 private class PostListProperties {
