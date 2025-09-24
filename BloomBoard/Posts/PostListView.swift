@@ -45,6 +45,7 @@ struct PostListView: View {
         
     }
 }
+
 private struct EmptyListView: View {
     let isDrafts: Bool
     @Environment(PostListProperties.self) var postListProperties
