@@ -204,7 +204,6 @@ private struct SocialMediaDefaultPicker: View {
 private class PostListProperties {
     var postDetailPath = NavigationPath()
     var postToDelete: Post?
-    var postToEdit: Post?
     var showAddSheet = false
     var showDeleteAlert = false
     var showSocialMediaPicker = false
