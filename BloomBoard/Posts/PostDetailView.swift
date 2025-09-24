@@ -27,9 +27,9 @@ struct PostDetailView: View {
     var body: some View {
         VStack{
             Text(postProperties.post.title)
-                .font(.title3)
                 .foregroundStyle(.text)
                 .padding(5)
+                .bold()
             
             PostDateView(
                 postPerformance: $postPerformance,
@@ -312,6 +312,7 @@ private struct PostDetailToolbar: ToolbarContent {
 
 // MARK: Post Alert
 private struct PostAlert: ViewModifier {
+    @AppStorage("defaultSocialMedia") private var defaultSocialMedia: SocialMedias = .none
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(PostProperties.self) var postProperties
@@ -330,6 +331,10 @@ private struct PostAlert: ViewModifier {
                     } else {
                         postProperties.post.postDate = postProperties.selectedPostDate
                         postProperties.post.performance = .unrated
+                        
+                        if defaultSocialMedia != .none {
+                            postProperties.post.socialMedias = [defaultSocialMedia]
+                        }
                     }
                     try? modelContext.save()
                     dismiss()
