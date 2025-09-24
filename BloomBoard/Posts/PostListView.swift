@@ -10,9 +10,6 @@ import SwiftData
 
 struct PostListView: View {
     @Environment(\.modelContext) var modelContext
-    
-    @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
-    
     @State private var postListProperties = PostListProperties()
     
     let posts: [Post]
@@ -22,10 +19,9 @@ struct PostListView: View {
         NavigationStack(path: $postListProperties.postDetailPath) {
             Group {
                 if (posts.isEmpty) {
-                    EmptyListView(isDrafts: isDrafts, showAddSheet: $postListProperties.showAddSheet)
+                    EmptyListView(isDrafts: isDrafts)
                 } else {
                     PopulatedListView(posts: posts)
-                        .environment(postListProperties)
                         .navigationDestination(for: Post.self) { post in
                             PostDetailView(post: post)
                         }
@@ -44,37 +40,9 @@ struct PostListView: View {
             }
             .navigationTitle(isDrafts ? UIStrings.draftPosts: UIStrings.publishedPosts)
             .toolbar {
-                if (isDrafts) {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            switch selectedAppearance {
-                            case .dark: selectedAppearance = .light
-                            case .light: selectedAppearance = .dark
-                            }
-                        } label: {
-                            Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
-                                .symbolEffect(.bounce, value: selectedAppearance)
-                        }
-                    }
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            postListProperties.showAddSheet.toggle()
-                        } label: {
-                            Image(systemName: UIIcons.addIcon)
-
-                        }
-                    }
-                } else {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            postListProperties.showSocialMediaPicker.toggle()
-                        } label: {
-                            Image(systemName: UIIcons.socialMedia)
-                        }
-                    }
+                Group {
+                    PostListToolbar(isDrafts: isDrafts)
                 }
-              
             }
         }
         .sheet(isPresented: $postListProperties.showAddSheet) {
@@ -85,12 +53,14 @@ struct PostListView: View {
             SocialMediaDefaultPicker()
         })
         .tint(.text)
+        .environment(postListProperties)
+
     }
 }
 private struct EmptyListView: View {
     let isDrafts: Bool
-    @Binding var showAddSheet: Bool
-    
+    @Environment(PostListProperties.self) var postListProperties
+
     var body: some View {
         VStack {
             Text(isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts)
@@ -99,7 +69,7 @@ private struct EmptyListView: View {
             
             if(isDrafts) {
                 Button {
-                    showAddSheet.toggle()
+                    postListProperties.showAddSheet.toggle()
                 } label: {
                     Text(UIStrings.createPost)
                         .defaultButtonStyle()
@@ -111,19 +81,19 @@ private struct EmptyListView: View {
 
 private struct PopulatedListView: View {
     let posts: [Post]
-    
-    @Environment(PostListProperties.self) var state
+
+    @Environment(PostListProperties.self) var postListProperties
     
     var body: some View {
         List(posts) { post in
             
             PostItemView(post: post) { post in
-                state.postDetailPath.append(post)
+                postListProperties.postDetailPath.append(post)
             }
             .swipeActions(edge: .trailing) {
                 Button {
-                    state.postToDelete = post
-                    state.showDeleteAlert.toggle()
+                    postListProperties.postToDelete = post
+                    postListProperties.showDeleteAlert.toggle()
                 } label: {
                     Image(systemName: UIIcons.trashIcon)
                         .tint(.red)
@@ -132,6 +102,49 @@ private struct PopulatedListView: View {
         }
     }
 }
+
+// MARK: Toolbar
+private struct PostListToolbar: ToolbarContent {
+    @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
+    
+    @Environment(PostListProperties.self) var postListProperties
+    
+    let isDrafts: Bool
+
+    var body: some ToolbarContent {
+        if isDrafts {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    switch selectedAppearance {
+                    case .dark: selectedAppearance = .light
+                    case .light: selectedAppearance = .dark
+                    }
+                } label: {
+                    Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
+                        .symbolEffect(.bounce, value: selectedAppearance)
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    postListProperties.showAddSheet.toggle()
+                } label: {
+                    Image(systemName: UIIcons.addIcon)
+                }
+            }
+        } else {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    postListProperties.showSocialMediaPicker.toggle()
+                } label: {
+                    Image(systemName: UIIcons.socialMedia)
+                }
+            }
+        }
+    }
+}
+
+
 
 // MARK: Social Media Default Picker
 private struct SocialMediaDefaultPicker: View {
