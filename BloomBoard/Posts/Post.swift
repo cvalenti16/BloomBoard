@@ -54,7 +54,10 @@ enum Performance: String, CaseIterable, Codable {
     }
 }
 
-enum SocialMedias: String, CaseIterable, Codable {
+enum SocialMedias: String, CaseIterable, Codable, Identifiable {
+    var id: String { rawValue }
+    
+    case none = "None"
     case facebook = "Facebook"
     case instagram = "Instagram"
     case reddit = "Reddit"
@@ -62,4 +65,5 @@ enum SocialMedias: String, CaseIterable, Codable {
     case tiktok = "TikTok"
     case x = "X"
     case youtube = "Youtube"
+    
 }

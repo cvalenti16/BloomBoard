@@ -51,6 +51,7 @@ struct UIStrings {
     static let selectPlatforms = "Select Platforms"
     static let platforms = "Platforms: "
     static let confirm = "Confirm"
+    static let selectDefaultPlatform = "Select Default Platform"
 }
 
 
@@ -71,6 +72,7 @@ struct UIIcons {
     static let sun = "sun.max"
     static let upload = "square.and.arrow.up"
     static let socialMedia = "network"
+    static let checkmark = "checkmark"
 }
 
 extension Image {

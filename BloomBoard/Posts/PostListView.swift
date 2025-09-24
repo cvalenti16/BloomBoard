@@ -10,9 +10,9 @@ import SwiftData
 
 struct PostListView: View {
     @Environment(\.modelContext) var modelContext
+    
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
-    @State private var showAddSheet = false
     @State private var postListProperties = PostListProperties()
     
     let posts: [Post]
@@ -22,7 +22,7 @@ struct PostListView: View {
         NavigationStack(path: $postListProperties.postDetailPath) {
             Group {
                 if (posts.isEmpty) {
-                    EmptyListView(isDrafts: isDrafts, showAddSheet: $showAddSheet)
+                    EmptyListView(isDrafts: isDrafts, showAddSheet: $postListProperties.showAddSheet)
                 } else {
                     PopulatedListView(posts: posts)
                         .environment(postListProperties)
@@ -45,34 +45,45 @@ struct PostListView: View {
             .navigationTitle(isDrafts ? UIStrings.draftPosts: UIStrings.publishedPosts)
             .toolbar {
                 if (isDrafts) {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            switch selectedAppearance {
+                            case .dark: selectedAppearance = .light
+                            case .light: selectedAppearance = .dark
+                            }
+                        } label: {
+                            Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
+                                .symbolEffect(.bounce, value: selectedAppearance)
+                        }
+                    }
+                    
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
-                            showAddSheet.toggle()
+                            postListProperties.showAddSheet.toggle()
                         } label: {
                             Image(systemName: UIIcons.addIcon)
 
                         }
                     }
-                }
-                
-                //Theme toggle
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        switch selectedAppearance {
-                        case .dark: selectedAppearance = .light
-                        case .light: selectedAppearance = .dark
+                } else {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            postListProperties.showSocialMediaPicker.toggle()
+                        } label: {
+                            Image(systemName: UIIcons.socialMedia)
                         }
-                    } label: {
-                        Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
-                            .symbolEffect(.bounce, value: selectedAppearance)
                     }
                 }
+              
             }
         }
-        .sheet(isPresented: $showAddSheet) {
+        .sheet(isPresented: $postListProperties.showAddSheet) {
             FormAddPost()
                 .presentationDetents([.fraction(0.60)])
         }
+        .sheet(isPresented: $postListProperties.showSocialMediaPicker, content: {
+            SocialMediaDefaultPicker()
+        })
         .tint(.text)
     }
 }
@@ -122,12 +133,54 @@ private struct PopulatedListView: View {
     }
 }
 
+// MARK: Social Media Default Picker
+private struct SocialMediaDefaultPicker: View {
+    @AppStorage("defaultSocialMedia") private var defaultSocialMedia: SocialMedias = .none
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                List(SocialMedias.allCases) { platform in
+                    Button {
+                        defaultSocialMedia = platform
+                    } label: {
+                        HStack {
+                            Text(platform.rawValue)
+                            Spacer()
+                            if platform == defaultSocialMedia {
+                                Image(systemName: UIIcons.checkmark)
+                                    .foregroundStyle(.tint)
+                            }
+                        }
+                    }
+                }
+                .scrollDisabled(true)
+                
+                Button {
+                    dismiss()
+                } label: {
+                    Text(UIStrings.close)
+                        .defaultButtonStyle()
+                }
+            }
+            .navigationTitle(UIStrings.selectDefaultPlatform)
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
+
+
+
+
 
 @Observable
 private class PostListProperties {
     var postDetailPath = NavigationPath()
     var postToDelete: Post?
     var postToEdit: Post?
+    var showAddSheet = false
     var showDeleteAlert = false
+    var showSocialMediaPicker = false
 }
 
