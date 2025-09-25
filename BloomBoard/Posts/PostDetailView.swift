@@ -270,33 +270,30 @@ private struct SocialMediaChecklist: View {
     @Environment(PostProperties.self) var postProperties
     
     var body: some View {
-        VStack(alignment: .leading) {
-            
-            Text(UIStrings.selectPlatforms)
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.horizontal, 10)
-            
-            
-            ForEach(SocialMedias.allCases.filter{$0 != .none}) { platform in
-                Toggle(platform.rawValue, isOn: Binding(
-                    get: {
-                        postProperties.post.socialMedias?.contains(platform) ?? false
-                    },
-                    set: { isOn in
-                        updateSocialMedias(for: platform, isOn: isOn)
-                    }
-                ))
-                .padding(.horizontal, 10)
-                .scaleEffect(0.90)
+        NavigationStack {
+            VStack {
+                ForEach(SocialMedias.allCases.filter{$0 != .none}) { platform in
+                    Toggle(platform.rawValue, isOn: Binding(
+                        get: {
+                            postProperties.post.socialMedias?.contains(platform) ?? false
+                        },
+                        set: { isOn in
+                            updateSocialMedias(for: platform, isOn: isOn)
+                        }
+                    ))
+                    .padding(.horizontal, 10)
+                    .scaleEffect(0.90)
+                }
+                
+                Button {
+                    dismiss()
+                } label: {
+                    Text(UIStrings.close)
+                        .defaultButtonStyle()
+                }
             }
-            
-            Button {
-                dismiss()
-            } label: {
-                Text(UIStrings.close)
-                    .defaultButtonStyle()
-            }
+            .navigationTitle(UIStrings.selectDefaultPlatform)
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
