@@ -56,9 +56,7 @@ struct PostDetailView: View {
         }
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
-            Group {
                 PostDetailToolbar()
-            }
         }
         .sheet(isPresented: $postProperties.showPostDateSheet) {
             SelectPostDate(initialDate: postProperties.selectedPostDate) { date in
