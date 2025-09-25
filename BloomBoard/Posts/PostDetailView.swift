@@ -62,6 +62,8 @@ struct PostDetailView: View {
             SelectPostDate(initialDate: postProperties.selectedPostDate) { date in
                 postProperties.selectedPostDate = date
             }
+            .presentationDetents([.fraction(0.75)])
+
         }
         .sheet(isPresented: $postProperties.showEditPostSheet) {
             FormEditPost(post: postProperties.post)
