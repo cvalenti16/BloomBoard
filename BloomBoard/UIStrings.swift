@@ -20,10 +20,10 @@ struct Punctuation {
 }
 
 struct UIStrings {
-    static let cancelString = "Cancel"
-    static let saveString = "Save"
-    static let deleteString = "Delete"
-    static let editString = "Edit"
+    static let cancel = "Cancel"
+    static let save = "Save"
+    static let delete = "Delete"
+    static let edit = "Edit"
     static let created = "Created"
     static let copy = "Copy"
     static let add = "Add"
@@ -68,7 +68,7 @@ struct UIIcons {
     static let edit = "pencil"
     static let calendar = "calendar.badge.plus"
     static let changeIcon = "arrow.triangle.2.circlepath"
-    static let x = "xmark"
+    static let cancel = "xmark"
     static let save = "square.and.arrow.down"
     static let moon = "moon.fill"
     static let sun = "sun.max"

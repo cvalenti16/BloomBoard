@@ -66,7 +66,7 @@ struct PostSheetToolbar: ToolbarContent {
             Button {
                 dismiss()
             } label: {
-                Image(systemName: UIIcons.x)
+                Image(systemName: UIIcons.cancel)
                     .foregroundStyle(.text)
             }
         }

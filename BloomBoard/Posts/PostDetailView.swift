@@ -152,30 +152,36 @@ struct SelectPostDate: View {
     }
     
     var body: some View {
-        VStack {
-            Text(UIStrings.selectPostDate)
-                .font(.headline)
-            
-            DatePicker(
-                UIStrings.posted,
-                selection: $selectedDate,
-                displayedComponents: .date
-            )
-            .datePickerStyle(.graphical)
-            
-            
-            HStack {
-                Button(UIStrings.cancelString) { dismiss() }
+        NavigationStack {
+            VStack {
+                DatePicker(
+                    UIStrings.posted,
+                    selection: $selectedDate,
+                    displayedComponents: .date
+                )
+                .datePickerStyle(.graphical)
+            }
+            .navigationTitle(UIStrings.selectPostDate)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: UIIcons.cancel)
+                    }
+                    
+                }
                 
-                Spacer()
-                
-                Button(UIStrings.saveString) {
-                    onSave(selectedDate)
-                    dismiss()
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        onSave(selectedDate)
+                        dismiss()
+                    } label: {
+                        Image(systemName: UIIcons.save)
+                    }
                 }
             }
-            .padding(.horizontal)
-            .foregroundStyle(.text)
         }
     }
 }
@@ -344,7 +350,7 @@ private struct PostDetailToolbar: ToolbarContent {
         }
         
         ToolbarItem {
-            Button(UIStrings.editString, systemImage: UIIcons.edit) {
+            Button(UIStrings.edit, systemImage: UIIcons.edit) {
                 postProperties.showEditPostSheet.toggle()
                 
             }
@@ -382,7 +388,7 @@ private struct PostAlert: ViewModifier {
                     dismiss()
                 }
                 
-                Button(UIStrings.cancelString, role: .cancel) {
+                Button(UIStrings.cancel, role: .cancel) {
                     showPostSheet.toggle()
                 }
             }

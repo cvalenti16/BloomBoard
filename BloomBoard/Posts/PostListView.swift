@@ -101,13 +101,13 @@ private struct PostDeleteAlert: ViewModifier {
     
     func body(content: Content) -> some View {
         content.alert(UIStrings.deletePost, isPresented: $showDeleteAlert) {
-            Button(UIStrings.deleteString, role: .destructive) {
+            Button(UIStrings.delete, role: .destructive) {
                 if let post = postListProperties.postToDelete {
                     modelContext.delete(post)
                     postListProperties.postToDelete = nil
                 }
             }
-            Button(UIStrings.cancelString, role: .cancel) {
+            Button(UIStrings.cancel, role: .cancel) {
                 postListProperties.postToDelete = nil
             }
         }
