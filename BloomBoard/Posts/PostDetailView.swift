@@ -138,6 +138,48 @@ private struct PostDateView: View {
     }
 }
 
+struct SelectPostDate: View {
+    var initialDate: Date
+    let onSave: (Date) -> Void
+    
+    @State private var selectedDate: Date
+    @Environment(\.dismiss) var dismiss
+    
+    init(initialDate: Date, onSave: @escaping (Date) -> Void) {
+        self.initialDate = initialDate
+        self.onSave = onSave
+        _selectedDate = State(initialValue: initialDate)
+    }
+    
+    var body: some View {
+        VStack {
+            Text(UIStrings.selectPostDate)
+                .font(.headline)
+            
+            DatePicker(
+                UIStrings.posted,
+                selection: $selectedDate,
+                displayedComponents: .date
+            )
+            .datePickerStyle(.graphical)
+            
+            
+            HStack {
+                Button(UIStrings.cancelString) { dismiss() }
+                
+                Spacer()
+                
+                Button(UIStrings.saveString) {
+                    onSave(selectedDate)
+                    dismiss()
+                }
+            }
+            .padding(.horizontal)
+            .foregroundStyle(.text)
+        }
+    }
+}
+
 
 //Mark: UIImageView
 private struct UIImageView: View {

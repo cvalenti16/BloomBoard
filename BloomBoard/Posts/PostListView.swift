@@ -142,19 +142,19 @@ private struct PostListToolbar: ToolbarContent {
                 }
             }
             
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
+            ToolbarItem {
+                Button(UIStrings.add, systemImage: UIIcons.addIcon) {
                     postListProperties.showAddSheet.toggle()
-                } label: {
-                    Image(systemName: UIIcons.addIcon)
                 }
             }
-        } else {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
+            
+            if #available(iOS 26.0, *) {
+                ToolbarSpacer(.fixed)
+            }
+            
+            ToolbarItem {
+                Button(UIStrings.socialMediaPicker, systemImage: UIIcons.socialMedia) {
                     postListProperties.showSocialMediaPicker.toggle()
-                } label: {
-                    Image(systemName: UIIcons.socialMedia)
                 }
             }
         }

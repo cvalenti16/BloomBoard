@@ -26,6 +26,7 @@ struct UIStrings {
     static let editString = "Edit"
     static let created = "Created"
     static let copy = "Copy"
+    static let add = "Add"
     static let close = "Close"
     static let title = "Title"
     static let drafts = "Drafts"
@@ -52,6 +53,7 @@ struct UIStrings {
     static let platforms = "Platforms: "
     static let confirm = "Confirm"
     static let selectDefaultPlatform = "Select Default Platform"
+    static let socialMediaPicker = "Social Media Picker"
 }
 
 
