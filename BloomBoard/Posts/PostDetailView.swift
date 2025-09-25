@@ -278,7 +278,7 @@ private struct SocialMediaChecklist: View {
                 .padding(.horizontal, 10)
             
             
-            ForEach(SocialMedias.allCases, id: \.self) { platform in
+            ForEach(SocialMedias.allCases.filter{$0 != .none}) { platform in
                 Toggle(platform.rawValue, isOn: Binding(
                     get: {
                         postProperties.post.socialMedias?.contains(platform) ?? false
