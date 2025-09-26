@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 
+//MARK: PostListView
 struct PostListView: View {
     @State private var postListProperties = PostListProperties()
     
@@ -46,6 +47,17 @@ struct PostListView: View {
     }
 }
 
+// MARK: PostListProperties
+@Observable
+private class PostListProperties {
+    var postDetailPath = NavigationPath()
+    var postToDelete: Post?
+    var showAddSheet = false
+    var showDeleteAlert = false
+    var showSocialMediaPicker = false
+}
+
+// MARK: EmptyListView
 private struct EmptyListView: View {
     let isDrafts: Bool
     @Environment(PostListProperties.self) var postListProperties
@@ -68,6 +80,7 @@ private struct EmptyListView: View {
     }
 }
 
+// MARK: PopulatedListView
 private struct PopulatedListView: View {
     let posts: [Post]
     
@@ -92,7 +105,7 @@ private struct PopulatedListView: View {
     }
 }
 
-// MARK: Delete Alert
+// MARK: PostDeleteAlert
 private struct PostDeleteAlert: ViewModifier {
     @Environment(\.modelContext) private var modelContext
     @Environment(PostListProperties.self) private var postListProperties
@@ -120,7 +133,7 @@ private extension View {
     }
 }
 
-// MARK: Toolbar
+// MARK: PostListToolbar
 private struct PostListToolbar: ToolbarContent {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
@@ -163,7 +176,7 @@ private struct PostListToolbar: ToolbarContent {
 
 
 
-// MARK: Social Media Default Picker
+// MARK: SocialMediaDefaultPicker
 private struct SocialMediaDefaultPicker: View {
     @AppStorage("defaultSocialMedia") private var defaultSocialMedia: SocialMedias = .none
     @Environment(\.dismiss) private var dismiss
@@ -198,14 +211,5 @@ private struct SocialMediaDefaultPicker: View {
             .navigationBarTitleDisplayMode(.inline)
         }
     }
-}
-
-@Observable
-private class PostListProperties {
-    var postDetailPath = NavigationPath()
-    var postToDelete: Post?
-    var showAddSheet = false
-    var showDeleteAlert = false
-    var showSocialMediaPicker = false
 }
 
