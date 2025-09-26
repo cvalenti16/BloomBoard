@@ -29,7 +29,6 @@ struct FormAddPost: View {
                 PhotosPicker(selection:$imageProperties.selectedImage, matching: .images, photoLibrary: .shared()) {
                     if imageProperties.uiImage != nil {
                         ImagePreview()
-                            .environment(imageProperties)
                     } else {
                         Text(UIStrings.uploadImage)
                             .defaultUploadImageStyle()
@@ -55,9 +54,7 @@ struct FormAddPost: View {
             .navigationTitle(UIStrings.createPost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                Group {
-                    PostSheetToolbar(postTitle: postTitle, isEditing: false)
-                }
+                PostSheetToolbar(postTitle: postTitle, isEditing: false)
             }
         }
         .environment(imageProperties)
