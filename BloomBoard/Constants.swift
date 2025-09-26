@@ -14,6 +14,7 @@ struct FeedbackMessages {
     static let copySucceeded = "Copied"
     static let downloadSucceeded = "Downloaded"
 }
+
 struct Punctuation {
     static let colon = ":"
     static let space = " "

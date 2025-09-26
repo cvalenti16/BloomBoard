@@ -178,13 +178,13 @@ private struct PostListToolbar: ToolbarContent {
 
 // MARK: SocialMediaDefaultPicker
 private struct SocialMediaDefaultPicker: View {
-    @AppStorage("defaultSocialMedia") private var defaultSocialMedia: SocialMedias = .none
+    @AppStorage("defaultSocialMedia") private var defaultSocialMedia: SocialMedia = .none
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationStack {
             VStack {
-                List(SocialMedias.allCases) { platform in
+                List(SocialMedia.allCases) { platform in
                     Button {
                         defaultSocialMedia = platform
                     } label: {

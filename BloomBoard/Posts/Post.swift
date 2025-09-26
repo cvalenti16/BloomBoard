@@ -17,9 +17,9 @@ class Post: Identifiable {
     var postDate: Date?
     var creationDate: Date
     var performance: Performance?
-    var socialMedias: [SocialMedias]?
+    var socialMedias: [SocialMedia]?
     
-    init(id: UUID = UUID(), title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil, socialMedias: [SocialMedias]? = nil) {
+    init(id: UUID = UUID(), title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil, socialMedias: [SocialMedia]? = nil) {
         self.id = id
         self.title = title
         self.image = image
@@ -34,6 +34,7 @@ class Post: Identifiable {
 }
 
 
+// MARK: Performance
 enum Performance: String, CaseIterable, Codable {
     case unrated = "Unrated"
     case decent = "Decent"
@@ -54,7 +55,8 @@ enum Performance: String, CaseIterable, Codable {
     }
 }
 
-enum SocialMedias: String, CaseIterable, Codable, Identifiable {
+// MARK: Social Media Enum
+enum SocialMedia: String, CaseIterable, Codable, Identifiable {
     var id: String { rawValue }
     
     case none = "None"

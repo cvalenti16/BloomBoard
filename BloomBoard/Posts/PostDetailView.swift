@@ -272,7 +272,7 @@ private struct SocialMediaChecklist: View {
     var body: some View {
         NavigationStack {
             VStack {
-                ForEach(SocialMedias.allCases.filter{$0 != .none}) { platform in
+                ForEach(SocialMedia.allCases.filter{$0 != .none}) { platform in
                     Toggle(platform.rawValue, isOn: Binding(
                         get: {
                             postProperties.post.socialMedias?.contains(platform) ?? false
@@ -297,7 +297,7 @@ private struct SocialMediaChecklist: View {
         }
     }
     
-    private func updateSocialMedias(for platform: SocialMedias, isOn: Bool) {
+    private func updateSocialMedias(for platform: SocialMedia, isOn: Bool) {
         var current = postProperties.post.socialMedias ?? []
         
         if isOn {
@@ -357,7 +357,7 @@ private struct PostDetailToolbar: ToolbarContent {
 
 // MARK: Post Alert
 private struct PostAlert: ViewModifier {
-    @AppStorage("defaultSocialMedia") private var defaultSocialMedia: SocialMedias = .none
+    @AppStorage("defaultSocialMedia") private var defaultSocialMedia: SocialMedia = .none
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(PostProperties.self) var postProperties

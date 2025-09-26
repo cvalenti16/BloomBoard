@@ -46,11 +46,9 @@ struct PostItemView: View {
                 Text("\(UIStrings.platforms)\(sortedMedias.joined(separator: ", "))")
                     .foregroundStyle(.secondary)
                     .font(.system(size: 14))
-
-    
             }
             
-            if let postPerformance = post.performance{
+            if let postPerformance = post.performance {
                 Text((postPerformance.rawValue))
                     .padding(5)
                     .background(post.performance?.color.opacity(0.5))
