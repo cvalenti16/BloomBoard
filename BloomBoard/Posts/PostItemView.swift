@@ -41,7 +41,7 @@ struct PostItemView: View {
             
             
             if let medias = post.socialMedias, !medias.isEmpty {
-                let sortedMedias = medias.map { $0.rawValue}.sorted()
+                let sortedMedias = medias.map { $0.shortName}.sorted()
                 
                 Text("\(UIStrings.platforms)\(sortedMedias.joined(separator: ", "))")
                     .foregroundStyle(.secondary)

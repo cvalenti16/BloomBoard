@@ -6,6 +6,7 @@
 //
 import SwiftUI
 
+// MARK: PostDetailView
 struct PostDetailView: View {
     @State private var postProperties: PostProperties
     @State private var postPerformance: Performance
@@ -102,7 +103,7 @@ class PostProperties {
 }
 
 
-// MARK: PostDate View
+// MARK: PostDateView
 private struct PostDateView: View {
     @Environment(PostProperties.self) var postProperties
     @Binding var postPerformance: Performance
@@ -187,7 +188,7 @@ struct SelectPostDate: View {
 }
 
 
-//Mark: UIImageView
+//MARK: UIImageView
 private struct UIImageView: View {
     @Environment(PostProperties.self) var postProperties
     var loadedImage: UIImage?
@@ -238,7 +239,7 @@ private struct UIImageView: View {
 }
 
 
-// MARK: Social Media
+// MARK: SocialMediaSummary
 private struct SocialMediaSummary: View {
     @Environment(PostProperties.self) var postProperties
     
@@ -258,7 +259,7 @@ private struct SocialMediaSummary: View {
             return UIStrings.selectPlatforms
         }
         
-        let names = medias.map { $0.rawValue }.sorted()
+        let names = medias.map { $0.shortName }.sorted()
         return UIStrings.postedOn + names.joined(separator: ", ")
     }
 }

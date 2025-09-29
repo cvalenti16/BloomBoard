@@ -9,6 +9,7 @@ import Foundation
 import SwiftData
 import SwiftUI
 
+// MARK: Post Model
 @Model
 class Post: Identifiable {
     @Attribute(.unique) var id: UUID = UUID()
@@ -34,7 +35,7 @@ class Post: Identifiable {
 }
 
 
-// MARK: Performance
+// MARK: Performance Enum
 enum Performance: String, CaseIterable, Codable {
     case unrated = "Unrated"
     case decent = "Decent"
@@ -57,7 +58,7 @@ enum Performance: String, CaseIterable, Codable {
 
 // MARK: Social Media Enum
 enum SocialMedia: String, CaseIterable, Codable, Identifiable {
-    var id: String { rawValue }
+    var id: Self { self }
     
     case none = "None"
     case facebook = "Facebook"
@@ -66,6 +67,19 @@ enum SocialMedia: String, CaseIterable, Codable, Identifiable {
     case threads = "Threads"
     case tiktok = "TikTok"
     case x = "X"
-    case youtube = "Youtube"
+    case youtube = "YouTube"
+    
+    var shortName: String {
+        switch self {
+        case .none: return ""
+        case .facebook: return "FB"
+        case .instagram: return "IG"
+        case .reddit: return "RD"
+        case .threads: return "TH"
+        case .tiktok: return "TT"
+        case .x: return "X"
+        case .youtube: return "YT"
+        }
+    }
     
 }
