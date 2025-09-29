@@ -41,7 +41,6 @@ struct FormEditPost: View {
                 PhotosPicker(selection: $imageProperties.selectedImage, matching: .images, photoLibrary: .shared()) {
                     if imageProperties.uiImage != nil {
                         ImagePreview()
-                            .environment(imageProperties)
                     } else {
                         Text(UIStrings.uploadImage)
                             .defaultUploadImageStyle()
