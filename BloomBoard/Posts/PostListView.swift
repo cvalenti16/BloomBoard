@@ -31,7 +31,7 @@ struct PostListView: View {
             }
             .navigationTitle(isDrafts ? UIStrings.draftPosts: UIStrings.publishedPosts)
             .toolbar {
-                PostListToolbar(isDrafts: isDrafts)
+                PostListToolbar(selectMissingPlatfrom: $postListProperties.selectedMissingPlatform, isDrafts: isDrafts)
             }
         }
         .sheet(isPresented: $postListProperties.showAddSheet) {
@@ -55,6 +55,7 @@ private class PostListProperties {
     var showAddSheet = false
     var showDeleteAlert = false
     var showSocialMediaPicker = false
+    var selectedMissingPlatform: SocialMedia? = nil
 }
 
 // MARK: EmptyListView
@@ -86,8 +87,16 @@ private struct PopulatedListView: View {
     
     @Environment(PostListProperties.self) var postListProperties
     
+    var filteredPosts: [Post] {
+        if let platform = postListProperties.selectedMissingPlatform {
+            return posts.filter { !($0.socialMedias?.contains(platform) ?? false)}
+        } else {
+            return posts
+        }
+    }
+    
     var body: some View {
-        List(posts) { post in
+        List(filteredPosts) { post in
             
             PostItemView(post: post) { post in
                 postListProperties.postDetailPath.append(post)
@@ -138,6 +147,7 @@ private struct PostListToolbar: ToolbarContent {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
     @Environment(PostListProperties.self) var postListProperties
+    @Binding var selectMissingPlatfrom: SocialMedia?
     
     let isDrafts: Bool
     
@@ -170,11 +180,29 @@ private struct PostListToolbar: ToolbarContent {
                     postListProperties.showSocialMediaPicker.toggle()
                 }
             }
+        } else {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Text(UIStrings.notPostedOn)
+                    
+                    Picker(UIStrings.notPostedOn, selection: $selectMissingPlatfrom) {
+                        ForEach(SocialMedia.allCases.filter{ $0 != .none}) { platform in
+                            Text(platform.rawValue).tag(platform as SocialMedia?)
+                        }
+                    }
+                    
+                    if self.selectMissingPlatfrom != nil {
+                        Button(UIStrings.clear) {
+                            selectMissingPlatfrom = nil
+                        }
+                    }
+                } label: {
+                    Label(UIStrings.filter, systemImage: UIIcons.filter)
+                }
+            }
         }
     }
 }
-
-
 
 // MARK: SocialMediaDefaultPicker
 private struct SocialMediaDefaultPicker: View {
@@ -212,4 +240,3 @@ private struct SocialMediaDefaultPicker: View {
         }
     }
 }
-

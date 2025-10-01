@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+// MARK: FeedbackMessages
 struct FeedbackMessages {
     static let emptyTitle = "Please a Enter Title"
     static let savedFailed = "Failed to save, please try again"
@@ -20,6 +21,7 @@ struct Punctuation {
     static let space = " "
 }
 
+// MARK: UIStrings
 struct UIStrings {
     static let cancel = "Cancel"
     static let save = "Save"
@@ -55,9 +57,12 @@ struct UIStrings {
     static let confirm = "Confirm"
     static let selectDefaultPlatform = "Select Default Platform"
     static let socialMediaPicker = "Social Media Picker"
+    static let notPostedOn = "Not Posted On"
+    static let clear = "Clear"
+    static let filter = "Filter"
 }
 
-
+// MARK: UIIcons
 struct UIIcons {
     static let addIcon = "plus"
     static let copy = "doc.on.doc"
@@ -76,8 +81,10 @@ struct UIIcons {
     static let upload = "square.and.arrow.up"
     static let socialMedia = "network"
     static let checkmark = "checkmark"
+    static let filter = "line.horizontal.3"
 }
 
+// MARK: Default Icon Style
 extension Image {
     func defaultIconStyle() -> some View {
         self
@@ -88,6 +95,7 @@ extension Image {
     }
 }
 
+// MARK: Default Button Style
 extension Text {
     func defaultButtonStyle() -> some View {
         self
@@ -101,7 +109,7 @@ extension Text {
     }
 }
 
-
+// MARK: Default Message Style
 extension Text {
     func defaultMessageStyle() -> some View {
         self
@@ -110,6 +118,7 @@ extension Text {
     }
 }
 
+// MARK: Default Upload Image Style
 extension Text {
     func defaultUploadImageStyle() -> some View {
         self
