@@ -36,7 +36,6 @@ struct PostListView: View {
         }
         .sheet(isPresented: $postListProperties.showAddSheet) {
             FormAddPost()
-                .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postListProperties.showSocialMediaPicker, content: {
             SocialMediaDefaultPicker()
