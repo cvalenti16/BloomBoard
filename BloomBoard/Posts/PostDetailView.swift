@@ -130,7 +130,7 @@ private struct PostDateView: View {
                 Button {
                     postProperties.showPostDateSheet.toggle()
                 } label : {
-                    Label("\(UIStrings.postDate)\(Punctuation.colon)\(Punctuation.space)\(postProperties.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
+                    Label("\(UIStrings.postDate)\(postProperties.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
                         .foregroundStyle(.text)
                         .padding()
                 }

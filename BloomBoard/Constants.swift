@@ -16,11 +16,6 @@ struct FeedbackMessages {
     static let downloadSucceeded = "Downloaded"
 }
 
-struct Punctuation {
-    static let colon = ":"
-    static let space = " "
-}
-
 // MARK: UIStrings
 struct UIStrings {
     static let cancel = "Cancel"
@@ -43,7 +38,7 @@ struct UIStrings {
     static let post = "Post"
     static let posted = "Posted: "
     static let selectPostDate = "Select Post Date"
-    static let postDate = "Post Date"
+    static let postDate = "Post Date: "
     static let unpost = "Unpost"
     static let noPublishedPosts = "No Published Posts"
     static let noDrafts = "No Drafts"
