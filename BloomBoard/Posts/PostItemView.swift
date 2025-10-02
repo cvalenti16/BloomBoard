@@ -29,13 +29,12 @@ struct PostItemView: View {
                     Text("\(UIStrings.posted)\(postedDate, style: .date)")
                         .foregroundStyle(.secondary)
                 } else {
-                    Text("\(UIStrings.created)\(Punctuation.colon)\(Punctuation.space)\(post.creationDate, style: .date)")
+                    Text("\(UIStrings.created)\(post.creationDate, style: .date)")
                         .foregroundStyle(.secondary)
                 }
                 
                 Image(systemName: post.image == nil ? "text.document.fill" : "photo")
                     .foregroundStyle(.secondary)
-                
             }
             .font(.system(size: 14))
             

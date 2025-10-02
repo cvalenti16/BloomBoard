@@ -27,7 +27,7 @@ struct UIStrings {
     static let save = "Save"
     static let delete = "Delete"
     static let edit = "Edit"
-    static let created = "Created"
+    static let created = "Created: "
     static let copy = "Copy"
     static let add = "Add"
     static let close = "Close"
