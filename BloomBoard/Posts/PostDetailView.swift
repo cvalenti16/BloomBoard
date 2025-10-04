@@ -89,7 +89,7 @@ struct PostDetailView: View {
                     dismiss()
                 }
             }
-            .presentationDetents([.fraction(0.60)])
+            .presentationDetents([.fraction(0.50)])
 
         })
         .environment(postProperties)
