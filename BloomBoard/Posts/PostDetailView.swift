@@ -356,21 +356,12 @@ private struct UnPostAlert: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .alert(isPosted ? UIStrings.confirmUnpost : UIStrings.confirmPost,
+            .alert(UIStrings.confirmUnpost,
                    isPresented: $showUnPostAlert) {
                 Button(UIStrings.confirm) {
-                    if isPosted {
                         postProperties.post.postDate = nil
                         postProperties.post.performance = nil
                         postProperties.post.socialMedias = nil
-                    } else {
-                        postProperties.post.postDate = postProperties.selectedPostDate
-                        postProperties.post.performance = .unrated
-                        
-                        if defaultSocialMedia != .none {
-                            postProperties.post.socialMedias = [defaultSocialMedia]
-                        }
-                    }
                     try? modelContext.save()
                     dismiss()
                 }
@@ -384,7 +375,6 @@ private struct UnPostAlert: ViewModifier {
 
 // MARK: Post Sheet
 private struct PostSheet: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) var modelContext
     @Environment(PostProperties.self) var postProperties
     @State private var selectedMedia: SocialMedia = .facebook
@@ -417,7 +407,7 @@ private struct PostSheet: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         didPost(false)
-                        dismiss()
+                        showPostSheet.toggle()
                     } label: {
                         Image(systemName: UIIcons.cancel)
                             .foregroundStyle(.text)
@@ -431,7 +421,7 @@ private struct PostSheet: View {
 
                         postProperties.post.socialMedias = [selectedMedia]
                          
-                        dismiss()
+                        showPostSheet.toggle()
                         didPost(true)
                     } label: {
                         Image(systemName: UIIcons.published)
