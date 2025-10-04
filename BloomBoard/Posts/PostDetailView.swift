@@ -27,6 +27,7 @@ struct PostDetailView: View {
     }
     
     var body: some View {
+        // MARK: Main View
         VStack{
             Text(postProperties.post.title)
                 .foregroundStyle(.text)
@@ -37,7 +38,6 @@ struct PostDetailView: View {
                 postPerformance: $postPerformance,
             )
             
-            
             UIImageView(
                 loadedImage: loadedImage,
             )
@@ -46,7 +46,7 @@ struct PostDetailView: View {
                 SocialMediaSummary()
             }
             
-            PostButton(
+            PostUnPostButton(
                 isPosted: isPosted
             )
             
@@ -88,7 +88,7 @@ struct PostDetailView: View {
     }
 }
 
-// MARK: PostProperties
+// MARK: Post Properties
 @Observable
 class PostProperties {
     var post: Post
@@ -113,7 +113,7 @@ class PostProperties {
 }
 
 
-// MARK: PostDateView
+// MARK: Post Date View
 private struct PostDateView: View {
     @Environment(PostProperties.self) var postProperties
     @Binding var postPerformance: Performance
@@ -198,7 +198,7 @@ struct SelectPostDate: View {
 }
 
 
-//MARK: UIImageView
+//MARK: UI Image View
 private struct UIImageView: View {
     @Environment(PostProperties.self) var postProperties
     var loadedImage: UIImage?
@@ -249,7 +249,7 @@ private struct UIImageView: View {
 }
 
 
-// MARK: SocialMediaSummary
+// MARK: Social Media Summary
 private struct SocialMediaSummary: View {
     @Environment(PostProperties.self) var postProperties
     
@@ -324,8 +324,8 @@ private struct SocialMediaChecklist: View {
     }
 }
 
-// MARK: Post Button
-private struct PostButton: View {
+// MARK: Post/UnPost Button
+private struct PostUnPostButton: View {
     @Environment(PostProperties.self) var postProperties
     
     let isPosted: Bool
@@ -341,32 +341,6 @@ private struct PostButton: View {
         } label: {
             Text(isPosted ? UIStrings.unpost : UIStrings.post)
                 .defaultButtonStyle()
-        }
-    }
-}
-
-
-//MARK: Toolbar
-private struct PostDetailToolbar: ToolbarContent {
-    @Environment(PostProperties.self) var postProperties
-    
-    var body: some ToolbarContent {
-        ToolbarItem {
-            Button(UIStrings.copy, systemImage: UIIcons.copy) {
-                UIPasteboard.general.string = postProperties.post.title
-                postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
-            }
-        }
-        
-        if #available(iOS 26.0, *) {
-            ToolbarSpacer(.fixed)
-        }
-        
-        ToolbarItem {
-            Button(UIStrings.edit, systemImage: UIIcons.edit) {
-                postProperties.showEditPostSheet.toggle()
-                
-            }
         }
     }
 }
@@ -436,26 +410,6 @@ private struct PostSheet: View {
                     }
                 }
                 .scrollDisabled(true)
-                
-                Button {
-                    
-                    postProperties.post.postDate = postProperties.selectedPostDate
-                    postProperties.post.performance = .unrated
-
-                    postProperties.post.socialMedias = [selectedMedia]
-
-                    postProperties.showPostSheet = false
-                     postProperties.showSocialMediaSheet = false
-                     postProperties.showPostDateSheet = false
-                     postProperties.showEditPostSheet = false
-                     
-                    dismiss()
-                    
-                    didPost(true)
-                } label: {
-                    Text(UIStrings.post)
-                        .defaultButtonStyle()
-                }
             }
             .navigationTitle(UIStrings.selectPlatform)
             .navigationBarTitleDisplayMode(.inline)
@@ -470,14 +424,20 @@ private struct PostSheet: View {
                     }
                 }
                 
-//                ToolbarItem(placement: .topBarTrailing) {
-//                    Button {
-//                        
-//                    } label: {
-//                        Image(systemName: UIIcons.published)
-//                            .foregroundStyle(.text)
-//                    }
-//                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        postProperties.post.postDate = postProperties.selectedPostDate
+                        postProperties.post.performance = .unrated
+
+                        postProperties.post.socialMedias = [selectedMedia]
+                         
+                        dismiss()
+                        didPost(true)
+                    } label: {
+                        Image(systemName: UIIcons.published)
+                            .foregroundStyle(.text)
+                    }
+                }
             }
         }
     }
@@ -489,6 +449,31 @@ private extension View {
             showUnPostAlert: showUnPostAlert,
             isPosted: isPosted
         ))
+    }
+}
+
+//MARK: Toolbar
+private struct PostDetailToolbar: ToolbarContent {
+    @Environment(PostProperties.self) var postProperties
+    
+    var body: some ToolbarContent {
+        ToolbarItem {
+            Button(UIStrings.copy, systemImage: UIIcons.copy) {
+                UIPasteboard.general.string = postProperties.post.title
+                postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
+            }
+        }
+        
+        if #available(iOS 26.0, *) {
+            ToolbarSpacer(.fixed)
+        }
+        
+        ToolbarItem {
+            Button(UIStrings.edit, systemImage: UIIcons.edit) {
+                postProperties.showEditPostSheet.toggle()
+                
+            }
+        }
     }
 }
 
