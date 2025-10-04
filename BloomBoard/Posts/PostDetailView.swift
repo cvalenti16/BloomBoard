@@ -66,7 +66,6 @@ struct PostDetailView: View {
                 postProperties.selectedPostDate = date
             }
             .presentationDetents([.fraction(0.75)])
-            
         }
         .sheet(isPresented: $postProperties.showEditPostSheet) {
             FormEditPost(post: postProperties.post)
@@ -90,6 +89,8 @@ struct PostDetailView: View {
                     dismiss()
                 }
             }
+            .presentationDetents([.fraction(0.60)])
+
         })
         .environment(postProperties)
     }
@@ -366,19 +367,18 @@ private struct UnPostSheet: View {
         NavigationStack {
             VStack {
                 Text(UIStrings.confirmUnpost)
-            }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                    .font(.title3)
+                
+                
+                HStack {
                     Button {
                         didUnPost(false)
                         showUnPostSheet.toggle()
                     } label: {
-                        Image(systemName: UIIcons.cancel)
-                            .foregroundStyle(.text)
+                        Text(UIStrings.cancel)
+                            .defaultButtonStyle()
                     }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
+                    
                     Button {
                         postProperties.post.postDate = nil
                         postProperties.post.performance = nil
@@ -387,13 +387,13 @@ private struct UnPostSheet: View {
                         dismiss()
                         didUnPost(true)
                     } label: {
-                        Image(systemName: UIIcons.published)
-                            .foregroundStyle(.text)
+                        Text(UIStrings.confirm)
+                            .defaultButtonStyle()
                     }
                 }
+            
             }
         }
-        
     }
 }
 

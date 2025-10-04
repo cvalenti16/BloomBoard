@@ -36,6 +36,7 @@ struct PostListView: View {
         }
         .sheet(isPresented: $postListProperties.showAddSheet) {
             FormAddPost()
+                .presentationDetents([.fraction(0.60)])
         }
         .tint(.text)
         .environment(postListProperties)
