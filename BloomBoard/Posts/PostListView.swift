@@ -37,9 +37,6 @@ struct PostListView: View {
         .sheet(isPresented: $postListProperties.showAddSheet) {
             FormAddPost()
         }
-        .sheet(isPresented: $postListProperties.showSocialMediaPicker, content: {
-            SocialMediaDefaultPicker()
-        })
         .tint(.text)
         .environment(postListProperties)
         
@@ -53,7 +50,6 @@ private class PostListProperties {
     var postToDelete: Post?
     var showAddSheet = false
     var showDeleteAlert = false
-    var showSocialMediaPicker = false
     var selectedMissingPlatform: SocialMedia? = nil
 }
 
@@ -173,12 +169,6 @@ private struct PostListToolbar: ToolbarContent {
             if #available(iOS 26.0, *) {
                 ToolbarSpacer(.fixed)
             }
-            
-            ToolbarItem {
-                Button(UIStrings.socialMediaPicker, systemImage: UIIcons.socialMedia) {
-                    postListProperties.showSocialMediaPicker.toggle()
-                }
-            }
         } else {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -199,43 +189,6 @@ private struct PostListToolbar: ToolbarContent {
                     Label(UIStrings.filter, systemImage: UIIcons.filter)
                 }
             }
-        }
-    }
-}
-
-// MARK: SocialMediaDefaultPicker
-private struct SocialMediaDefaultPicker: View {
-    @AppStorage("defaultSocialMedia") private var defaultSocialMedia: SocialMedia = .none
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        NavigationStack {
-            VStack {
-                List(SocialMedia.allCases) { platform in
-                    Button {
-                        defaultSocialMedia = platform
-                    } label: {
-                        HStack {
-                            Text(platform.rawValue)
-                            Spacer()
-                            if platform == defaultSocialMedia {
-                                Image(systemName: UIIcons.checkmark)
-                                    .foregroundStyle(.tint)
-                            }
-                        }
-                    }
-                }
-                .scrollDisabled(true)
-                
-                Button {
-                    dismiss()
-                } label: {
-                    Text(UIStrings.close)
-                        .defaultButtonStyle()
-                }
-            }
-            .navigationTitle(UIStrings.selectPlatform)
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
