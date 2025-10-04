@@ -11,7 +11,7 @@ struct PostDetailView: View {
     @State private var postProperties: PostProperties
     @State private var postPerformance: Performance
     @Environment(\.dismiss) var dismiss
-
+    
     var isPosted: Bool {
         return postProperties.post.postDate != nil
     }
@@ -58,7 +58,7 @@ struct PostDetailView: View {
         }
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
-                PostDetailToolbar()
+            PostDetailToolbar()
         }
         //MARK: Sheets
         .sheet(isPresented: $postProperties.showPostDateSheet) {
@@ -66,7 +66,7 @@ struct PostDetailView: View {
                 postProperties.selectedPostDate = date
             }
             .presentationDetents([.fraction(0.75)])
-
+            
         }
         .sheet(isPresented: $postProperties.showEditPostSheet) {
             FormEditPost(post: postProperties.post)
@@ -84,7 +84,13 @@ struct PostDetailView: View {
                 
             }
         })
-        .postAlert(showUnPostAlert: $postProperties.showUnPostAlert, isPosted: isPosted)
+        .sheet(isPresented: $postProperties.showUnPostAlert, content: {
+            UnPostSheet(showUnPostAlert: $postProperties.showUnPostAlert) { didPost in
+                if didPost {
+                    dismiss()
+                }
+            }
+        })
         .environment(postProperties)
     }
 }
@@ -347,33 +353,50 @@ private struct PostUnPostButton: View {
     }
 }
 
-// MARK: UnPost Alert
-private struct UnPostAlert: ViewModifier {
-    @AppStorage("defaultSocialMedia") private var defaultSocialMedia: SocialMedia = .none
+// MARK: UnPostSheet
+private struct UnPostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(PostProperties.self) var postProperties
     @Binding var showUnPostAlert: Bool
-    let isPosted: Bool
+    let didUnPost: (Bool) -> Void
     
-    func body(content: Content) -> some View {
-        content
-            .alert(UIStrings.confirmUnpost,
-                   isPresented: $showUnPostAlert) {
-                Button(UIStrings.confirm) {
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                Text(UIStrings.confirmUnpost)
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        didUnPost(false)
+                        showUnPostAlert.toggle()
+                    } label: {
+                        Image(systemName: UIIcons.cancel)
+                            .foregroundStyle(.text)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
                         postProperties.post.postDate = nil
                         postProperties.post.performance = nil
                         postProperties.post.socialMedias = nil
-                    try? modelContext.save()
-                    dismiss()
-                }
-                
-                Button(UIStrings.cancel, role: .cancel) {
-                    showUnPostAlert.toggle()
+                        try? modelContext.save()
+                        dismiss()
+                        didUnPost(true)
+                    } label: {
+                        Image(systemName: UIIcons.published)
+                            .foregroundStyle(.text)
+                    }
                 }
             }
+        }
+        
     }
 }
+
 
 // MARK: Post Sheet
 private struct PostSheet: View {
@@ -381,9 +404,8 @@ private struct PostSheet: View {
     @Environment(PostProperties.self) var postProperties
     @State private var selectedMedia: SocialMedia = .facebook
     @Binding var showPostSheet: Bool
-
     let didPost: (Bool) -> Void
-
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -420,9 +442,9 @@ private struct PostSheet: View {
                     Button {
                         postProperties.post.postDate = postProperties.selectedPostDate
                         postProperties.post.performance = .unrated
-
+                        
                         postProperties.post.socialMedias = [selectedMedia]
-                         
+                        
                         showPostSheet.toggle()
                         didPost(true)
                     } label: {
@@ -432,15 +454,6 @@ private struct PostSheet: View {
                 }
             }
         }
-    }
-}
-
-private extension View {
-    func postAlert(showUnPostAlert: Binding<Bool>, isPosted: Bool) -> some View { self.modifier(
-        UnPostAlert(
-            showUnPostAlert: showUnPostAlert,
-            isPosted: isPosted
-        ))
     }
 }
 
