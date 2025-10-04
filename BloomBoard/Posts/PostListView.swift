@@ -151,19 +151,19 @@ private struct PostListToolbar: ToolbarContent {
     let isDrafts: Bool
     
     var body: some ToolbarContent {
-        if isDrafts {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    switch selectedAppearance {
-                    case .dark: selectedAppearance = .light
-                    case .light: selectedAppearance = .dark
-                    }
-                } label: {
-                    Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
-                        .symbolEffect(.bounce, value: selectedAppearance)
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                switch selectedAppearance {
+                case .dark: selectedAppearance = .light
+                case .light: selectedAppearance = .dark
                 }
+            } label: {
+                Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
+                    .symbolEffect(.bounce, value: selectedAppearance)
             }
-            
+        }
+        
+        if isDrafts {
             ToolbarItem {
                 Button(UIStrings.add, systemImage: UIIcons.addIcon) {
                     postListProperties.showAddSheet.toggle()
