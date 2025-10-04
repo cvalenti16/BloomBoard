@@ -50,7 +50,7 @@ struct UIStrings {
     static let selectPlatforms = "Select Platforms"
     static let platforms = "Platforms: "
     static let confirm = "Confirm"
-    static let selectDefaultPlatform = "Select Default Platform"
+    static let selectPlatform = "Select Platform"
     static let socialMediaPicker = "Social Media Picker"
     static let notPostedOn = "Not Posted On"
     static let clear = "Clear"

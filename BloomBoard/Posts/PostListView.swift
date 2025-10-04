@@ -234,7 +234,7 @@ private struct SocialMediaDefaultPicker: View {
                         .defaultButtonStyle()
                 }
             }
-            .navigationTitle(UIStrings.selectDefaultPlatform)
+            .navigationTitle(UIStrings.selectPlatform)
             .navigationBarTitleDisplayMode(.inline)
         }
     }

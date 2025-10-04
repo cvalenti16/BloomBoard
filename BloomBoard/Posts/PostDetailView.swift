@@ -74,7 +74,9 @@ struct PostDetailView: View {
             SocialMediaChecklist()
                 .presentationDetents([.fraction(0.60)])
         }
-        .postAlert(showPostSheet: $postProperties.showPostSheet, isPosted: isPosted)
+        .sheet(isPresented: $postProperties.showPostSheet, content: {
+            PostingPlatformSheet()
+        })
         .environment(postProperties)
     }
 }
@@ -293,7 +295,7 @@ private struct SocialMediaChecklist: View {
                         .defaultButtonStyle()
                 }
             }
-            .navigationTitle(UIStrings.selectDefaultPlatform)
+            .navigationTitle(UIStrings.selectPlatform)
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -393,12 +395,60 @@ private struct PostAlert: ViewModifier {
     }
 }
 
-private extension View {
-    func postAlert(showPostSheet: Binding<Bool>, isPosted: Bool) -> some View { self.modifier(
-        PostAlert(
-            showPostSheet: showPostSheet,
-            isPosted: isPosted
-        ))
+
+// MARK: PostingPlatformSheet
+private struct PostingPlatformSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedPlatform: SocialMedia = .facebook
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                List(SocialMedia.allCases) { platform in
+                    Button {
+                        selectedPlatform = platform
+                    } label: {
+                        HStack {
+                            Text(platform.rawValue)
+                            Spacer()
+                            if selectedPlatform == platform {
+                                Image(systemName: UIIcons.checkmark)
+                                    .foregroundStyle(.tint)
+                            }
+                        }
+                    }
+                }
+                .scrollDisabled(true)
+                
+                Button {
+                    dismiss()
+                } label: {
+                    Text(UIStrings.post)
+                        .defaultButtonStyle()
+                }
+            }
+            .navigationTitle(UIStrings.selectPlatform)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: UIIcons.cancel)
+                            .foregroundStyle(.text)
+                    }
+                }
+                
+//                ToolbarItem(placement: .topBarTrailing) {
+//                    Button {
+//                        
+//                    } label: {
+//                        Image(systemName: UIIcons.published)
+//                            .foregroundStyle(.text)
+//                    }
+//                }
+            }
+        }
     }
 }
 
@@ -406,8 +456,12 @@ private extension View {
 
 
 
-#Preview {
-    PostDetailView(post: Post.testPost)
-        .preferredColorScheme(.dark)
+private extension View {
+    func postAlert(showPostSheet: Binding<Bool>, isPosted: Bool) -> some View { self.modifier(
+        PostAlert(
+            showPostSheet: showPostSheet,
+            isPosted: isPosted
+        ))
+    }
 }
 
