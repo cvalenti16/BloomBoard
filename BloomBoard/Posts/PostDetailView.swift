@@ -84,8 +84,8 @@ struct PostDetailView: View {
                 
             }
         })
-        .sheet(isPresented: $postProperties.showUnPostAlert, content: {
-            UnPostSheet(showUnPostAlert: $postProperties.showUnPostAlert) { didPost in
+        .sheet(isPresented: $postProperties.showUnPostSheet, content: {
+            UnPostSheet(showUnPostSheet: $postProperties.showUnPostSheet) { didPost in
                 if didPost {
                     dismiss()
                 }
@@ -101,7 +101,7 @@ class PostProperties {
     var post: Post
     var showEditPostSheet = false
     var showPostDateSheet = false
-    var showUnPostAlert = false
+    var showUnPostSheet = false
     var showPostSheet = false
     var showSocialMediaSheet = false
     var selectedPostDate = Date()
@@ -341,7 +341,7 @@ private struct PostUnPostButton: View {
     var body: some View {
         Button {
             if isPosted {
-                postProperties.showUnPostAlert.toggle()
+                postProperties.showUnPostSheet.toggle()
             } else {
                 postProperties.showPostSheet.toggle()
             }
@@ -358,7 +358,7 @@ private struct UnPostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(PostProperties.self) var postProperties
-    @Binding var showUnPostAlert: Bool
+    @Binding var showUnPostSheet: Bool
     let didUnPost: (Bool) -> Void
     
     
@@ -371,7 +371,7 @@ private struct UnPostSheet: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         didUnPost(false)
-                        showUnPostAlert.toggle()
+                        showUnPostSheet.toggle()
                     } label: {
                         Image(systemName: UIIcons.cancel)
                             .foregroundStyle(.text)
