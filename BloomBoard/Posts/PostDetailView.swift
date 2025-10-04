@@ -75,7 +75,7 @@ struct PostDetailView: View {
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postProperties.showPostSheet, content: {
-            PostingPlatformSheet()
+            
         })
         .environment(postProperties)
     }
@@ -399,19 +399,21 @@ private struct PostAlert: ViewModifier {
 // MARK: PostingPlatformSheet
 private struct PostingPlatformSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedPlatform: SocialMedia = .facebook
-    
+    @Environment(\.modelContext) var modelContext
+    @Environment(PostProperties.self) var postProperties
+    @State private var selectedMedia: SocialMedia = .facebook
+
     var body: some View {
         NavigationStack {
             VStack {
-                List(SocialMedia.allCases) { platform in
+                List(SocialMedia.allCases.filter{$0 != .none}) { media in
                     Button {
-                        selectedPlatform = platform
+                        selectedMedia = media
                     } label: {
                         HStack {
-                            Text(platform.rawValue)
+                            Text(media.rawValue)
                             Spacer()
-                            if selectedPlatform == platform {
+                            if selectedMedia == media {
                                 Image(systemName: UIIcons.checkmark)
                                     .foregroundStyle(.tint)
                             }
@@ -421,6 +423,13 @@ private struct PostingPlatformSheet: View {
                 .scrollDisabled(true)
                 
                 Button {
+                    
+                    postProperties.post.postDate = postProperties.selectedPostDate
+                    postProperties.post.performance = .unrated
+
+                    postProperties.post.socialMedias = [selectedMedia]
+
+                    
                     dismiss()
                 } label: {
                     Text(UIStrings.post)
