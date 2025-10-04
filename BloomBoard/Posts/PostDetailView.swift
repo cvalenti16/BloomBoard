@@ -60,6 +60,7 @@ struct PostDetailView: View {
         .toolbar {
                 PostDetailToolbar()
         }
+        //MARK: Sheets
         .sheet(isPresented: $postProperties.showPostDateSheet) {
             SelectPostDate(initialDate: postProperties.selectedPostDate) { date in
                 postProperties.selectedPostDate = date
@@ -149,6 +150,7 @@ private struct PostDateView: View {
     }
 }
 
+// MARK: Select Post Date
 struct SelectPostDate: View {
     var initialDate: Date
     let onSave: (Date) -> Void
