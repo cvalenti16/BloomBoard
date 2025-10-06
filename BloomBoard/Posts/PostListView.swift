@@ -29,7 +29,7 @@ struct PostListView: View {
                         )
                 }
             }
-            .navigationTitle(isDrafts ? UIStrings.draftPosts: UIStrings.publishedPosts)
+            .navigationTitle(isDrafts ? UIStrings.draftPosts: UIStrings.posts)
             .toolbar {
                 PostListToolbar(selectMissingPlatfrom: $postListProperties.selectedMissingPlatform, isDrafts: isDrafts)
             }
