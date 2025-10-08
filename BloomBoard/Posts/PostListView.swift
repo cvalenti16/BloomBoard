@@ -15,6 +15,16 @@ struct PostListView: View {
     let posts: [Post]
     let isDrafts: Bool
     
+    var currentNavigationTitle: String {
+        if isDrafts {
+            return UIStrings.draftPosts
+        } else if let platform = postListProperties.selectedMissingPlatform {
+            return String(format: UIStrings.unpublished, platform.shortName)
+        } else {
+            return UIStrings.allPublished
+        }
+    }
+    
     var body: some View {
         NavigationStack(path: $postListProperties.postDetailPath) {
             Group {
@@ -29,7 +39,7 @@ struct PostListView: View {
                         )
                 }
             }
-            .navigationTitle(isDrafts ? UIStrings.draftPosts: UIStrings.posts)
+            .navigationTitle(currentNavigationTitle)
             .toolbar {
                 PostListToolbar(selectMissingPlatfrom: $postListProperties.selectedMissingPlatform, isDrafts: isDrafts)
             }
@@ -40,7 +50,6 @@ struct PostListView: View {
         }
         .tint(.text)
         .environment(postListProperties)
-        
     }
 }
 
