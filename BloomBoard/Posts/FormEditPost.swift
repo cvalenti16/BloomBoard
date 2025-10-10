@@ -65,9 +65,7 @@ struct FormEditPost: View {
             .navigationTitle(UIStrings.editPost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                Group {
                     PostSheetToolbar(postTitle: draftTitle, post: post, isEditing: true)
-                }
             }
         }
         .environment(imageProperties)
