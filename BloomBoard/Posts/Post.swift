@@ -12,7 +12,7 @@ import SwiftUI
 // MARK: Post Model
 @Model
 class Post: Identifiable {
-    @Attribute(.unique) var id: UUID = UUID()
+    @Attribute(.unique) var id: UUID
     var title: String
     @Attribute(.externalStorage) var image: Data?
     var postDate: Date?
