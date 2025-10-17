@@ -11,6 +11,7 @@ import SwiftData
 //MARK: PostListView
 struct PostListView: View {
     @State private var postListProperties = PostListProperties()
+    @State private var searchTerm = ""
     
     let posts: [Post]
     let isDrafts: Bool
@@ -25,13 +26,25 @@ struct PostListView: View {
         }
     }
     
+    var searchedPosts: [Post] {
+        if searchTerm.isEmpty {
+            return posts
+        } else {
+            return posts.filter{ posts in
+                posts.title.localizedCaseInsensitiveContains(searchTerm)
+            }
+        }
+    }
+    
     var body: some View {
         NavigationStack(path: $postListProperties.postDetailPath) {
             Group {
-                if (posts.isEmpty) {
-                    EmptyListView(isDrafts: isDrafts)
+                if (searchedPosts.isEmpty) {
+                    Text(isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts)
+                        .font(.title3)
+                        .bold()
                 } else {
-                    PopulatedListView(posts: posts)
+                    PopulatedListView(posts: searchedPosts)
                         .navigationDestination(for: Post.self) { post in
                             PostDetailView(post: post)
                         }.postDeleteAlert(
@@ -40,6 +53,7 @@ struct PostListView: View {
                 }
             }
             .navigationTitle(currentNavigationTitle)
+            .searchable(text: $searchTerm)
             .toolbar {
                 PostListToolbar(selectMissingPlatfrom: $postListProperties.selectedMissingPlatform, isDrafts: isDrafts)
             }
@@ -63,29 +77,6 @@ private class PostListProperties {
     var selectedMissingPlatform: SocialMedia? = nil
 }
 
-// MARK: EmptyListView
-private struct EmptyListView: View {
-    let isDrafts: Bool
-    @Environment(PostListProperties.self) var postListProperties
-    
-    var body: some View {
-        VStack {
-            Text(isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts)
-                .font(.title3)
-                .bold()
-            
-            if(isDrafts) {
-                Button {
-                    postListProperties.showAddSheet.toggle()
-                } label: {
-                    Text(UIStrings.createPost)
-                        .defaultButtonStyle()
-                }
-            }
-        }
-    }
-}
-
 // MARK: PopulatedListView
 private struct PopulatedListView: View {
     let posts: [Post]
@@ -101,21 +92,29 @@ private struct PopulatedListView: View {
     }
     
     var body: some View {
-        List(filteredPosts) { post in
-            
-            PostItemView(post: post) { post in
-                postListProperties.postDetailPath.append(post)
-            }
-            .swipeActions(edge: .trailing) {
-                Button {
-                    postListProperties.postToDelete = post
-                    postListProperties.showDeleteAlert.toggle()
-                } label: {
-                    Image(systemName: UIIcons.trashIcon)
-                        .tint(.red)
+            List(filteredPosts) { post in
+                PostItemView(post: post) { post in
+                    postListProperties.postDetailPath.append(post)
+                }
+                .swipeActions(edge: .trailing) {
+                    Button {
+                        postListProperties.postToDelete = post
+                        postListProperties.showDeleteAlert.toggle()
+                    } label: {
+                        Image(systemName: UIIcons.trashIcon)
+                            .tint(.red)
+                    }
                 }
             }
-        }
+            .overlay {
+                if(filteredPosts.isEmpty) {
+                    ContentUnavailableView {
+                        Label("No Mail", systemImage: "tray.fill")
+                    } description: {
+                        Text("New mails you receive will appear here.")
+                    }
+                }
+            }
     }
 }
 

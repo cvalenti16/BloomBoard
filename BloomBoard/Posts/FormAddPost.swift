@@ -9,7 +9,6 @@ import SwiftUI
 import PhotosUI
 import SwiftData
 
-//Test Push
 struct FormAddPost: View {
     @State private var postTitle = ""
     @State private var imageProperties = ImageProperties()
