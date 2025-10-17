@@ -21,12 +21,9 @@ struct ContentView: View {
         ,sort: [
             SortDescriptor(\Post.postDate, order: .reverse)
         ]) var publishedPosts: [Post]
-    
-    @State var searchText = ""
-    
+        
     var body: some View {
         TabView {
-            
             Tab(UIStrings.drafts, systemImage: UIIcons.posts) {
                 PostListView(posts: draftPosts,  isDrafts: true)
             }
@@ -34,16 +31,7 @@ struct ContentView: View {
             Tab(UIStrings.published, systemImage: UIIcons.published) {
                 PostListView(posts: publishedPosts, isDrafts: false)
             }
-            
-            Tab(role: .search) {
-                NavigationStack {
-                    Text(searchText)
-                        .navigationTitle("Search")
-                }
-            }
         }
-        .searchable(text: $searchText)
-        
     }
 }
 
