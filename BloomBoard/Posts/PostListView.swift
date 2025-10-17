@@ -30,7 +30,7 @@ struct PostListView: View {
         if searchTerm.isEmpty {
             return posts
         } else {
-            return posts.filter{ posts in
+            return posts.filter { posts in
                 posts.title.localizedCaseInsensitiveContains(searchTerm)
             }
         }
@@ -38,25 +38,18 @@ struct PostListView: View {
     
     var body: some View {
         NavigationStack(path: $postListProperties.postDetailPath) {
-            Group {
-                if (searchedPosts.isEmpty) {
-                    Text(isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts)
-                        .font(.title3)
-                        .bold()
-                } else {
-                    PopulatedListView(posts: searchedPosts)
-                        .navigationDestination(for: Post.self) { post in
-                            PostDetailView(post: post)
-                        }.postDeleteAlert(
-                            showDeleteAlert: $postListProperties.showDeleteAlert
-                        )
+            PopulatedListView(posts: searchedPosts)
+                .navigationDestination(for: Post.self) { post in
+                    PostDetailView(post: post)
                 }
-            }
-            .navigationTitle(currentNavigationTitle)
-            .searchable(text: $searchTerm)
-            .toolbar {
-                PostListToolbar(selectMissingPlatfrom: $postListProperties.selectedMissingPlatform, isDrafts: isDrafts)
-            }
+                .postDeleteAlert(
+                    showDeleteAlert: $postListProperties.showDeleteAlert
+                )
+                .navigationTitle(currentNavigationTitle)
+                .searchable(text: $searchTerm)
+                .toolbar {
+                    PostListToolbar(selectMissingPlatfrom: $postListProperties.selectedMissingPlatform, isDrafts: isDrafts)
+                }
         }
         .sheet(isPresented: $postListProperties.showAddSheet) {
             FormAddPost()
@@ -64,6 +57,15 @@ struct PostListView: View {
         }
         .tint(.text)
         .environment(postListProperties)
+        .overlay {
+            if searchedPosts.isEmpty && !searchTerm.isEmpty {
+                ContentUnavailableView.search
+            } else if searchedPosts.isEmpty {
+                ContentUnavailableView {
+                    Label(isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts, systemImage: isDrafts ? UIIcons.posts : UIIcons.published)
+                }
+            }
+        }
     }
 }
 
@@ -92,29 +94,20 @@ private struct PopulatedListView: View {
     }
     
     var body: some View {
-            List(filteredPosts) { post in
-                PostItemView(post: post) { post in
-                    postListProperties.postDetailPath.append(post)
-                }
-                .swipeActions(edge: .trailing) {
-                    Button {
-                        postListProperties.postToDelete = post
-                        postListProperties.showDeleteAlert.toggle()
-                    } label: {
-                        Image(systemName: UIIcons.trashIcon)
-                            .tint(.red)
-                    }
+        List(filteredPosts) { post in
+            PostItemView(post: post) { post in
+                postListProperties.postDetailPath.append(post)
+            }
+            .swipeActions(edge: .trailing) {
+                Button {
+                    postListProperties.postToDelete = post
+                    postListProperties.showDeleteAlert.toggle()
+                } label: {
+                    Image(systemName: UIIcons.trashIcon)
+                        .tint(.red)
                 }
             }
-            .overlay {
-                if(filteredPosts.isEmpty) {
-                    ContentUnavailableView {
-                        Label("No Mail", systemImage: "tray.fill")
-                    } description: {
-                        Text("New mails you receive will appear here.")
-                    }
-                }
-            }
+        }
     }
 }
 
