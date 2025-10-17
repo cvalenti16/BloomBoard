@@ -36,9 +36,17 @@ struct PostListView: View {
         }
     }
     
+    var filteredPosts: [Post] {
+        if let platform = postListProperties.selectedMissingPlatform {
+            return searchedPosts.filter { !($0.socialMedias?.contains(platform) ?? false)}
+        } else {
+            return searchedPosts
+        }
+    }
+    
     var body: some View {
         NavigationStack(path: $postListProperties.postDetailPath) {
-            PopulatedListView(posts: searchedPosts)
+            PopulatedListView(posts: filteredPosts)
                 .navigationDestination(for: Post.self) { post in
                     PostDetailView(post: post)
                 }
@@ -46,25 +54,24 @@ struct PostListView: View {
                     showDeleteAlert: $postListProperties.showDeleteAlert
                 )
                 .navigationTitle(currentNavigationTitle)
-                .searchable(text: $searchTerm)
                 .toolbar {
                     PostListToolbar(selectMissingPlatfrom: $postListProperties.selectedMissingPlatform, isDrafts: isDrafts)
                 }
         }
+        .tint(.text)
+        .environment(postListProperties)
+        .searchable(text: $searchTerm)
         .sheet(isPresented: $postListProperties.showAddSheet) {
             FormAddPost()
                 .presentationDetents([.fraction(0.60)])
         }
-        .tint(.text)
-        .environment(postListProperties)
         .overlay {
-            if searchedPosts.isEmpty && !searchTerm.isEmpty {
-                ContentUnavailableView.search
-            } else if searchedPosts.isEmpty {
-                ContentUnavailableView {
-                    Label(isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts, systemImage: isDrafts ? UIIcons.posts : UIIcons.published)
-                }
-            }
+            PostListOverlay(
+                searchedPosts: searchedPosts,
+                filteredPosts: filteredPosts,
+                searchTerm: searchTerm,
+                isDrafts: isDrafts
+            )
         }
     }
 }
@@ -85,16 +92,8 @@ private struct PopulatedListView: View {
     
     @Environment(PostListProperties.self) var postListProperties
     
-    var filteredPosts: [Post] {
-        if let platform = postListProperties.selectedMissingPlatform {
-            return posts.filter { !($0.socialMedias?.contains(platform) ?? false)}
-        } else {
-            return posts
-        }
-    }
-    
     var body: some View {
-        List(filteredPosts) { post in
+        List(posts) { post in
             PostItemView(post: post) { post in
                 postListProperties.postDetailPath.append(post)
             }
@@ -194,3 +193,28 @@ private struct PostListToolbar: ToolbarContent {
         }
     }
 }
+
+private struct PostListOverlay: View {
+    let searchedPosts: [Post]
+    let filteredPosts: [Post]
+    let searchTerm: String
+    let isDrafts: Bool
+    
+    var body: some View {
+        if searchedPosts.isEmpty && !searchTerm.isEmpty {
+            ContentUnavailableView.search
+        } else if searchedPosts.isEmpty {
+            ContentUnavailableView {
+                Label(
+                    isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts,
+                    systemImage: isDrafts ? UIIcons.posts : UIIcons.published
+                )
+            }
+        } else if filteredPosts.isEmpty {
+            ContentUnavailableView {
+                Label(UIStrings.noUnpublishedPosts, systemImage: UIIcons.published)
+            }
+        }
+    }
+}
+
