@@ -75,23 +75,21 @@ struct PostDetailView: View {
             SocialMediaChecklist()
                 .presentationDetents([.fraction(0.60)])
         }
-        .sheet(isPresented: $postProperties.showPostSheet, content: {
-            PostSheet(showPostSheet: $postProperties.showPostSheet) { didPost in
+        .sheet(isPresented: $postProperties.showPostSheet) {
+            PostSheet() { didPost in
                 if didPost {
                     dismiss()
                 }
-                
             }
-        })
-        .sheet(isPresented: $postProperties.showUnPostSheet, content: {
-            UnPostSheet(showUnPostSheet: $postProperties.showUnPostSheet) { didPost in
-                if didPost {
+        }
+        .sheet(isPresented: $postProperties.showUnPostSheet){
+            UnPostSheet() { didUnpost in
+                if didUnpost {
                     dismiss()
                 }
             }
             .presentationDetents([.fraction(0.50)])
-
-        })
+        }
         .environment(postProperties)
     }
 }
@@ -359,9 +357,7 @@ private struct UnPostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(PostProperties.self) var postProperties
-    @Binding var showUnPostSheet: Bool
     let didUnPost: (Bool) -> Void
-    
     
     var body: some View {
         NavigationStack {
@@ -373,7 +369,7 @@ private struct UnPostSheet: View {
                 HStack {
                     Button {
                         didUnPost(false)
-                        showUnPostSheet.toggle()
+                        postProperties.showUnPostSheet.toggle()
                     } label: {
                         Text(UIStrings.cancel)
                             .defaultButtonStyle()
@@ -384,8 +380,8 @@ private struct UnPostSheet: View {
                         postProperties.post.performance = nil
                         postProperties.post.socialMedias = nil
                         try? modelContext.save()
-                        dismiss()
                         didUnPost(true)
+                        dismiss()
                     } label: {
                         Text(UIStrings.confirm)
                             .defaultButtonStyle()
@@ -403,7 +399,6 @@ private struct PostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(PostProperties.self) var postProperties
     @State private var selectedMedia: SocialMedia = .facebook
-    @Binding var showPostSheet: Bool
     let didPost: (Bool) -> Void
     
     var body: some View {
@@ -431,7 +426,7 @@ private struct PostSheet: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         didPost(false)
-                        showPostSheet.toggle()
+                        postProperties.showPostSheet.toggle()
                     } label: {
                         Image(systemName: UIIcons.cancel)
                             .foregroundStyle(.text)
@@ -445,7 +440,7 @@ private struct PostSheet: View {
                         
                         postProperties.post.socialMedias = [selectedMedia]
                         
-                        showPostSheet.toggle()
+                        postProperties.showPostSheet.toggle()
                         didPost(true)
                     } label: {
                         Image(systemName: UIIcons.published)
