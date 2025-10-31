@@ -18,6 +18,52 @@ class ImageProperties {
     var errorMessage: String? = nil
 }
 
+struct StartingView: View {
+    @Environment(ImageProperties.self) var imageProperties
+    @Binding var title: String
+     
+    var body: some View {
+        @Bindable var imageProperties = imageProperties
+        
+        VStack {
+            TextField(UIStrings.title, text: $title, axis: .vertical)
+                .textFieldStyle(.plain)
+                .padding(10)
+                .bold()
+            
+            Rectangle()
+                .foregroundStyle(.text)
+                .frame(height: 2)
+                .padding(.horizontal, 10)
+            
+            // MARK: Image Picker
+            PhotosPicker(selection: $imageProperties.selectedImage, matching: .images, photoLibrary: .shared()) {
+                if imageProperties.uiImage != nil {
+                    ImagePreview()
+                } else {
+                    Text(UIStrings.uploadImage)
+                        .defaultUploadImageStyle()
+                }
+            }
+            .onChange(of: imageProperties.selectedImage) { oldValue, newValue in
+                Task {
+                    if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                        await MainActor.run {
+                            imageProperties.uiImage = UIImage(data: data)
+                            imageProperties.imageWasChanged = true
+                        }
+                    }
+                }
+            }
+            
+            if let error = imageProperties.errorMessage {
+                Text(error)
+                    .defaultMessageStyle()
+            }
+        }
+    }
+}
+
 struct ImagePreview: View {
     @Environment(ImageProperties.self) var imageProperties
     var body: some View {
