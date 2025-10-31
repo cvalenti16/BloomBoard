@@ -16,9 +16,7 @@ struct FormAddPost: View {
     var body: some View {
         NavigationStack {
             VStack {
-                
-            PostFieldsView(title: $postTitle)
-                
+                PostFieldsView(title: $postTitle)
             }
             .navigationTitle(UIStrings.createPost)
             .navigationBarTitleDisplayMode(.inline)
