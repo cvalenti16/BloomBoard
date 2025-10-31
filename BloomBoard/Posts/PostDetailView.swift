@@ -219,24 +219,14 @@ private struct UIImageView: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .padding()
                 
-                HStack {
-                    Button {
-                        postProperties.showEditPostSheet.toggle()
-                    } label: {
-                        Image(systemName: UIIcons.changeIcon)
-                            .defaultIconStyle()
-                    }
+                Button {
+                    UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                     
+                    postProperties.showFeedback(message: FeedbackMessages.downloadSucceeded)
                     
-                    Button {
-                        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                        
-                        postProperties.showFeedback(message: FeedbackMessages.downloadSucceeded)
-                        
-                    } label: {
-                        Image(systemName: UIIcons.download)
-                            .defaultIconStyle()
-                    }
+                } label: {
+                    Image(systemName: UIIcons.download)
+                        .defaultIconStyle()
                 }
             }
             .frame(maxHeight: 250)
