@@ -17,7 +17,7 @@ struct FormAddPost: View {
         NavigationStack {
             VStack {
                 
-            StartingView(title: $postTitle)
+            PostFieldsView(title: $postTitle)
                 
             }
             .navigationTitle(UIStrings.createPost)

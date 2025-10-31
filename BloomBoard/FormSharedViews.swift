@@ -18,7 +18,7 @@ class ImageProperties {
     var errorMessage: String? = nil
 }
 
-struct StartingView: View {
+struct PostFieldsView: View {
     @Environment(ImageProperties.self) var imageProperties
     @Binding var title: String
      

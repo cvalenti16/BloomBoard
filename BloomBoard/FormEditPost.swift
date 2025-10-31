@@ -27,7 +27,7 @@ struct FormEditPost: View {
     var body: some View {
         NavigationStack {
             VStack {
-                StartingView(title: $draftTitle)
+                PostFieldsView(title: $draftTitle)
             }
             .navigationTitle(UIStrings.editPost)
             .navigationBarTitleDisplayMode(.inline)
