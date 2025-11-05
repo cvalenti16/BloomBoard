@@ -50,9 +50,7 @@ struct PostListView: View {
                 .navigationDestination(for: Post.self) { post in
                     PostDetailView(post: post)
                 }
-                .postDeleteAlert(
-                    showDeleteAlert: $postListProperties.showDeleteAlert
-                )
+                .postDeleteAlert()
                 .navigationTitle(currentNavigationTitle)
                 .toolbar {
                     PostListToolbar(isDrafts: isDrafts)
@@ -114,11 +112,12 @@ private struct PopulatedListView: View {
 private struct PostDeleteAlert: ViewModifier {
     @Environment(\.modelContext) private var modelContext
     @Environment(PostListProperties.self) private var postListProperties
-    @Binding var showDeleteAlert: Bool
     
     
     func body(content: Content) -> some View {
-        content.alert(UIStrings.deletePost, isPresented: $showDeleteAlert) {
+        @Bindable var postListProperties = postListProperties
+
+        content.alert(UIStrings.deletePost, isPresented: $postListProperties.showDeleteAlert) {
             Button(UIStrings.delete, role: .destructive) {
                 if let post = postListProperties.postToDelete {
                     modelContext.delete(post)
@@ -133,8 +132,8 @@ private struct PostDeleteAlert: ViewModifier {
 }
 
 private extension View {
-    func postDeleteAlert(showDeleteAlert: Binding<Bool>) -> some View {
-        self.modifier(PostDeleteAlert(showDeleteAlert: showDeleteAlert))
+    func postDeleteAlert() -> some View {
+        self.modifier(PostDeleteAlert())
     }
 }
 
