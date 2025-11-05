@@ -9,17 +9,16 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 
-struct FormEditPost: View {
-    @Bindable var post: Post
-    
+struct PostEditorView: View {
     @State private var imageProperties = ImageProperties()
-    @State private var draftTitle: String
-    
-    init(post: Post) {
+    @State private var title: String
+    @State private var post: Post?
+   
+    init(post: Post? = nil) {
+        _title = State(initialValue: post?.title ?? "")
         self.post = post
-        _draftTitle = State(initialValue: post.title)
         
-        if let data = post.image {
+        if let data = post?.image {
             imageProperties.uiImage = UIImage(data: data)
         }
     }
@@ -27,12 +26,12 @@ struct FormEditPost: View {
     var body: some View {
         NavigationStack {
             VStack {
-                PostFieldsView(title: $draftTitle)
+                PostFieldsView(title: $title)
             }
             .navigationTitle(UIStrings.editPost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                    PostSheetToolbar(postTitle: draftTitle, post: post, isEditing: true)
+                    PostSheetToolbar(postTitle: title, post: post)
             }
         }
         .environment(imageProperties)
@@ -40,6 +39,6 @@ struct FormEditPost: View {
 }
 
 #Preview {
-    FormEditPost(post: .testPost)
+    PostEditorView(post: .testPost)
         .preferredColorScheme(.dark)
 }

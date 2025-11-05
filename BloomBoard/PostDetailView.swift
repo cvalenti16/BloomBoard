@@ -68,7 +68,7 @@ struct PostDetailView: View {
             .presentationDetents([.fraction(0.75)])
         }
         .sheet(isPresented: $postProperties.showEditPostSheet) {
-            FormEditPost(post: postProperties.post)
+            PostEditorView(post: postProperties.post)
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postProperties.showSocialMediaSheet) {

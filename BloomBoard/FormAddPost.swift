@@ -21,7 +21,7 @@ struct FormAddPost: View {
             .navigationTitle(UIStrings.createPost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                PostSheetToolbar(postTitle: postTitle, isEditing: false)
+                PostSheetToolbar(postTitle: postTitle)
             }
         }
         .environment(imageProperties)

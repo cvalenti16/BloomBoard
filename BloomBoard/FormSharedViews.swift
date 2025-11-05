@@ -102,10 +102,17 @@ struct PostSheetToolbar: ToolbarContent {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(ImageProperties.self) var imageProperties
-    
-    var postTitle: String
     var post: Post?
-    let isEditing: Bool
+    var postTitle: String
+    
+    init(postTitle: String,post: Post? = nil) {
+        self.postTitle = postTitle
+        self.post = post
+    }
+    
+    var isEditing: Bool {
+        return post != nil
+    }
     
     var body: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
@@ -126,8 +133,10 @@ struct PostSheetToolbar: ToolbarContent {
                 
                 if isEditing {
                     updatePost()
+                    print("This was called")
                 } else {
                     createPost()
+                    print("This was called 2")
                 }
                 
             } label: {
@@ -150,6 +159,7 @@ extension PostSheetToolbar {
         
         do {
             try modelContext.save()
+
             dismiss()
         } catch {
             imageProperties.errorMessage = FeedbackMessages.savedFailed
