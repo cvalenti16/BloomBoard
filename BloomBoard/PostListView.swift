@@ -62,7 +62,7 @@ struct PostListView: View {
         .environment(postListProperties)
         .searchable(text: $searchTerm)
         .sheet(isPresented: $postListProperties.showAddSheet) {
-            FormAddPost()
+            PostEditorView()
                 .presentationDetents([.fraction(0.60)])
         }
         .overlay {

@@ -102,16 +102,12 @@ struct PostSheetToolbar: ToolbarContent {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(ImageProperties.self) var imageProperties
+    
     var post: Post?
     var postTitle: String
     
-    init(postTitle: String,post: Post? = nil) {
-        self.postTitle = postTitle
-        self.post = post
-    }
-    
     var isEditing: Bool {
-        return post != nil
+        post != nil
     }
     
     var body: some ToolbarContent {
@@ -133,10 +129,8 @@ struct PostSheetToolbar: ToolbarContent {
                 
                 if isEditing {
                     updatePost()
-                    print("This was called")
                 } else {
                     createPost()
-                    print("This was called 2")
                 }
                 
             } label: {
