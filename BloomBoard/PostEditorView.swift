@@ -14,6 +14,10 @@ struct PostEditorView: View {
     @State private var title: String
     let post: Post?
    
+    var isEditing: Bool {
+        post != nil
+    }
+    
     init(post: Post? = nil) {
         self.post = post
         _title = State(initialValue: post?.title ?? "")
@@ -32,10 +36,10 @@ struct PostEditorView: View {
             VStack {
                 PostFieldsView(title: $title)
             }
-            .navigationTitle(UIStrings.editPost)
+            .navigationTitle(isEditing ? UIStrings.editPost : UIStrings.createPost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                PostSheetToolbar(post: post, postTitle: title)
+                PostSheetToolbar(post: post, postTitle: title, isEditing: isEditing)
             }
         }
         .environment(imageState)
@@ -139,9 +143,7 @@ struct PostSheetToolbar: ToolbarContent {
     var post: Post?
     var postTitle: String
     
-    var isEditing: Bool {
-        post != nil
-    }
+    var isEditing: Bool
     
     var body: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
