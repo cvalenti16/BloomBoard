@@ -10,17 +10,21 @@ import SwiftData
 import PhotosUI
 
 struct PostEditorView: View {
-    @State private var properties = Properties()
+    @State private var imageState: ImageState
     @State private var title: String
-    var post: Post?
+    let post: Post?
    
     init(post: Post? = nil) {
-        _title = State(initialValue: post?.title ?? "")
         self.post = post
+        _title = State(initialValue: post?.title ?? "")
+        
+        let imageState = ImageState()
         
         if let data = post?.image {
-            properties.uiImage = UIImage(data: data)
+            imageState.uiImage = UIImage(data: data)
         }
+        
+        _imageState = State(initialValue: imageState)
     }
     
     var body: some View {
@@ -34,12 +38,12 @@ struct PostEditorView: View {
                 PostSheetToolbar(post: post, postTitle: title)
             }
         }
-        .environment(properties)
+        .environment(imageState)
     }
 }
 
 @Observable
-class Properties {
+class ImageState {
     var selectedImage: PhotosPickerItem? = nil
     var uiImage: UIImage? = nil
     var imageWasChanged = false
@@ -47,11 +51,11 @@ class Properties {
 }
 
 struct PostFieldsView: View {
-    @Environment(Properties.self) var properties
+    @Environment(ImageState.self) var imageState
     @Binding var title: String
      
     var body: some View {
-        @Bindable var properties = properties
+        @Bindable var imageState = imageState
         
         VStack {
             TextField(UIStrings.title, text: $title, axis: .vertical)
@@ -65,26 +69,26 @@ struct PostFieldsView: View {
                 .padding(.horizontal, 10)
             
             // MARK: Image Picker
-            PhotosPicker(selection: $properties.selectedImage, matching: .images, photoLibrary: .shared()) {
-                if properties.uiImage != nil {
+            PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
+                if imageState.uiImage != nil {
                     ImagePreview()
                 } else {
                     Text(UIStrings.uploadImage)
                         .defaultUploadImageStyle()
                 }
             }
-            .onChange(of: properties.selectedImage) { oldValue, newValue in
+            .onChange(of: imageState.selectedImage) { oldValue, newValue in
                 Task {
                     if let data = try? await newValue?.loadTransferable(type: Data.self) {
                         await MainActor.run {
-                            properties.uiImage = UIImage(data: data)
-                            properties.imageWasChanged = true
+                            imageState.uiImage = UIImage(data: data)
+                            imageState.imageWasChanged = true
                         }
                     }
                 }
             }
             
-            if let error = properties.errorMessage {
+            if let error = imageState.errorMessage {
                 Text(error)
                     .defaultMessageStyle()
             }
@@ -93,10 +97,10 @@ struct PostFieldsView: View {
 }
 
 struct ImagePreview: View {
-    @Environment(Properties.self) var properties
+    @Environment(ImageState.self) var imageState
     
     var body: some View {
-        if let image = properties.uiImage {
+        if let image = imageState.uiImage {
             ZStack {
                 Image(uiImage: image)
                     .resizable()
@@ -110,9 +114,9 @@ struct ImagePreview: View {
                         .defaultIconStyle()
                     
                     Button {
-                        properties.selectedImage = nil
-                        properties.uiImage = nil
-                        properties.imageWasChanged = true
+                        imageState.selectedImage = nil
+                        imageState.uiImage = nil
+                        imageState.imageWasChanged = true
                     } label: {
                         Image(systemName: UIIcons.trashIcon)
                             .defaultIconStyle()
@@ -130,7 +134,7 @@ struct ImagePreview: View {
 struct PostSheetToolbar: ToolbarContent {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @Environment(Properties.self) var properties
+    @Environment(ImageState.self) var imageState
     
     var post: Post?
     var postTitle: String
@@ -152,7 +156,7 @@ struct PostSheetToolbar: ToolbarContent {
         ToolbarItem(placement: .confirmationAction) {
             Button {
                 guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                    properties.errorMessage = FeedbackMessages.emptyTitle
+                    imageState.errorMessage = FeedbackMessages.emptyTitle
                     return
                 }
                 
@@ -176,8 +180,8 @@ extension PostSheetToolbar {
     private func updatePost() {
         post?.title = postTitle
         
-        if properties.imageWasChanged {
-            post?.image = properties.uiImage?.jpegData(compressionQuality: 0.8)
+        if imageState.imageWasChanged {
+            post?.image = imageState.uiImage?.jpegData(compressionQuality: 0.8)
         }
         
         do {
@@ -185,14 +189,14 @@ extension PostSheetToolbar {
 
             dismiss()
         } catch {
-            properties.errorMessage = FeedbackMessages.savedFailed
+            imageState.errorMessage = FeedbackMessages.savedFailed
         }
     }
     
     private func createPost() {
         let newPost = Post(title: postTitle)
         
-        if let imageData = properties.uiImage?.jpegData(compressionQuality: 0.8) {
+        if let imageData = imageState.uiImage?.jpegData(compressionQuality: 0.8) {
             newPost.image = imageData
         }
         
@@ -201,7 +205,7 @@ extension PostSheetToolbar {
             try modelContext.save()
             dismiss()
         } catch {
-            properties.errorMessage = FeedbackMessages.savedFailed
+            imageState.errorMessage = FeedbackMessages.savedFailed
         }
     }
 }
