@@ -55,7 +55,7 @@ struct PostListView: View {
                 )
                 .navigationTitle(currentNavigationTitle)
                 .toolbar {
-                    PostListToolbar(selectMissingPlatfrom: $postListProperties.selectedMissingPlatform, isDrafts: isDrafts)
+                    PostListToolbar(isDrafts: isDrafts)
                 }
         }
         .tint(.text)
@@ -143,11 +143,11 @@ private struct PostListToolbar: ToolbarContent {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
     @Environment(PostListProperties.self) var postListProperties
-    @Binding var selectMissingPlatfrom: SocialMedia?
     
     let isDrafts: Bool
     
     var body: some ToolbarContent {
+        @Bindable var postListProperties = postListProperties
         ToolbarItem(placement: .topBarLeading) {
             Button {
                 switch selectedAppearance {
@@ -175,15 +175,15 @@ private struct PostListToolbar: ToolbarContent {
                 Menu {
                     Text(UIStrings.notPostedOn)
                     
-                    Picker(UIStrings.notPostedOn, selection: $selectMissingPlatfrom) {
+                    Picker(UIStrings.notPostedOn, selection: $postListProperties.selectedMissingPlatform) {
                         ForEach(SocialMedia.allCases.filter{ $0 != .none}) { platform in
                             Text(platform.rawValue).tag(platform as SocialMedia?)
                         }
                     }
                     
-                    if self.selectMissingPlatfrom != nil {
+                    if postListProperties.selectedMissingPlatform != nil {
                         Button(UIStrings.clear) {
-                            selectMissingPlatfrom = nil
+                            postListProperties.selectedMissingPlatform = nil
                         }
                     }
                 } label: {
