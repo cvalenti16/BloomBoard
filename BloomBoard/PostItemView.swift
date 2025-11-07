@@ -10,8 +10,11 @@ import SwiftUI
 struct PostItemView: View {
     let post: Post
     let onSelect: (Post) -> Void
+    var hasImage: Bool {
+        post.image != nil
+    }
+    
     var body: some View {
-        
         VStack (alignment: .leading) {
             Button {
                 onSelect(post)
@@ -27,30 +30,28 @@ struct PostItemView: View {
             HStack {
                 if let postedDate = post.postDate {
                     Text("\(UIStrings.posted)\(postedDate, style: .date)")
-                        .foregroundStyle(.secondary)
                 } else {
                     Text("\(UIStrings.created)\(post.creationDate, style: .date)")
-                        .foregroundStyle(.secondary)
                 }
                 
-                Image(systemName: post.image == nil ? "text.document.fill" : "photo")
-                    .foregroundStyle(.secondary)
+                Image(systemName: hasImage ? "photo" : "text.document.fill")
             }
-            .font(.system(size: 14))
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
             
             
             if let medias = post.socialMedias, !medias.isEmpty {
                 let sortedMedias = medias.map { $0.shortName}.sorted()
                 
                 Text("\(UIStrings.platforms)\(sortedMedias.joined(separator: ", "))")
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .font(.system(size: 14))
             }
             
             if let postPerformance = post.performance {
                 Text((postPerformance.rawValue))
                     .padding(5)
-                    .background(post.performance?.color.opacity(0.5))
+                    .background(postPerformance.color.opacity(0.5))
                     .clipShape(.rect(cornerRadius: 10))
             }
         }
