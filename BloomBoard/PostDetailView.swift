@@ -129,7 +129,7 @@ private struct PostDateView: View {
             if let postDate = postProperties.post.postDate {
                 Text("\(UIStrings.posted)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
-                    .font(.system(size: 14))
+                    .font(.subheadline)
                 
                 
                 Picker(UIStrings.performance, selection: $postPerformance) {
