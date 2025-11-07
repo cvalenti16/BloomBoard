@@ -11,14 +11,14 @@ import SwiftData
 
 struct ContentView: View {
     @Query(
-        filter: #Predicate<Post> { $0.postDate == nil }
-        ,sort: [
+        filter: #Predicate<Post> { $0.postDate == nil },
+        sort: [
             SortDescriptor(\Post.creationDate)
         ]) var draftPosts: [Post]
     
     @Query(
-        filter: #Predicate<Post> { $0.postDate != nil }
-        ,sort: [
+        filter: #Predicate<Post> { $0.postDate != nil },
+        sort: [
             SortDescriptor(\Post.postDate, order: .reverse)
         ]) var publishedPosts: [Post]
         
