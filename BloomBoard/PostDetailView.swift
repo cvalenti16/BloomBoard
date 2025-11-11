@@ -8,9 +8,9 @@ import SwiftUI
 
 // MARK: PostDetailView
 struct PostDetailView: View {
-    @State private var postProperties: PostProperties
-    @State private var postPerformance: Performance
     @Environment(\.dismiss) var dismiss
+    @State private var postState: PostState
+    @State private var postPerformance: Performance
     let post: Post
     
     var isPosted: Bool {
@@ -24,7 +24,7 @@ struct PostDetailView: View {
     
     init(post: Post) {
         self.post = post
-        _postProperties = State(initialValue: PostProperties())
+        _postState = State(initialValue: PostState())
         _postPerformance = State(initialValue: post.performance ?? Performance.unrated)
     }
     
@@ -32,30 +32,25 @@ struct PostDetailView: View {
         // MARK: Main View
         VStack{
             Text(post.title)
-                .foregroundStyle(.text)
-                .padding(5)
+                .font(.title3)
                 .bold()
             
-            PostDateView(
-                postPerformance: $postPerformance, post: post,
-            )
+            PostDateView(postPerformance: $postPerformance, post: post)
             
-            UIImageView(
-                loadedImage: loadedImage,
-            )
+            UIImageView(loadedImage: loadedImage)
             
             if(isPosted) {
                 SocialMediaSummary(post: post)
             }
             
-            PostUnPostButton(
+            PostButton(
                 isPosted: isPosted
             )
             
             
-            Text(postProperties.userFeedback ?? "")
+            Text(postState.userFeedback ?? "")
                 .defaultMessageStyle()
-                .animation(.easeInOut, value: postProperties.userFeedback)
+                .animation(.easeInOut, value: postState.userFeedback)
             
         }
         .toolbarBackground(.visible, for: .navigationBar)
@@ -63,28 +58,28 @@ struct PostDetailView: View {
             PostDetailToolbar(post: post)
         }
         //MARK: Sheets
-        .sheet(isPresented: $postProperties.showPostDateSheet) {
-            SelectPostDate(initialDate: postProperties.selectedPostDate) { date in
-                postProperties.selectedPostDate = date
+        .sheet(isPresented: $postState.showPostDateSheet) {
+            SelectPostDate(initialDate: postState.selectedPostDate) { date in
+                postState.selectedPostDate = date
             }
             .presentationDetents([.fraction(0.75)])
         }
-        .sheet(isPresented: $postProperties.showEditPostSheet) {
+        .sheet(isPresented: $postState.showEditPostSheet) {
             PostEditorView(post: post)
                 .presentationDetents([.fraction(0.60)])
         }
-        .sheet(isPresented: $postProperties.showSocialMediaSheet) {
+        .sheet(isPresented: $postState.showSocialMediaSheet) {
             SocialMediaChecklist(post: post)
                 .presentationDetents([.fraction(0.60)])
         }
-        .sheet(isPresented: $postProperties.showPostSheet) {
+        .sheet(isPresented: $postState.showPostSheet) {
             PostSheet(post: post) { didPost in
                 if didPost {
                     dismiss()
                 }
             }
         }
-        .sheet(isPresented: $postProperties.showUnPostSheet){
+        .sheet(isPresented: $postState.showUnPostSheet){
             UnPostSheet(post: post) { didUnpost in
                 if didUnpost {
                     dismiss()
@@ -92,13 +87,13 @@ struct PostDetailView: View {
             }
             .presentationDetents([.fraction(0.50)])
         }
-        .environment(postProperties)
+        .environment(postState)
     }
 }
 
 // MARK: Post Properties
 @Observable
-class PostProperties {
+class PostState {
     var showEditPostSheet = false
     var showPostDateSheet = false
     var showUnPostSheet = false
@@ -118,7 +113,7 @@ class PostProperties {
 
 // MARK: Post Date View
 private struct PostDateView: View {
-    @Environment(PostProperties.self) var postProperties
+    @Environment(PostState.self) var postState
     @Binding var postPerformance: Performance
     
     let post: Post
@@ -129,6 +124,7 @@ private struct PostDateView: View {
                 Text("\(UIStrings.posted)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
                     .font(.subheadline)
+                    .padding()
                 
                 
                 Picker(UIStrings.performance, selection: $postPerformance) {
@@ -143,9 +139,9 @@ private struct PostDateView: View {
                 }
             } else {
                 Button {
-                    postProperties.showPostDateSheet.toggle()
+                    postState.showPostDateSheet.toggle()
                 } label : {
-                    Label("\(UIStrings.postDate)\(postProperties.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
+                    Label("\(UIStrings.postDate)\(postState.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
                         .foregroundStyle(.text)
                         .padding()
                 }
@@ -206,7 +202,7 @@ struct SelectPostDate: View {
 
 //MARK: UI Image View
 private struct UIImageView: View {
-    @Environment(PostProperties.self) var postProperties
+    @Environment(PostState.self) var postState
     var loadedImage: UIImage?
     
     var body: some View {
@@ -221,7 +217,7 @@ private struct UIImageView: View {
                 Button {
                     UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                     
-                    postProperties.showFeedback(message: FeedbackMessages.downloadSucceeded)
+                    postState.showFeedback(message: FeedbackMessages.downloadSucceeded)
                     
                 } label: {
                     Image(systemName: UIIcons.download)
@@ -231,7 +227,7 @@ private struct UIImageView: View {
             .frame(maxHeight: 250)
         } else {
             Button {
-                postProperties.showEditPostSheet.toggle()
+                postState.showEditPostSheet.toggle()
             } label: {
                 Image(systemName: UIIcons.upload)
                     .foregroundStyle(.gray)
@@ -247,15 +243,14 @@ private struct UIImageView: View {
 
 // MARK: Social Media Summary
 private struct SocialMediaSummary: View {
-    @Environment(PostProperties.self) var postProperties
+    @Environment(PostState.self) var postState
     let post: Post
     
     var body: some View {
         Button {
-            postProperties.showSocialMediaSheet.toggle()
+            postState.showSocialMediaSheet.toggle()
         } label: {
             Label(summaryText, systemImage: UIIcons.socialMedia)
-                .font(.system(size: 14))
                 .padding(.horizontal,10)
         }
     }
@@ -275,7 +270,6 @@ private struct SocialMediaSummary: View {
 private struct SocialMediaChecklist: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
-    @Environment(PostProperties.self) var postProperties
     let post: Post
 
     
@@ -324,17 +318,17 @@ private struct SocialMediaChecklist: View {
 }
 
 // MARK: Post/UnPost Button
-private struct PostUnPostButton: View {
-    @Environment(PostProperties.self) var postProperties
+private struct PostButton: View {
+    @Environment(PostState.self) var postState
     
     let isPosted: Bool
     
     var body: some View {
         Button {
             if isPosted {
-                postProperties.showUnPostSheet.toggle()
+                postState.showUnPostSheet.toggle()
             } else {
-                postProperties.showPostSheet.toggle()
+                postState.showPostSheet.toggle()
             }
             
         } label: {
@@ -348,7 +342,7 @@ private struct PostUnPostButton: View {
 private struct UnPostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Environment(PostProperties.self) var postProperties
+    @Environment(PostState.self) var postState
    
     let post: Post
     let didUnPost: (Bool) -> Void
@@ -363,7 +357,7 @@ private struct UnPostSheet: View {
                 HStack {
                     Button {
                         didUnPost(false)
-                        postProperties.showUnPostSheet.toggle()
+                        postState.showUnPostSheet.toggle()
                     } label: {
                         Text(UIStrings.cancel)
                             .defaultButtonStyle()
@@ -391,7 +385,7 @@ private struct UnPostSheet: View {
 // MARK: Post Sheet
 private struct PostSheet: View {
     @Environment(\.modelContext) var modelContext
-    @Environment(PostProperties.self) var postProperties
+    @Environment(PostState.self) var postState
     @State private var selectedMedia: SocialMedia = .facebook
     let post: Post
     let didPost: (Bool) -> Void
@@ -421,7 +415,7 @@ private struct PostSheet: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         didPost(false)
-                        postProperties.showPostSheet.toggle()
+                        postState.showPostSheet.toggle()
                     } label: {
                         Image(systemName: UIIcons.cancel)
                             .foregroundStyle(.text)
@@ -430,12 +424,12 @@ private struct PostSheet: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        post.postDate = postProperties.selectedPostDate
+                        post.postDate = postState.selectedPostDate
                         post.performance = .unrated
                         
                         post.socialMedias = [selectedMedia]
                         
-                        postProperties.showPostSheet.toggle()
+                        postState.showPostSheet.toggle()
                         didPost(true)
                     } label: {
                         Image(systemName: UIIcons.published)
@@ -449,7 +443,7 @@ private struct PostSheet: View {
 
 //MARK: Toolbar
 private struct PostDetailToolbar: ToolbarContent {
-    @Environment(PostProperties.self) var postProperties
+    @Environment(PostState.self) var postState
     
     let post: Post
     
@@ -457,7 +451,7 @@ private struct PostDetailToolbar: ToolbarContent {
         ToolbarItem {
             Button(UIStrings.copy, systemImage: UIIcons.copy) {
                 UIPasteboard.general.string = post.title
-                postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
+                postState.showFeedback(message: FeedbackMessages.copySucceeded)
             }
         }
         
@@ -467,7 +461,7 @@ private struct PostDetailToolbar: ToolbarContent {
         
         ToolbarItem {
             Button(UIStrings.edit, systemImage: UIIcons.edit) {
-                postProperties.showEditPostSheet.toggle()
+                postState.showEditPostSheet.toggle()
                 
             }
         }

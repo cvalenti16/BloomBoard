@@ -48,7 +48,7 @@ struct UIStrings {
     static let draftPosts = "Draft Posts"
     static let performance = "Performance"
     static let enterTitle = "Enter Title"
-    static let postedOn = "Posted On: "
+    static let postedOn = "Posted on: "
     static let selectPlatforms = "Select Platforms"
     static let platforms = "Platforms: "
     static let confirm = "Confirm"
