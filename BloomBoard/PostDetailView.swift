@@ -11,31 +11,33 @@ struct PostDetailView: View {
     @State private var postProperties: PostProperties
     @State private var postPerformance: Performance
     @Environment(\.dismiss) var dismiss
+    let post: Post
     
     var isPosted: Bool {
-        return postProperties.post.postDate != nil
+        return post.postDate != nil
     }
     
     var loadedImage: UIImage? {
-        guard let imageData = postProperties.post.image else { return nil }
+        guard let imageData = post.image else { return nil }
         return UIImage(data: imageData)
     }
     
     init(post: Post) {
-        _postProperties = State(initialValue: PostProperties(post: post))
+        self.post = post
+        _postProperties = State(initialValue: PostProperties())
         _postPerformance = State(initialValue: post.performance ?? Performance.unrated)
     }
     
     var body: some View {
         // MARK: Main View
         VStack{
-            Text(postProperties.post.title)
+            Text(post.title)
                 .foregroundStyle(.text)
                 .padding(5)
                 .bold()
             
             PostDateView(
-                postPerformance: $postPerformance,
+                postPerformance: $postPerformance, post: post,
             )
             
             UIImageView(
@@ -43,7 +45,7 @@ struct PostDetailView: View {
             )
             
             if(isPosted) {
-                SocialMediaSummary()
+                SocialMediaSummary(post: post)
             }
             
             PostUnPostButton(
@@ -58,7 +60,7 @@ struct PostDetailView: View {
         }
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
-            PostDetailToolbar()
+            PostDetailToolbar(post: post)
         }
         //MARK: Sheets
         .sheet(isPresented: $postProperties.showPostDateSheet) {
@@ -68,22 +70,22 @@ struct PostDetailView: View {
             .presentationDetents([.fraction(0.75)])
         }
         .sheet(isPresented: $postProperties.showEditPostSheet) {
-            PostEditorView(post: postProperties.post)
+            PostEditorView(post: post)
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postProperties.showSocialMediaSheet) {
-            SocialMediaChecklist()
+            SocialMediaChecklist(post: post)
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postProperties.showPostSheet) {
-            PostSheet() { didPost in
+            PostSheet(post: post) { didPost in
                 if didPost {
                     dismiss()
                 }
             }
         }
         .sheet(isPresented: $postProperties.showUnPostSheet){
-            UnPostSheet() { didUnpost in
+            UnPostSheet(post: post) { didUnpost in
                 if didUnpost {
                     dismiss()
                 }
@@ -97,7 +99,6 @@ struct PostDetailView: View {
 // MARK: Post Properties
 @Observable
 class PostProperties {
-    var post: Post
     var showEditPostSheet = false
     var showPostDateSheet = false
     var showUnPostSheet = false
@@ -105,10 +106,6 @@ class PostProperties {
     var showSocialMediaSheet = false
     var selectedPostDate = Date()
     var userFeedback: String? = nil
-    
-    init(post: Post) {
-        self.post = post
-    }
     
     func showFeedback(message: String, duration: TimeInterval = 1) {
         userFeedback = message
@@ -124,9 +121,11 @@ private struct PostDateView: View {
     @Environment(PostProperties.self) var postProperties
     @Binding var postPerformance: Performance
     
+    let post: Post
+    
     var body: some View {
         VStack {
-            if let postDate = postProperties.post.postDate {
+            if let postDate = post.postDate {
                 Text("\(UIStrings.posted)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
                     .font(.subheadline)
@@ -140,7 +139,7 @@ private struct PostDateView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal, 10)
                 .onChange(of: postPerformance) { _, newValue in
-                    postProperties.post.performance = newValue
+                    post.performance = newValue
                 }
             } else {
                 Button {
@@ -249,6 +248,7 @@ private struct UIImageView: View {
 // MARK: Social Media Summary
 private struct SocialMediaSummary: View {
     @Environment(PostProperties.self) var postProperties
+    let post: Post
     
     var body: some View {
         Button {
@@ -261,7 +261,7 @@ private struct SocialMediaSummary: View {
     }
     
     private var summaryText: String {
-        guard let medias = postProperties.post.socialMedias,
+        guard let medias = post.socialMedias,
               !medias.isEmpty else {
             return UIStrings.selectPlatforms
         }
@@ -276,6 +276,8 @@ private struct SocialMediaChecklist: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     @Environment(PostProperties.self) var postProperties
+    let post: Post
+
     
     var body: some View {
         NavigationStack {
@@ -283,7 +285,7 @@ private struct SocialMediaChecklist: View {
                 ForEach(SocialMedia.allCases.filter{$0 != .none}) { platform in
                     Toggle(platform.rawValue, isOn: Binding(
                         get: {
-                            postProperties.post.socialMedias?.contains(platform) ?? false
+                            post.socialMedias?.contains(platform) ?? false
                         },
                         set: { isOn in
                             updateSocialMedias(for: platform, isOn: isOn)
@@ -306,7 +308,7 @@ private struct SocialMediaChecklist: View {
     }
     
     private func updateSocialMedias(for platform: SocialMedia, isOn: Bool) {
-        var current = postProperties.post.socialMedias ?? []
+        var current = post.socialMedias ?? []
         
         if isOn {
             if !current.contains(platform) {
@@ -316,7 +318,7 @@ private struct SocialMediaChecklist: View {
             current.removeAll { $0 == platform }
         }
         
-        postProperties.post.socialMedias = current
+        post.socialMedias = current
         try? modelContext.save()
     }
 }
@@ -347,6 +349,8 @@ private struct UnPostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(PostProperties.self) var postProperties
+   
+    let post: Post
     let didUnPost: (Bool) -> Void
     
     var body: some View {
@@ -366,9 +370,9 @@ private struct UnPostSheet: View {
                     }
                     
                     Button {
-                        postProperties.post.postDate = nil
-                        postProperties.post.performance = nil
-                        postProperties.post.socialMedias = nil
+                        post.postDate = nil
+                        post.performance = nil
+                        post.socialMedias = nil
                         try? modelContext.save()
                         didUnPost(true)
                         dismiss()
@@ -389,6 +393,7 @@ private struct PostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(PostProperties.self) var postProperties
     @State private var selectedMedia: SocialMedia = .facebook
+    let post: Post
     let didPost: (Bool) -> Void
     
     var body: some View {
@@ -425,10 +430,10 @@ private struct PostSheet: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        postProperties.post.postDate = postProperties.selectedPostDate
-                        postProperties.post.performance = .unrated
+                        post.postDate = postProperties.selectedPostDate
+                        post.performance = .unrated
                         
-                        postProperties.post.socialMedias = [selectedMedia]
+                        post.socialMedias = [selectedMedia]
                         
                         postProperties.showPostSheet.toggle()
                         didPost(true)
@@ -446,10 +451,12 @@ private struct PostSheet: View {
 private struct PostDetailToolbar: ToolbarContent {
     @Environment(PostProperties.self) var postProperties
     
+    let post: Post
+    
     var body: some ToolbarContent {
         ToolbarItem {
             Button(UIStrings.copy, systemImage: UIIcons.copy) {
-                UIPasteboard.general.string = postProperties.post.title
+                UIPasteboard.general.string = post.title
                 postProperties.showFeedback(message: FeedbackMessages.copySucceeded)
             }
         }
