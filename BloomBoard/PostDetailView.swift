@@ -131,7 +131,6 @@ private struct PostDateView: View {
             } else {
                 HStack {
                     Image(systemName: UIIcons.calendar)
-                    
                     DatePicker(
                         "",
                         selection: $postState.selectedPostDate,
@@ -168,14 +167,14 @@ private struct UIImageView: View {
                         .defaultIconStyle()
                 }
             }
-            .frame(maxHeight: 250)
+            .frame(maxHeight: 220)
         } else {
             Button {
                 postState.showEditPostSheet.toggle()
             } label: {
                 Image(systemName: UIIcons.upload)
                     .foregroundStyle(.gray)
-                    .frame(maxWidth: .infinity, maxHeight: 250)
+                    .frame(maxWidth: .infinity, maxHeight: 220)
                     .background(.ultraThinMaterial)
                     .clipShape(.rect(cornerRadius: 10))
                     .padding(10)
