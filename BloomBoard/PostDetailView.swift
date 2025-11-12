@@ -6,7 +6,6 @@
 //
 import SwiftUI
 
-// MARK: PostDetailView
 struct PostDetailView: View {
     @Environment(\.dismiss) var dismiss
     @State private var postState: PostState
@@ -29,7 +28,6 @@ struct PostDetailView: View {
     }
     
     var body: some View {
-        // MARK: Main View
         VStack{
             Text(post.title)
                 .font(.title3)
@@ -58,12 +56,6 @@ struct PostDetailView: View {
             PostDetailToolbar(post: post)
         }
         //MARK: Sheets
-        .sheet(isPresented: $postState.showPostDateSheet) {
-            SelectPostDate(initialDate: postState.selectedPostDate) { date in
-                postState.selectedPostDate = date
-            }
-            .presentationDetents([.fraction(0.75)])
-        }
         .sheet(isPresented: $postState.showEditPostSheet) {
             PostEditorView(post: post)
                 .presentationDetents([.fraction(0.60)])
@@ -95,7 +87,6 @@ struct PostDetailView: View {
 @Observable
 class PostState {
     var showEditPostSheet = false
-    var showPostDateSheet = false
     var showUnPostSheet = false
     var showPostSheet = false
     var showSocialMediaSheet = false
@@ -119,13 +110,14 @@ private struct PostDateView: View {
     let post: Post
     
     var body: some View {
+        @Bindable var postState = postState
+        
         VStack {
             if let postDate = post.postDate {
                 Text("\(UIStrings.posted)\(postDate, style: .date)")
                     .foregroundStyle(.secondary)
                     .font(.subheadline)
                     .padding()
-                
                 
                 Picker(UIStrings.performance, selection: $postPerformance) {
                     ForEach(Performance.allCases, id: \.self) { performance in
@@ -138,67 +130,20 @@ private struct PostDateView: View {
                     post.performance = newValue
                 }
             } else {
-                Button {
-                    postState.showPostDateSheet.toggle()
-                } label : {
-                    Label("\(UIStrings.postDate)\(postState.selectedPostDate, style: .date)", systemImage: UIIcons.calendar)
-                        .foregroundStyle(.text)
-                        .padding()
-                }
-            }
-        }
-    }
-}
-
-// MARK: Select Post Date
-struct SelectPostDate: View {
-    var initialDate: Date
-    let onSave: (Date) -> Void
-    
-    @State private var selectedDate: Date
-    @Environment(\.dismiss) var dismiss
-    
-    init(initialDate: Date, onSave: @escaping (Date) -> Void) {
-        self.initialDate = initialDate
-        self.onSave = onSave
-        _selectedDate = State(initialValue: initialDate)
-    }
-    
-    var body: some View {
-        NavigationStack {
-            VStack {
-                DatePicker(
-                    UIStrings.posted,
-                    selection: $selectedDate,
-                    displayedComponents: .date
-                )
-                .datePickerStyle(.graphical)
-            }
-            .navigationTitle(UIStrings.selectPostDate)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: UIIcons.cancel)
-                    }
+                HStack {
+                    Image(systemName: "calendar")
                     
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        onSave(selectedDate)
-                        dismiss()
-                    } label: {
-                        Image(systemName: UIIcons.save)
-                    }
+                    DatePicker(
+                        "",
+                        selection: $postState.selectedPostDate,
+                        displayedComponents: .date
+                    )
+                    .labelsHidden()
                 }
             }
         }
     }
 }
-
 
 //MARK: UI Image View
 private struct UIImageView: View {
@@ -271,7 +216,7 @@ private struct SocialMediaChecklist: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     let post: Post
-
+    
     
     var body: some View {
         NavigationStack {
@@ -343,7 +288,7 @@ private struct UnPostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(PostState.self) var postState
-   
+    
     let post: Post
     let didUnPost: (Bool) -> Void
     
@@ -375,7 +320,7 @@ private struct UnPostSheet: View {
                             .defaultButtonStyle()
                     }
                 }
-            
+                
             }
         }
     }
