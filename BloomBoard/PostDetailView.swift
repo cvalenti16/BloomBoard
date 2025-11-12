@@ -175,7 +175,7 @@ private struct UIImageView: View {
             } label: {
                 Image(systemName: UIIcons.upload)
                     .foregroundStyle(.gray)
-                    .frame(maxWidth: .infinity, maxHeight: 200)
+                    .frame(maxWidth: .infinity, maxHeight: 250)
                     .background(.ultraThinMaterial)
                     .clipShape(.rect(cornerRadius: 10))
                     .padding(10)
