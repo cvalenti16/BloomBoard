@@ -130,7 +130,7 @@ private struct PostDateView: View {
                 }
             } else {
                 HStack {
-                    Image(systemName: "calendar")
+                    Image(systemName: UIIcons.calendar)
                     
                     DatePicker(
                         "",
