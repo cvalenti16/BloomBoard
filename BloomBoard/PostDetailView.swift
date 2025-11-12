@@ -45,7 +45,6 @@ struct PostDetailView: View {
                 isPosted: isPosted
             )
             
-            
             Text(postState.userFeedback ?? "")
                 .defaultMessageStyle()
                 .animation(.easeInOut, value: postState.userFeedback)
