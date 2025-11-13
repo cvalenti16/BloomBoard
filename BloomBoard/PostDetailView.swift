@@ -32,6 +32,7 @@ struct PostDetailView: View {
             Text(post.title)
                 .font(.title3)
                 .bold()
+                .padding(.horizontal, 10)
             
             PostDateView(postPerformance: $postPerformance, post: post)
             
@@ -113,7 +114,6 @@ private struct PostDateView: View {
         
         VStack {
             if post.postDate != nil {
-               
                 Picker(UIStrings.performance, selection: $postPerformance) {
                     ForEach(Performance.allCases, id: \.self) { performance in
                         Text(performance.rawValue).tag(performance)
