@@ -80,7 +80,7 @@ struct UIIcons {
     static let upload = "square.and.arrow.up"
     static let socialMedia = "network"
     static let checkmark = "checkmark"
-    static let filter = "line.horizontal.3"
+    static let filter = "line.3.horizontal.decrease"
 }
 
 // MARK: Default Icon Style

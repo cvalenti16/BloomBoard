@@ -38,11 +38,24 @@ struct PostListView: View {
         let count = filteredPosts.count
         
         if isDrafts {
-            return String(format: UIStrings.navigationTitle, UIStrings.draftPosts, count)
+            return String(
+                format: UIStrings.navigationTitle,
+                UIStrings.draftPosts,
+                count
+            )
         } else if let platform = postListState.selectedMissingPlatform {
-            return String(format: UIStrings.navigationTitle, platform.rawValue, count)
+            return String(
+                format: UIStrings.navigationTitle,
+                platform.rawValue,
+                count
+            )
+            
         } else {
-            return String(format: UIStrings.navigationTitle, UIStrings.allPublished, count)
+            return String(
+                format: UIStrings.navigationTitle,
+                UIStrings.allPublished,
+                count
+            )
         }
     }
     
