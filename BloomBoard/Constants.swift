@@ -44,7 +44,7 @@ struct UIStrings {
     static let noUnpublishedPosts = "No Unpublished Posts"
     static let noDrafts = "No Draft Posts"
     static let allPublished = "All Published"
-    static let unpublished = "%@ Unpublished"
+    static let navigationTitle = "%@ (%d)"
     static let draftPosts = "Draft Posts"
     static let performance = "Performance"
     static let enterTitle = "Enter Title"
