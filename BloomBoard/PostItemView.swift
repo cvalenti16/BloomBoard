@@ -28,10 +28,9 @@ struct PostItemView: View {
             }
             
             HStack {
+                
                 if let originalPlatform = post.originalPlatform {
                     Text(originalPlatform.rawValue)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
                 } else {
                     Text("\(UIStrings.created)\(post.creationDate, style: .date)")
                 }
