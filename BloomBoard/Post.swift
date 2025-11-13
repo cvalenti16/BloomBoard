@@ -19,8 +19,9 @@ class Post: Identifiable {
     private(set) var creationDate: Date
     var performance: Performance?
     var socialMedias: [SocialMedia]?
+    var originalPlatform: SocialMedia?
     
-    init(title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil, socialMedias: [SocialMedia]? = nil) {
+    init(title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil, socialMedias: [SocialMedia]? = nil, originalPlatform: SocialMedia? = nil) {
         self.id = UUID()
         self.title = title
         self.image = image
@@ -28,6 +29,7 @@ class Post: Identifiable {
         self.creationDate = Date()
         self.performance = performance
         self.socialMedias = socialMedias
+        self.originalPlatform = originalPlatform
     }
     
     

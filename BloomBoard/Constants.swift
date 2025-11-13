@@ -22,7 +22,7 @@ struct UIStrings {
     static let save = "Save"
     static let delete = "Delete"
     static let edit = "Edit"
-    static let created = "Created: "
+    static let created = "Created "
     static let copy = "Copy"
     static let add = "Add"
     static let close = "Close"
@@ -36,7 +36,7 @@ struct UIStrings {
     static let confirmUnpost = "Do you want to unpost?"
     static let confirmPost = "Do you want to post?"
     static let post = "Post"
-    static let posted = "Posted: "
+    static let posted = "Posted "
     static let selectPostDate = "Select Post Date"
     static let postDate = "Post Date: "
     static let unpost = "Unpost"
@@ -57,6 +57,8 @@ struct UIStrings {
     static let notPostedOn = "Not Posted On"
     static let clear = "Clear"
     static let filter = "Filter"
+    static let platform = "Platform"
+    
 }
 
 // MARK: UIIcons

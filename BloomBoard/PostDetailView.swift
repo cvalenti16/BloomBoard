@@ -371,6 +371,7 @@ private struct PostSheet: View {
                         post.performance = .unrated
                         
                         post.socialMedias = [selectedMedia]
+                        post.originalPlatform = selectedMedia
                         
                         postState.showPostSheet.toggle()
                         didPost(true)

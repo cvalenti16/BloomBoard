@@ -28,32 +28,25 @@ struct PostItemView: View {
             }
             
             HStack {
-                if let postedDate = post.postDate {
-                    Text("\(UIStrings.posted)\(postedDate, style: .date)")
+                if let originalPlatform = post.originalPlatform {
+                    Text(originalPlatform.rawValue)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 } else {
                     Text("\(UIStrings.created)\(post.creationDate, style: .date)")
+                }
+                
+                if let postPerformance = post.performance {
+                    Text((postPerformance.rawValue))
+                        .padding(5)
+                        .background(postPerformance.color.opacity(0.5))
+                        .clipShape(.rect(cornerRadius: 10))
                 }
                 
                 Image(systemName: hasImage ? "photo" : "text.document.fill")
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
-            
-            
-            if let medias = post.socialMedias, !medias.isEmpty {
-                let sortedMedias = medias.map { $0.shortName}.sorted()
-                
-                Text("\(UIStrings.platforms)\(sortedMedias.joined(separator: ", "))")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            
-            if let postPerformance = post.performance {
-                Text((postPerformance.rawValue))
-                    .padding(5)
-                    .background(postPerformance.color.opacity(0.5))
-                    .clipShape(.rect(cornerRadius: 10))
-            }
         }
     }
 }
@@ -64,3 +57,4 @@ struct PostItemView: View {
     }
     .preferredColorScheme(.dark)
 }
+
