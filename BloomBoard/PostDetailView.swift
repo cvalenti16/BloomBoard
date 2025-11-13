@@ -112,12 +112,8 @@ private struct PostDateView: View {
         @Bindable var postState = postState
         
         VStack {
-            if let postDate = post.postDate {
-                Text("\(UIStrings.posted)\(postDate, style: .date)")
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
-                    .padding()
-                
+            if post.postDate != nil {
+               
                 Picker(UIStrings.performance, selection: $postPerformance) {
                     ForEach(Performance.allCases, id: \.self) { performance in
                         Text(performance.rawValue).tag(performance)
