@@ -28,24 +28,24 @@ struct PostItemView: View {
             }
             
             HStack {
-                
                 if let originalPlatform = post.originalPlatform {
                     Text(originalPlatform.rawValue)
                 } else {
                     Text("\(UIStrings.created)\(post.creationDate, style: .date)")
                 }
                 
-                if let postPerformance = post.performance {
-                    Text((postPerformance.rawValue))
-                        .padding(5)
-                        .background(postPerformance.color.opacity(0.5))
-                        .clipShape(.rect(cornerRadius: 10))
-                }
-                
                 Image(systemName: hasImage ? "photo" : "text.document.fill")
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
+            
+            if let postPerformance = post.performance {
+                Text((postPerformance.rawValue))
+                    .padding(5)
+                    .background(postPerformance.color.opacity(0.5))
+                    .clipShape(.rect(cornerRadius: 10))
+                    .font(.subheadline)
+            }
         }
     }
 }
