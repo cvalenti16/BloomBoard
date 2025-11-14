@@ -250,7 +250,7 @@ private struct PostSheet: View {
     }
 }
 
-// MARK: SocialMediaChecklist
+// MARK: RepostSheet
 private struct RepostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
@@ -271,7 +271,6 @@ private struct RepostSheet: View {
                         }
                     ))
                     .padding(.horizontal, 10)
-                    .scaleEffect(0.90)
                 }
                 
                 Button {
@@ -280,19 +279,18 @@ private struct RepostSheet: View {
                     Text(UIStrings.close)
                         .defaultButtonStyle()
                 }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        post.postDate = nil
-                        post.performance = nil
-                        post.socialMedias = nil
-                        try? modelContext.save()
-                        didUnPost(true)
-                        dismiss()
-                    } label : {
-                        Image(systemName: "arrow.uturn.left")
-                    }
+                
+                Button {
+                    post.postDate = nil
+                    post.performance = nil
+                    post.socialMedias = nil
+                    try? modelContext.save()
+                    didUnPost(true)
+                    dismiss()
+                } label: {
+                    Label("Unpublish" , systemImage: "arrow.uturn.left")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
             }
             .navigationTitle(UIStrings.selectPlatform)
