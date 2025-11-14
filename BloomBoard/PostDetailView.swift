@@ -269,6 +269,8 @@ private struct PostSheet: View {
         try? modelContext.save()
         closeParentSheet(true)
         postState.showPostSheet = false
+        
+        post.originalPlatform = nil
     }
     
     private func publishAndClose () {
@@ -290,6 +292,7 @@ private struct PostSheet: View {
         if isRepost {
             post.socialMedias?.removeAll { $0 == selectedMedia }
             closeParentSheet(false)
+            post.originalPlatform = nil
         }
     }
 }
