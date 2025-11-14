@@ -195,20 +195,27 @@ private struct PostSheet: View {
         NavigationStack {
             VStack {
                 List(SocialMedia.allCases.filter{$0 != .none}) { media in
+                    
                     Button {
                         selectedMedia = media
                     } label: {
                         HStack {
                             Text(media.rawValue)
+                            
+                            if isAlreadyShared(media) {
+                                Text("Posted")
+                            }
+                            
                             Spacer()
+                            
                             if selectedMedia == media {
-                                Image(systemName: UIIcons.checkmark)
+                                Image(systemName: isAlreadyShared(media) ? UIIcons.cancel :  UIIcons.checkmark)
                                     .foregroundStyle(.tint)
                             }
                         }
                     }
+                    .scrollDisabled(true)
                 }
-                .scrollDisabled(true)
                 
                 if isRepost {
                     Button {
@@ -248,6 +255,10 @@ private struct PostSheet: View {
         }
     }
     
+    private func isAlreadyShared(_ media: SocialMedia) -> Bool {
+        post.socialMedias?.contains(media) ?? false
+    }
+    
     private func unpublishAndClose() {
         post.postDate = nil
         post.performance = nil
@@ -260,13 +271,20 @@ private struct PostSheet: View {
     private func publishAndClose () {
         if isRepost {
             post.socialMedias?.append(selectedMedia)
-            post.socialMedias = [selectedMedia]
             closeParentSheet(false)
         } else {
             post.postDate = postState.selectedPostDate
             post.performance = .unrated
             post.originalPlatform = selectedMedia
+            post.socialMedias = [selectedMedia]
             closeParentSheet(true)
+        }
+    }
+    
+    private func removepost() {
+        if isRepost {
+            post.socialMedias?.removeAll { $0 == selectedMedia }
+            closeParentSheet(false)
         }
     }
 }
