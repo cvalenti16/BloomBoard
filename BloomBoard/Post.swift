@@ -31,9 +31,6 @@ class Post: Identifiable {
         self.socialMedias = socialMedias
         self.originalPlatform = originalPlatform
     }
-    
-    
-    static var testPost = Post(title: "How is my SwiftData Model?", image: UIImage(named: "sampleImage")?.pngData())
 }
 
 
@@ -70,18 +67,4 @@ enum SocialMedia: String, CaseIterable, Codable, Identifiable {
     case tiktok = "TikTok"
     case x = "X"
     case youtube = "YouTube"
-    
-    var shortName: String {
-        switch self {
-        case .none: return ""
-        case .facebook: return "FB"
-        case .instagram: return "IG"
-        case .reddit: return "RD"
-        case .threads: return "TH"
-        case .tiktok: return "TT"
-        case .x: return "X"
-        case .youtube: return "YT"
-        }
-    }
-    
 }

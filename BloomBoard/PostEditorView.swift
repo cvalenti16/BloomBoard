@@ -211,10 +211,3 @@ extension PostSheetToolbar {
         }
     }
 }
-
-
-
-#Preview {
-    PostEditorView(post: .testPost)
-        .preferredColorScheme(.dark)
-}

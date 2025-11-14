@@ -49,11 +49,3 @@ struct PostItemView: View {
         }
     }
 }
-
-#Preview {
-    PostItemView(post: Post.testPost) { post in
-        
-    }
-    .preferredColorScheme(.dark)
-}
-
