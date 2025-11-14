@@ -57,7 +57,7 @@ struct PostDetailView: View {
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postState.showSocialMediaSheet) {
-            SocialMediaChecklist(post: post) { didPost in
+            RepostSheet(post: post) { didPost in
                 dismiss()
             }
             .presentationDetents([.fraction(0.60)])
@@ -251,7 +251,7 @@ private struct PostSheet: View {
 }
 
 // MARK: SocialMediaChecklist
-private struct SocialMediaChecklist: View {
+private struct RepostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     
