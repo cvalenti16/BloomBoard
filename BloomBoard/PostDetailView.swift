@@ -191,28 +191,6 @@ private struct PostSheet: View {
         post.postDate != nil
     }
     
-    private func unpublishAndClose() {
-        post.postDate = nil
-        post.performance = nil
-        post.socialMedias = nil
-        try? modelContext.save()
-        closeParentSheet(true)
-        postState.showPostSheet = false
-    }
-    
-    private func publishAndClose () {
-        if isRepost {
-            post.socialMedias?.append(selectedMedia)
-            post.socialMedias = [selectedMedia]
-            closeParentSheet(false)
-        } else {
-            post.postDate = postState.selectedPostDate
-            post.performance = .unrated
-            post.originalPlatform = selectedMedia
-            closeParentSheet(true)
-        }
-    }
-    
     var body: some View {
         NavigationStack {
             VStack {
@@ -267,6 +245,28 @@ private struct PostSheet: View {
                     }
                 }
             }
+        }
+    }
+    
+    private func unpublishAndClose() {
+        post.postDate = nil
+        post.performance = nil
+        post.socialMedias = nil
+        try? modelContext.save()
+        closeParentSheet(true)
+        postState.showPostSheet = false
+    }
+    
+    private func publishAndClose () {
+        if isRepost {
+            post.socialMedias?.append(selectedMedia)
+            post.socialMedias = [selectedMedia]
+            closeParentSheet(false)
+        } else {
+            post.postDate = postState.selectedPostDate
+            post.performance = .unrated
+            post.originalPlatform = selectedMedia
+            closeParentSheet(true)
         }
     }
 }
