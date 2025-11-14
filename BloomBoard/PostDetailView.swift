@@ -269,10 +269,6 @@ private struct PostSheet: View {
             }
         }
     }
-    
-    func helper() {
-        
-    }
 }
 
 //MARK: Toolbar
