@@ -38,9 +38,7 @@ struct PostDetailView: View {
             
             UIImageView(loadedImage: loadedImage)
             
-            PostButton(
-                isPosted: isPosted
-            )
+            PostButton(isPosted)
             
             Text(postState.userFeedback ?? "")
                 .defaultMessageStyle()
@@ -56,15 +54,9 @@ struct PostDetailView: View {
             PostEditorView(post: post)
                 .presentationDetents([.fraction(0.60)])
         }
-        .sheet(isPresented: $postState.showSocialMediaSheet) {
-            RepostSheet(post: post) { didPost in
-                dismiss()
-            }
-            .presentationDetents([.fraction(0.60)])
-        }
         .sheet(isPresented: $postState.showPostSheet) {
-            PostSheet(post: post) { didPost in
-                if didPost {
+            PostSheet(post: post) { closeParentSheet in
+                if closeParentSheet {
                     dismiss()
                 }
             }
@@ -77,9 +69,7 @@ struct PostDetailView: View {
 @Observable
 class PostState {
     var showEditPostSheet = false
-    var showUnPostSheet = false
     var showPostSheet = false
-    var showSocialMediaSheet = false
     var selectedPostDate = Date()
     var userFeedback: String? = nil
     
@@ -175,14 +165,13 @@ private struct PostButton: View {
     
     let isPosted: Bool
     
+    init(_ isPosted: Bool) {
+        self.isPosted = isPosted
+    }
+    
     var body: some View {
         Button {
-            if isPosted {
-                postState.showSocialMediaSheet.toggle()
-            } else {
-                postState.showPostSheet.toggle()
-            }
-            
+            postState.showPostSheet = true
         } label: {
             Text(isPosted ? UIStrings.repost : UIStrings.post)
                 .defaultButtonStyle()
@@ -196,7 +185,11 @@ private struct PostSheet: View {
     @Environment(PostState.self) var postState
     @State private var selectedMedia: SocialMedia = .facebook
     let post: Post
-    let didPost: (Bool) -> Void
+    let closeParentSheet: (Bool) -> Void
+    
+    var isRepost: Bool {
+        post.postDate != nil
+    }
     
     var body: some View {
         NavigationStack {
@@ -216,14 +209,29 @@ private struct PostSheet: View {
                     }
                 }
                 .scrollDisabled(true)
+                
+                if isRepost {
+                    Button {
+                        post.postDate = nil
+                        post.performance = nil
+                        post.socialMedias = nil
+                        try? modelContext.save()
+                        closeParentSheet(true)
+                        postState.showPostSheet = false
+                    } label: {
+                        Label("Unpublish" , systemImage: "arrow.uturn.left")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
             .navigationTitle(UIStrings.selectPlatform)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
-                        didPost(false)
-                        postState.showPostSheet.toggle()
+                        closeParentSheet(false)
+                        postState.showPostSheet = false
                     } label: {
                         Image(systemName: UIIcons.cancel)
                             .foregroundStyle(.text)
@@ -232,14 +240,18 @@ private struct PostSheet: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        post.postDate = postState.selectedPostDate
-                        post.performance = .unrated
+                        if isRepost {
+                            post.socialMedias?.append(selectedMedia)
+                            post.socialMedias = [selectedMedia]
+                            closeParentSheet(false)
+                        } else {
+                            post.postDate = postState.selectedPostDate
+                            post.performance = .unrated
+                            post.originalPlatform = selectedMedia
+                            closeParentSheet(true)
+                        }
                         
-                        post.socialMedias = [selectedMedia]
-                        post.originalPlatform = selectedMedia
-                        
-                        postState.showPostSheet.toggle()
-                        didPost(true)
+                        postState.showPostSheet = false
                     } label: {
                         Image(systemName: UIIcons.published)
                             .foregroundStyle(.text)
@@ -247,70 +259,6 @@ private struct PostSheet: View {
                 }
             }
         }
-    }
-}
-
-// MARK: RepostSheet
-private struct RepostSheet: View {
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.dismiss) var dismiss
-    
-    let post: Post
-    let didUnPost: (Bool) -> Void
-    
-    var body: some View {
-        NavigationStack {
-            VStack {
-                ForEach(SocialMedia.allCases.filter{$0 != .none}) { platform in
-                    Toggle(platform.rawValue, isOn: Binding(
-                        get: {
-                            post.socialMedias?.contains(platform) ?? false
-                        },
-                        set: { isOn in
-                            updateSocialMedias(for: platform, isOn: isOn)
-                        }
-                    ))
-                    .padding(.horizontal, 10)
-                }
-                
-                Button {
-                    dismiss()
-                } label: {
-                    Text(UIStrings.close)
-                        .defaultButtonStyle()
-                }
-                
-                Button {
-                    post.postDate = nil
-                    post.performance = nil
-                    post.socialMedias = nil
-                    try? modelContext.save()
-                    didUnPost(true)
-                    dismiss()
-                } label: {
-                    Label("Unpublish" , systemImage: "arrow.uturn.left")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .navigationTitle(UIStrings.selectPlatform)
-            .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-    
-    private func updateSocialMedias(for platform: SocialMedia, isOn: Bool) {
-        var current = post.socialMedias ?? []
-        
-        if isOn {
-            if !current.contains(platform) {
-                current.append(platform)
-            }
-        } else {
-            current.removeAll { $0 == platform }
-        }
-        
-        post.socialMedias = current
-        try? modelContext.save()
     }
 }
 
