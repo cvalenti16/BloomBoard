@@ -195,9 +195,10 @@ private struct PostSheet: View {
         NavigationStack {
             VStack {
                 List(SocialMedia.allCases.filter{$0 != .none}) { media in
-                    
                     Button {
-                        selectedMedia = media
+                        if !isOrignalPost(media) {
+                            selectedMedia = media
+                        }
                     } label: {
                         HStack {
                             Text(media.rawValue)
@@ -211,6 +212,8 @@ private struct PostSheet: View {
                             if selectedMedia == media {
                                 Image(systemName: isAlreadyShared(media) ? UIIcons.cancel :  UIIcons.checkmark)
                                     .foregroundStyle(.tint)
+                            } else if isOrignalPost(media) {
+                                Image(systemName: UIIcons.checkmark)
                             }
                         }
                     }
@@ -257,6 +260,10 @@ private struct PostSheet: View {
     
     private func isAlreadyShared(_ media: SocialMedia) -> Bool {
         post.socialMedias?.contains(media) ?? false
+    }
+    
+    private func isOrignalPost( _ media: SocialMedia) -> Bool {
+        post.originalPlatform == media
     }
     
     private func unpublishAndClose() {
