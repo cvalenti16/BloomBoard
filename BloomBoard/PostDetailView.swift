@@ -204,7 +204,9 @@ private struct PostSheet: View {
                             Text(media.rawValue)
                             
                             if isAlreadyShared(media) {
-                                Text("Posted")
+                                Image(systemName: "seal.fill")
+                                    .foregroundStyle(.secondary)
+                                    .font(.subheadline)
                             }
                             
                             Spacer()
