@@ -39,7 +39,7 @@ struct UIStrings {
     static let posted = "Posted "
     static let selectPostDate = "Select Post Date"
     static let postDate = "Post Date: "
-    static let unpost = "Unpost"
+    static let repost = "Repost"
     static let noPublishedPosts = "No Published Posts"
     static let noUnpublishedPosts = "No Unpublished Posts"
     static let noDrafts = "No Draft Posts"

@@ -38,10 +38,6 @@ struct PostDetailView: View {
             
             UIImageView(loadedImage: loadedImage)
             
-            if(isPosted) {
-                SocialMediaSummary(post: post)
-            }
-            
             PostButton(
                 isPosted: isPosted
             )
@@ -61,8 +57,10 @@ struct PostDetailView: View {
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postState.showSocialMediaSheet) {
-            SocialMediaChecklist(post: post)
-                .presentationDetents([.fraction(0.60)])
+            SocialMediaChecklist(post: post) { didPost in
+                dismiss()
+            }
+            .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postState.showPostSheet) {
             PostSheet(post: post) { didPost in
@@ -70,14 +68,6 @@ struct PostDetailView: View {
                     dismiss()
                 }
             }
-        }
-        .sheet(isPresented: $postState.showUnPostSheet){
-            UnPostSheet(post: post) { didUnpost in
-                if didUnpost {
-                    dismiss()
-                }
-            }
-            .presentationDetents([.fraction(0.50)])
         }
         .environment(postState)
     }
@@ -179,83 +169,6 @@ private struct UIImageView: View {
     }
 }
 
-
-// MARK: Social Media Summary
-private struct SocialMediaSummary: View {
-    @Environment(PostState.self) var postState
-    let post: Post
-    
-    var body: some View {
-        Button {
-            postState.showSocialMediaSheet.toggle()
-        } label: {
-            Label(summaryText, systemImage: UIIcons.socialMedia)
-                .padding(.horizontal,10)
-        }
-    }
-    
-    private var summaryText: String {
-        guard let medias = post.socialMedias,
-              !medias.isEmpty else {
-            return UIStrings.selectPlatforms
-        }
-        
-        let names = medias.map { $0.shortName }.sorted()
-        return UIStrings.postedOn + names.joined(separator: ", ")
-    }
-}
-
-
-private struct SocialMediaChecklist: View {
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.dismiss) var dismiss
-    let post: Post
-    
-    
-    var body: some View {
-        NavigationStack {
-            VStack {
-                ForEach(SocialMedia.allCases.filter{$0 != .none}) { platform in
-                    Toggle(platform.rawValue, isOn: Binding(
-                        get: {
-                            post.socialMedias?.contains(platform) ?? false
-                        },
-                        set: { isOn in
-                            updateSocialMedias(for: platform, isOn: isOn)
-                        }
-                    ))
-                    .padding(.horizontal, 10)
-                    .scaleEffect(0.90)
-                }
-                
-                Button {
-                    dismiss()
-                } label: {
-                    Text(UIStrings.close)
-                        .defaultButtonStyle()
-                }
-            }
-            .navigationTitle(UIStrings.selectPlatform)
-            .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-    
-    private func updateSocialMedias(for platform: SocialMedia, isOn: Bool) {
-        var current = post.socialMedias ?? []
-        
-        if isOn {
-            if !current.contains(platform) {
-                current.append(platform)
-            }
-        } else {
-            current.removeAll { $0 == platform }
-        }
-        
-        post.socialMedias = current
-        try? modelContext.save()
-    }
-}
-
 // MARK: Post/UnPost Button
 private struct PostButton: View {
     @Environment(PostState.self) var postState
@@ -265,61 +178,17 @@ private struct PostButton: View {
     var body: some View {
         Button {
             if isPosted {
-                postState.showUnPostSheet.toggle()
+                postState.showSocialMediaSheet.toggle()
             } else {
                 postState.showPostSheet.toggle()
             }
             
         } label: {
-            Text(isPosted ? UIStrings.unpost : UIStrings.post)
+            Text(isPosted ? UIStrings.repost : UIStrings.post)
                 .defaultButtonStyle()
         }
     }
 }
-
-// MARK: UnPostSheet
-private struct UnPostSheet: View {
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.dismiss) private var dismiss
-    @Environment(PostState.self) var postState
-    
-    let post: Post
-    let didUnPost: (Bool) -> Void
-    
-    var body: some View {
-        NavigationStack {
-            VStack {
-                Text(UIStrings.confirmUnpost)
-                    .font(.title3)
-                
-                
-                HStack {
-                    Button {
-                        didUnPost(false)
-                        postState.showUnPostSheet.toggle()
-                    } label: {
-                        Text(UIStrings.cancel)
-                            .defaultButtonStyle()
-                    }
-                    
-                    Button {
-                        post.postDate = nil
-                        post.performance = nil
-                        post.socialMedias = nil
-                        try? modelContext.save()
-                        didUnPost(true)
-                        dismiss()
-                    } label: {
-                        Text(UIStrings.confirm)
-                            .defaultButtonStyle()
-                    }
-                }
-                
-            }
-        }
-    }
-}
-
 
 // MARK: Post Sheet
 private struct PostSheet: View {
@@ -378,6 +247,72 @@ private struct PostSheet: View {
                 }
             }
         }
+    }
+}
+
+// MARK: SocialMediaChecklist
+private struct SocialMediaChecklist: View {
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) var dismiss
+    
+    let post: Post
+    let didUnPost: (Bool) -> Void
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                ForEach(SocialMedia.allCases.filter{$0 != .none}) { platform in
+                    Toggle(platform.rawValue, isOn: Binding(
+                        get: {
+                            post.socialMedias?.contains(platform) ?? false
+                        },
+                        set: { isOn in
+                            updateSocialMedias(for: platform, isOn: isOn)
+                        }
+                    ))
+                    .padding(.horizontal, 10)
+                    .scaleEffect(0.90)
+                }
+                
+                Button {
+                    dismiss()
+                } label: {
+                    Text(UIStrings.close)
+                        .defaultButtonStyle()
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        post.postDate = nil
+                        post.performance = nil
+                        post.socialMedias = nil
+                        try? modelContext.save()
+                        didUnPost(true)
+                        dismiss()
+                    } label : {
+                        Image(systemName: "arrow.uturn.left")
+                    }
+                }
+            }
+            .navigationTitle(UIStrings.selectPlatform)
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+    
+    private func updateSocialMedias(for platform: SocialMedia, isOn: Bool) {
+        var current = post.socialMedias ?? []
+        
+        if isOn {
+            if !current.contains(platform) {
+                current.append(platform)
+            }
+        } else {
+            current.removeAll { $0 == platform }
+        }
+        
+        post.socialMedias = current
+        try? modelContext.save()
     }
 }
 
