@@ -292,7 +292,6 @@ private struct PostSheet: View {
         if isRepost {
             post.socialMedias?.removeAll { $0 == selectedMedia }
             closeParentSheet(false)
-            post.originalPlatform = nil
         }
     }
 }
