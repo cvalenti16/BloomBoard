@@ -270,7 +270,11 @@ private struct PostSheet: View {
     
     private func publishAndClose () {
         if isRepost {
-            post.socialMedias?.append(selectedMedia)
+            if isAlreadyShared(selectedMedia) {
+                removepost()
+            } else {
+                post.socialMedias?.append(selectedMedia)
+            }
             closeParentSheet(false)
         } else {
             post.postDate = postState.selectedPostDate
