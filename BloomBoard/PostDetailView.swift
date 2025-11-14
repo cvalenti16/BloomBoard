@@ -191,6 +191,28 @@ private struct PostSheet: View {
         post.postDate != nil
     }
     
+    private func unpublishAndClose() {
+        post.postDate = nil
+        post.performance = nil
+        post.socialMedias = nil
+        try? modelContext.save()
+        closeParentSheet(true)
+        postState.showPostSheet = false
+    }
+    
+    private func publishAndClose () {
+        if isRepost {
+            post.socialMedias?.append(selectedMedia)
+            post.socialMedias = [selectedMedia]
+            closeParentSheet(false)
+        } else {
+            post.postDate = postState.selectedPostDate
+            post.performance = .unrated
+            post.originalPlatform = selectedMedia
+            closeParentSheet(true)
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -212,12 +234,7 @@ private struct PostSheet: View {
                 
                 if isRepost {
                     Button {
-                        post.postDate = nil
-                        post.performance = nil
-                        post.socialMedias = nil
-                        try? modelContext.save()
-                        closeParentSheet(true)
-                        postState.showPostSheet = false
+                        unpublishAndClose()
                     } label: {
                         Label("Unpublish" , systemImage: "arrow.uturn.left")
                             .font(.subheadline)
@@ -228,6 +245,7 @@ private struct PostSheet: View {
             .navigationTitle(UIStrings.selectPlatform)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         closeParentSheet(false)
@@ -240,16 +258,7 @@ private struct PostSheet: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        if isRepost {
-                            post.socialMedias?.append(selectedMedia)
-                            post.socialMedias = [selectedMedia]
-                            closeParentSheet(false)
-                        } else {
-                            post.postDate = postState.selectedPostDate
-                            post.performance = .unrated
-                            post.originalPlatform = selectedMedia
-                            closeParentSheet(true)
-                        }
+                        publishAndClose()
                         
                         postState.showPostSheet = false
                     } label: {
@@ -259,6 +268,10 @@ private struct PostSheet: View {
                 }
             }
         }
+    }
+    
+    func helper() {
+        
     }
 }
 
