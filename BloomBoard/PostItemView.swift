@@ -28,13 +28,13 @@ struct PostItemView: View {
             }
             
             HStack {
-                if let originalPlatform = post.originalPlatform {
-                    Text(originalPlatform.rawValue)
+                if let postDate = post.postDate {
+                    Text("\(UIStrings.posted)\(postDate, style: .date)")
                 } else {
                     Text("\(UIStrings.created)\(post.creationDate, style: .date)")
                 }
                 
-                Image(systemName: hasImage ? "photo" : "text.document.fill")
+                Image(systemName: hasImage ? UIIcons.photo : UIIcons.document)
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
@@ -45,6 +45,7 @@ struct PostItemView: View {
                     .background(postPerformance.color.opacity(0.5))
                     .clipShape(.rect(cornerRadius: 10))
                     .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
         }
     }

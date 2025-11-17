@@ -81,6 +81,8 @@ struct UIIcons {
     static let socialMedia = "network"
     static let checkmark = "checkmark"
     static let filter = "line.3.horizontal.decrease"
+    static let photo = "photo.artframe"
+    static let document = "document"
 }
 
 // MARK: Default Icon Style
