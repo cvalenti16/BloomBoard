@@ -136,8 +136,9 @@ private struct SocialMediaSummary: View {
                 Text(summaryText(medias))
                 
             }
-            .font(.subheadline)
+            .font(.footnote)
             .foregroundStyle(.secondary)
+            .padding(.horizontal, 5)
         }
     }
     
