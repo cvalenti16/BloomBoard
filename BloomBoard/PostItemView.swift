@@ -44,7 +44,6 @@ struct PostItemView: View {
                     .padding(5)
                     .background(postPerformance.color.opacity(0.5))
                     .clipShape(.rect(cornerRadius: 10))
-                    .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
         }

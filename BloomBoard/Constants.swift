@@ -36,9 +36,8 @@ struct UIStrings {
     static let confirmUnpost = "Do you want to unpost?"
     static let confirmPost = "Do you want to post?"
     static let post = "Post"
-    static let posted = "Posted "
     static let selectPostDate = "Select Post Date"
-    static let postDate = "Post Date: "
+    static let posted = "Posted "
     static let repost = "Repost"
     static let noPublishedPosts = "No Published Posts"
     static let noUnpublishedPosts = "No Unpublished Posts"
@@ -48,7 +47,6 @@ struct UIStrings {
     static let draftPosts = "Draft Posts"
     static let performance = "Performance"
     static let enterTitle = "Enter Title"
-    static let postedOn = "Posted on: "
     static let selectPlatforms = "Select Platforms"
     static let platforms = "Platforms: "
     static let confirm = "Confirm"
@@ -58,7 +56,6 @@ struct UIStrings {
     static let clear = "Clear"
     static let filter = "Filter"
     static let platform = "Platform"
-    
 }
 
 // MARK: UIIcons

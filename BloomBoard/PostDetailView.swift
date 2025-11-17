@@ -38,6 +38,8 @@ struct PostDetailView: View {
             
             UIImageView(loadedImage: loadedImage)
             
+            SocialMediaSummary(post)
+            
             PostButton(isPosted)
             
             Text(postState.userFeedback ?? "")
@@ -116,6 +118,33 @@ private struct PostDateView: View {
                 }
             }
         }
+    }
+}
+
+// MARK: Social Media Summary
+private struct SocialMediaSummary: View {
+    let post: Post
+    
+    init(_ post: Post) {
+        self.post = post
+    }
+    
+    var body: some View {
+        if let medias = post.socialMedias {
+            HStack {
+                Image(systemName: UIIcons.socialMedia)
+                Text(summaryText(medias))
+                
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+        }
+    }
+    
+    func summaryText(_ medias: [SocialMedia]) -> String {
+        let names = medias.map { $0.rawValue }.sorted()
+        
+        return names.joined(separator: ", ")
     }
 }
 
@@ -198,7 +227,7 @@ private struct PostSheet: View {
                     $0 != .none && $0 != post.originalPlatform
                 }) { media in
                     Button {
-                            selectedMedia = media
+                        selectedMedia = media
                     } label: {
                         HStack {
                             Text(media.rawValue)
