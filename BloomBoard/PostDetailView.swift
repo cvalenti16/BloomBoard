@@ -247,9 +247,10 @@ private struct PostSheet: View {
                 
                 if isPosted {
                     Button {
-                        unpublishAndClose()
+                        unpublish()
                     } label: {
-                        Label(UIStrings.unpublish, systemImage: "arrow.uturn.left")
+                        Label(UIStrings.unpublish,
+                              systemImage: UIIcons.unpublished)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -258,7 +259,6 @@ private struct PostSheet: View {
             .navigationTitle(UIStrings.selectPlatform)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         closeParentSheet(false)
@@ -271,9 +271,7 @@ private struct PostSheet: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        publishAndClose()
-                        
-                        postState.showPostSheet = false
+                        publish()
                     } label: {
                         Image(systemName: UIIcons.published)
                             .foregroundStyle(.text)
@@ -287,20 +285,20 @@ private struct PostSheet: View {
         post.socialMedias?.contains(media) ?? false
     }
     
-    private func unpublishAndClose() {
+    private func unpublish() {
         post.postDate = nil
         post.performance = nil
         post.socialMedias = nil
+        post.originalPlatform = nil
         try? modelContext.save()
         closeParentSheet(true)
         postState.showPostSheet = false
-        
-        post.originalPlatform = nil
     }
     
-    private func publishAndClose () {
+    private func publish () {
         if isAlreadyShared(selectedMedia) {
-            removepost()
+            post.socialMedias?.removeAll { $0 == selectedMedia }
+            closeParentSheet(false)
         } else if isPosted {
             post.socialMedias?.append(selectedMedia)
             closeParentSheet(false)
@@ -311,13 +309,8 @@ private struct PostSheet: View {
             post.socialMedias = [selectedMedia]
             closeParentSheet(true)
         }
-    }
-    
-    private func removepost() {
-        if isPosted {
-            post.socialMedias?.removeAll { $0 == selectedMedia }
-            closeParentSheet(false)
-        }
+        try? modelContext.save()
+        postState.showPostSheet = false
     }
 }
 

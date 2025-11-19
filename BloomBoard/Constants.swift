@@ -67,6 +67,7 @@ struct UIIcons {
     static let photo = "photo.artframe"
     static let document = "document"
     static let posted = "seal.fill"
+    static let unpublished = "arrow.uturn.left"
 }
 
 // MARK: Default Icon Style
