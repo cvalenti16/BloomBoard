@@ -18,7 +18,7 @@ struct PostEditorView: View {
         post != nil
     }
     
-    init(post: Post? = nil) {
+    init(_ post: Post? = nil) {
         self.post = post
         _title = State(initialValue: post?.title ?? "")
         
@@ -122,7 +122,7 @@ struct ImagePreview: View {
                         imageState.uiImage = nil
                         imageState.imageWasChanged = true
                     } label: {
-                        Image(systemName: UIIcons.trashIcon)
+                        Image(systemName: UIIcons.trash)
                             .defaultIconStyle()
                     }
                 }

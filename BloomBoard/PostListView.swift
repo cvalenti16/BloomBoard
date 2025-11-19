@@ -115,7 +115,7 @@ private struct PopulatedListView: View {
                     postListState.postToDelete = post
                     postListState.showDeleteAlert.toggle()
                 } label: {
-                    Image(systemName: UIIcons.trashIcon)
+                    Image(systemName: UIIcons.trash)
                         .tint(.red)
                 }
             }
@@ -176,7 +176,7 @@ private struct PostListToolbar: ToolbarContent {
         
         if isDrafts {
             ToolbarItem {
-                Button(UIStrings.add, systemImage: UIIcons.addIcon) {
+                Button(UIStrings.add, systemImage: UIIcons.add) {
                     postListState.showAddSheet.toggle()
                 }
             }

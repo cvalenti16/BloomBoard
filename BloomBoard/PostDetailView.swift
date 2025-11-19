@@ -32,6 +32,7 @@ struct PostDetailView: View {
             Text(post.title)
                 .font(.title3)
                 .bold()
+                .textSelection(.enabled)
                 .padding(.horizontal, 10)
             
             PostDateView(postPerformance: $postPerformance, post: post)
@@ -49,15 +50,14 @@ struct PostDetailView: View {
         }
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
-            PostDetailToolbar(post: post)
+            PostDetailToolbar(post)
         }
-        //MARK: Sheets
         .sheet(isPresented: $postState.showEditPostSheet) {
-            PostEditorView(post: post)
+            PostEditorView(post)
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postState.showPostSheet) {
-            PostSheet(post: post) { closeParentSheet in
+            PostSheet(post: post, isPosted: isPosted) { closeParentSheet in
                 if closeParentSheet {
                     dismiss()
                 }
@@ -67,7 +67,7 @@ struct PostDetailView: View {
     }
 }
 
-// MARK: Post Properties
+// MARK: PostState
 @Observable
 class PostState {
     var showEditPostSheet = false
@@ -83,8 +83,7 @@ class PostState {
     }
 }
 
-
-// MARK: Post Date View
+// MARK: PostDateView
 private struct PostDateView: View {
     @Environment(PostState.self) var postState
     @Binding var postPerformance: Performance
@@ -121,7 +120,7 @@ private struct PostDateView: View {
     }
 }
 
-// MARK: Social Media Summary
+// MARK: SocialMediaSummary
 private struct SocialMediaSummary: View {
     let post: Post
     
@@ -143,13 +142,12 @@ private struct SocialMediaSummary: View {
     }
     
     func summaryText(_ medias: [SocialMedia]) -> String {
-        let names = medias.map { $0.rawValue }.sorted()
-        
+        let names = medias.map { $0.rawValue }
         return names.joined(separator: ", ")
     }
 }
 
-//MARK: UI Image View
+//MARK: UIImageView
 private struct UIImageView: View {
     @Environment(PostState.self) var postState
     var loadedImage: UIImage?
@@ -189,7 +187,7 @@ private struct UIImageView: View {
     }
 }
 
-// MARK: Post/UnPost Button
+// MARK: PostButton
 private struct PostButton: View {
     @Environment(PostState.self) var postState
     
@@ -209,17 +207,14 @@ private struct PostButton: View {
     }
 }
 
-// MARK: Post Sheet
+// MARK: PostSheet
 private struct PostSheet: View {
     @Environment(\.modelContext) var modelContext
     @Environment(PostState.self) var postState
     @State private var selectedMedia: SocialMedia = .facebook
     let post: Post
+    let isPosted: Bool
     let closeParentSheet: (Bool) -> Void
-    
-    var isRepost: Bool {
-        post.postDate != nil
-    }
     
     var body: some View {
         NavigationStack {
@@ -234,7 +229,7 @@ private struct PostSheet: View {
                             Text(media.rawValue)
                             
                             if isAlreadyShared(media) {
-                                Image(systemName: "seal.fill")
+                                Image(systemName: UIIcons.posted)
                                     .foregroundStyle(.secondary)
                                     .font(.subheadline)
                             }
@@ -242,7 +237,7 @@ private struct PostSheet: View {
                             Spacer()
                             
                             if selectedMedia == media {
-                                Image(systemName: isAlreadyShared(media) ? UIIcons.cancel :  UIIcons.checkmark)
+                                Image(systemName: isAlreadyShared(selectedMedia) ? UIIcons.cancel :  UIIcons.checkmark)
                                     .foregroundStyle(.tint)
                             }
                         }
@@ -250,11 +245,11 @@ private struct PostSheet: View {
                     .scrollDisabled(true)
                 }
                 
-                if isRepost {
+                if isPosted {
                     Button {
                         unpublishAndClose()
                     } label: {
-                        Label("Unpublish" , systemImage: "arrow.uturn.left")
+                        Label(UIStrings.unpublish, systemImage: "arrow.uturn.left")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -306,7 +301,7 @@ private struct PostSheet: View {
     private func publishAndClose () {
         if isAlreadyShared(selectedMedia) {
             removepost()
-        } else if isRepost {
+        } else if isPosted {
             post.socialMedias?.append(selectedMedia)
             closeParentSheet(false)
         } else {
@@ -319,7 +314,7 @@ private struct PostSheet: View {
     }
     
     private func removepost() {
-        if isRepost {
+        if isPosted {
             post.socialMedias?.removeAll { $0 == selectedMedia }
             closeParentSheet(false)
         }
@@ -332,17 +327,21 @@ private struct PostDetailToolbar: ToolbarContent {
     
     let post: Post
     
+    init(_ post: Post) {
+        self.post = post
+    }
+    
     var body: some ToolbarContent {
-        ToolbarItem {
-            Button(UIStrings.copy, systemImage: UIIcons.copy) {
-                UIPasteboard.general.string = post.title
-                postState.showFeedback(message: FeedbackMessages.copySucceeded)
-            }
-        }
-        
-        if #available(iOS 26.0, *) {
-            ToolbarSpacer(.fixed)
-        }
+//        ToolbarItem {
+//            Button(UIStrings.copy, systemImage: UIIcons.copy) {
+//                UIPasteboard.general.string = post.title
+//                postState.showFeedback(message: FeedbackMessages.copySucceeded)
+//            }
+//        }
+//        
+//        if #available(iOS 26.0, *) {
+//            ToolbarSpacer(.fixed)
+//        }
         
         ToolbarItem {
             Button(UIStrings.edit, systemImage: UIIcons.edit) {

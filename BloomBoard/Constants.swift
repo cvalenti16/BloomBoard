@@ -12,20 +12,16 @@ import SwiftUI
 struct FeedbackMessages {
     static let emptyTitle = "Please Enter a Title"
     static let savedFailed = "Failed to save, please try again"
-    static let copySucceeded = "Copied"
     static let downloadSucceeded = "Downloaded"
 }
 
 // MARK: UIStrings
 struct UIStrings {
     static let cancel = "Cancel"
-    static let save = "Save"
     static let delete = "Delete"
     static let edit = "Edit"
     static let created = "Created "
-    static let copy = "Copy"
     static let add = "Add"
-    static let close = "Close"
     static let title = "Title"
     static let drafts = "Drafts"
     static let published = "Published"
@@ -33,10 +29,8 @@ struct UIStrings {
     static let createPost = "Create Post"
     static let editPost = "Edit Post"
     static let deletePost = "Delete Post?"
-    static let confirmUnpost = "Do you want to unpost?"
-    static let confirmPost = "Do you want to post?"
+    static let unpublish = "Unpublish"
     static let post = "Post"
-    static let selectPostDate = "Select Post Date"
     static let posted = "Posted "
     static let repost = "Repost"
     static let noPublishedPosts = "No Published Posts"
@@ -46,24 +40,16 @@ struct UIStrings {
     static let navigationTitle = "%@ (%d)"
     static let draftPosts = "Draft Posts"
     static let performance = "Performance"
-    static let enterTitle = "Enter Title"
-    static let selectPlatforms = "Select Platforms"
-    static let platforms = "Platforms: "
-    static let confirm = "Confirm"
     static let selectPlatform = "Select Platform"
-    static let socialMediaPicker = "Social Media Picker"
     static let notPostedOn = "Not Posted On"
     static let clear = "Clear"
     static let filter = "Filter"
-    static let platform = "Platform"
 }
 
 // MARK: UIIcons
 struct UIIcons {
-    static let addIcon = "plus"
-    static let copy = "doc.on.doc"
-    static let trashIcon = "trash"
-    static let basePlan = "list.bullet"
+    static let add = "plus"
+    static let trash = "trash"
     static let posts = "tray"
     static let published = "paperplane.fill"
     static let download = "square.and.arrow.down"
@@ -80,6 +66,7 @@ struct UIIcons {
     static let filter = "line.3.horizontal.decrease"
     static let photo = "photo.artframe"
     static let document = "document"
+    static let posted = "seal.fill"
 }
 
 // MARK: Default Icon Style
