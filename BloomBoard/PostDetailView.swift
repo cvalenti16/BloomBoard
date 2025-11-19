@@ -251,8 +251,8 @@ private struct PostSheet: View {
                     } label: {
                         Label(UIStrings.unpublish,
                               systemImage: UIIcons.unpublished)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                     }
                 }
             }
@@ -325,16 +325,16 @@ private struct PostDetailToolbar: ToolbarContent {
     }
     
     var body: some ToolbarContent {
-//        ToolbarItem {
-//            Button(UIStrings.copy, systemImage: UIIcons.copy) {
-//                UIPasteboard.general.string = post.title
-//                postState.showFeedback(message: FeedbackMessages.copySucceeded)
-//            }
-//        }
-//        
-//        if #available(iOS 26.0, *) {
-//            ToolbarSpacer(.fixed)
-//        }
+        //        ToolbarItem {
+        //            Button(UIStrings.copy, systemImage: UIIcons.copy) {
+        //                UIPasteboard.general.string = post.title
+        //                postState.showFeedback(message: FeedbackMessages.copySucceeded)
+        //            }
+        //        }
+        //        
+        //        if #available(iOS 26.0, *) {
+        //            ToolbarSpacer(.fixed)
+        //        }
         
         ToolbarItem {
             Button(UIStrings.edit, systemImage: UIIcons.edit) {
