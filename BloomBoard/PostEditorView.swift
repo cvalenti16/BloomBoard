@@ -54,6 +54,7 @@ class ImageState {
     var errorMessage: String? = nil
 }
 
+//MARK: PostFieldsView
 struct PostFieldsView: View {
     @Environment(ImageState.self) var imageState
     @Binding var title: String
@@ -72,7 +73,6 @@ struct PostFieldsView: View {
                 .frame(height: 2)
                 .padding(.horizontal, 10)
             
-            // MARK: Image Picker
             PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
                 if imageState.uiImage != nil {
                     ImagePreview()
@@ -100,6 +100,7 @@ struct PostFieldsView: View {
     }
 }
 
+//MARK: ImagePreview
 struct ImagePreview: View {
     @Environment(ImageState.self) var imageState
     
@@ -134,7 +135,7 @@ struct ImagePreview: View {
     }
 }
 
-//MARK: Toolbar CRUD Actions
+//MARK: PostSheetToolbar
 struct PostSheetToolbar: ToolbarContent {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
