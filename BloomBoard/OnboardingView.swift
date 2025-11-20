@@ -7,7 +7,7 @@ struct OnboardingView: View {
     }
     
     
-    @AppStorage("didFinishOnboarding") private var didFinishOnboarding = false
+    @AppStorage("needsOnboarding") private var needsOnboarding = true
 
     @State private var currentStep: OnboardingStep = .draftFeature
     
@@ -45,7 +45,7 @@ struct OnboardingView: View {
                 
                 Button {
                     if currentStep == .crossPostFeature {
-                        didFinishOnboarding = true
+                        needsOnboarding = false
                     } else if let next = OnboardingStep(rawValue: currentStep.rawValue + 1) {
                         currentStep = next
                     }

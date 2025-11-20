@@ -13,7 +13,7 @@ struct PostListView: View {
     @State private var postListState = PostListState()
     @State private var searchTerm = ""
     
-    @AppStorage("didFinishOnboarding") private var didFinishOnboarding = false
+    @AppStorage("needsOnboarding") private var didFinishOnboarding = true
     
     let posts: [Post]
     let isDrafts: Bool
@@ -79,6 +79,9 @@ struct PostListView: View {
         .sheet(isPresented: $postListState.showAddSheet) {
             PostEditorView()
                 .presentationDetents([.fraction(0.60)])
+        }
+        .sheet(isPresented: $didFinishOnboarding) {
+            OnboardingView()
         }
         .overlay {
             PostListOverlay(
