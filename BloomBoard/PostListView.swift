@@ -13,6 +13,8 @@ struct PostListView: View {
     @State private var postListState = PostListState()
     @State private var searchTerm = ""
     
+    @AppStorage("didFinishOnboarding") private var didFinishOnboarding = false
+    
     let posts: [Post]
     let isDrafts: Bool
     
