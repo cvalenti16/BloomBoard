@@ -11,7 +11,7 @@ struct OnboardingView: View {
     
     var body: some View {
         VStack {
-//            Spacer()
+            Spacer()
             
             Image(systemName: imageName(for: currentStep))
                 .resizable()
@@ -23,12 +23,13 @@ struct OnboardingView: View {
             Text(title(for: currentStep))
                 .font(.largeTitle)
                 .bold()
+                .padding(.horizontal, 5)
             
             Text(subtitle(for: currentStep))
                 .font(.title3)
                 .padding(.top, 5)
             
-//            Spacer()
+            Spacer()
 
             HStack {
                 if currentStep != .welcome {
@@ -67,7 +68,7 @@ struct OnboardingView: View {
     
     func imageName(for step: OnboardingStep) -> String {
         switch step {
-        case .welcome: return "hand.wave.fill"
+        case .welcome: return "party.popper"
         case .draftFeature: return "tray.and.arrow.down.fill"
         case .trackFeature: return "chart.bar.fill"
         case .crossPostFeature: return "square.grid.2x2.fill"
@@ -76,7 +77,7 @@ struct OnboardingView: View {
     
     func title(for step: OnboardingStep) -> String {
         switch step {
-        case .welcome: return "Welcome to BloomBoard"
+        case .welcome: return "Meet BloomBoard"
         case .draftFeature: return "Store Post Ideas"
         case .trackFeature: return "Track Performance"
         case .crossPostFeature: return "Manage Platforms"
@@ -85,7 +86,7 @@ struct OnboardingView: View {
     
     func subtitle(for step: OnboardingStep) -> String {
         switch step {
-        case .welcome: return "Plan, track, and manage your posts"
+        case .welcome: return "Made to support your content workflow"
         case .draftFeature: return "Build your content pipeline"
         case .trackFeature: return "Rate posts by views to improve"
         case .crossPostFeature: return "See where you’ve shared your content"
