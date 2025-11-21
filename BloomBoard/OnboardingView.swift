@@ -50,7 +50,7 @@ struct OnboardingView: View {
                         currentStep = next
                     }
                 } label: {
-                    Text("Next")
+                    Text(currentStep == .crossPostFeature ? "Finish" : "Next")
                         .onboardingButtonStyle()
                 }
             }
