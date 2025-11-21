@@ -82,7 +82,6 @@ struct PostListView: View {
         }
         .sheet(isPresented: $didFinishOnboarding) {
             OnboardingView()
-                .presentationDetents([.fraction(0.75)])
                 .interactiveDismissDisabled()
         }
         .overlay {

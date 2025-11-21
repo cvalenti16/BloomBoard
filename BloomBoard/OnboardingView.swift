@@ -1,11 +1,9 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    
     enum OnboardingStep: Int, CaseIterable {
-        case draftFeature, postFeature, trackFeature, crossPostFeature
+        case draftFeature, welcome, trackFeature, crossPostFeature
     }
-    
     
     @AppStorage("needsOnboarding") private var needsOnboarding = true
 
@@ -28,6 +26,7 @@ struct OnboardingView: View {
             
             Text(subtitle(for: currentStep))
                 .font(.title3)
+                .padding(.top, 5)
             
             Spacer()
 
@@ -71,7 +70,7 @@ struct OnboardingView: View {
     func imageName(for step: OnboardingStep) -> String {
         switch step {
         case .draftFeature: return "tray.and.arrow.down.fill"
-        case .postFeature: return "square.and.arrow.up.fill"
+        case .welcome: return "hand.wave.fill"
         case .trackFeature: return "chart.bar.fill"
         case .crossPostFeature: return "square.grid.2x2.fill"
         }
@@ -80,7 +79,7 @@ struct OnboardingView: View {
     func title(for step: OnboardingStep) -> String {
         switch step {
         case .draftFeature: return "Store Post Ideas"
-        case .postFeature: return "Post Faster"
+        case .welcome: return "Welcome to BloomBoard"
         case .trackFeature: return "Track Performance"
         case .crossPostFeature: return "Manage Platforms"
         }
@@ -89,7 +88,7 @@ struct OnboardingView: View {
     func subtitle(for step: OnboardingStep) -> String {
         switch step {
         case .draftFeature: return "Build your content pipeline"
-        case .postFeature: return "Titles and images ready instantly"
+        case .welcome: return "Plan, track, and manage your posts"
         case .trackFeature: return "Rate posts by views to improve"
         case .crossPostFeature: return "See where you’ve shared your content"
         }
