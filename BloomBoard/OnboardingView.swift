@@ -88,7 +88,7 @@ struct OnboardingView: View {
         switch step {
         case .welcome: return "Made to support your content workflow"
         case .draftFeature: return "Build your content pipeline"
-        case .trackFeature: return "Rate posts by views to improve"
+        case .trackFeature: return "Rate posts by views for feedback"
         case .crossPostFeature: return "See where you’ve shared your content"
         }
     }
