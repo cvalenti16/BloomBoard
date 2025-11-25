@@ -64,8 +64,7 @@ struct PostFieldsView: View {
         
         VStack {
             TextField(UIStrings.title, text: $title, axis: .vertical)
-                .textFieldStyle(.plain)
-                .padding(10)
+                .padding(.horizontal,10)
                 .bold()
             
             Rectangle()
