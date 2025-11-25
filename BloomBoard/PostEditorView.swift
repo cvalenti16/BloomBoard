@@ -170,6 +170,7 @@ struct PostSheetToolbar: ToolbarContent {
                 
             } label: {
                 Image(systemName: UIIcons.save)
+                    .foregroundStyle(.text)
             }
         }
     }
