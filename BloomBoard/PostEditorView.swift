@@ -13,7 +13,7 @@ struct PostEditorView: View {
     @State private var imageState: ImageState
     @State private var title: String
     let post: Post?
-   
+    
     var isEditing: Bool {
         post != nil
     }
@@ -33,14 +33,12 @@ struct PostEditorView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                PostFieldsView(title: $title)
-            }
-            .navigationTitle(isEditing ? UIStrings.editPost : UIStrings.createPost)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                PostSheetToolbar(post: post, postTitle: title, isEditing: isEditing)
-            }
+            PostFieldsView(title: $title)
+                .navigationTitle(isEditing ? UIStrings.editPost : UIStrings.createPost)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    PostSheetToolbar(post: post, postTitle: title, isEditing: isEditing)
+                }
         }
         .environment(imageState)
     }
@@ -58,7 +56,7 @@ class ImageState {
 struct PostFieldsView: View {
     @Environment(ImageState.self) var imageState
     @Binding var title: String
-     
+    
     var body: some View {
         @Bindable var imageState = imageState
         
@@ -189,7 +187,7 @@ extension PostSheetToolbar {
         
         do {
             try modelContext.save()
-
+            
             dismiss()
         } catch {
             imageState.errorMessage = FeedbackMessages.savedFailed
