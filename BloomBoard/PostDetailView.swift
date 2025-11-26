@@ -161,14 +161,23 @@ private struct UIImageView: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .padding()
                 
-                Button {
-                    UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                HStack {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: UIIcons.crop)
+                            .defaultIconStyle()
+                    }
                     
-                    postState.showFeedback(message: FeedbackMessages.downloadSucceeded)
-                    
-                } label: {
-                    Image(systemName: UIIcons.download)
-                        .defaultIconStyle()
+                    Button {
+                        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                        
+                        postState.showFeedback(message: FeedbackMessages.downloadSucceeded)
+                        
+                    } label: {
+                        Image(systemName: UIIcons.download)
+                            .defaultIconStyle()
+                    }
                 }
             }
             .frame(maxHeight: 220)
