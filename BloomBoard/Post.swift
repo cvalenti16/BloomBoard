@@ -31,6 +31,10 @@ class Post: Identifiable {
         self.socialMedias = socialMedias
         self.originalPlatform = originalPlatform
     }
+    
+    static let testPosts = [
+        Post(title: "Is MVVM needed in SwiftUI?", image: UIImage(named: "sampleImage")?.jpegData(compressionQuality: 0.90))
+    ]
 }
 
 

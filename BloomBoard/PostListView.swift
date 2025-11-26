@@ -13,7 +13,7 @@ struct PostListView: View {
     @State private var postListState = PostListState()
     @State private var searchTerm = ""
     
-    @AppStorage("needsOnboarding") private var didFinishOnboarding = true
+    @AppStorage("needsOnboarding") private var needsOnboarding = true
     
     let posts: [Post]
     let isDrafts: Bool
@@ -80,7 +80,7 @@ struct PostListView: View {
             PostEditorView()
                 .presentationDetents([.fraction(0.60)])
         }
-        .sheet(isPresented: $didFinishOnboarding) {
+        .sheet(isPresented: $needsOnboarding) {
             OnboardingView()
                 .interactiveDismissDisabled()
         }
