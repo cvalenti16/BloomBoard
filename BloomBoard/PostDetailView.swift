@@ -56,6 +56,9 @@ struct PostDetailView: View {
             PostEditorView(post)
                 .presentationDetents([.fraction(0.60)])
         }
+        .sheet(isPresented: $postState.showCropView) {
+            PortraitCropView(post: post)
+        }
         .sheet(isPresented: $postState.showPostSheet) {
             PostSheet(post: post, isPosted: isPosted) { closeParentSheet in
                 if closeParentSheet {
@@ -74,7 +77,7 @@ class PostState {
     var showPostSheet = false
     var selectedPostDate = Date()
     var userFeedback: String? = nil
-    
+    var showCropView = false
     func showFeedback(message: String, duration: TimeInterval = 1) {
         userFeedback = message
         DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
@@ -163,7 +166,7 @@ private struct UIImageView: View {
                 
                 HStack {
                     Button {
-                        
+                        postState.showCropView = true
                     } label: {
                         Image(systemName: UIIcons.crop)
                             .defaultIconStyle()
