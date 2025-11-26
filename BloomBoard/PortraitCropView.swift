@@ -23,11 +23,9 @@ struct PortraitCropView: View {
                     if let image = loadedImage {
                         Image(uiImage: image)
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(height: geo.size.height)
+                            .aspectRatio(contentMode: .fill)
                     }
                 }
-                
                 cropOverlay(in: geo.size)
                     .allowsHitTesting(false)
             }
@@ -40,10 +38,8 @@ struct PortraitCropView: View {
         let centerY = size.height / 2
         
         return ZStack {
-            // Dim everything
             Color.black.opacity(0.55)
             
-            // Punch hole in the middle
             Rectangle()
                 .frame(width: size.width, height: cropHeight)
                 .position(x: size.width / 2, y: centerY)
