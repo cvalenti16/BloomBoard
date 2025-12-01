@@ -169,7 +169,7 @@ private struct UIImageView: View {
                     Button {
                         postState.showCropView = true
                     } label: {
-                        Image(systemName: UIIcons.crop)
+                        Image(systemName: UIIcons.portrait)
                             .defaultIconStyle()
                     }
                     

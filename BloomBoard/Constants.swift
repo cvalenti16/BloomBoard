@@ -68,14 +68,13 @@ struct UIIcons {
     static let document = "document"
     static let posted = "seal.fill"
     static let unpublished = "arrow.uturn.left"
-    static let crop = "crop"
+    static let portrait = "rectangle.dashed"
 }
 
 // MARK: Default Icon Style
 extension Image {
     func defaultIconStyle() -> some View {
         self
-            .font(.system(size: 20))
             .foregroundStyle(.text)
             .padding(12)
             .background(.ultraThinMaterial, in: Circle())
@@ -100,7 +99,7 @@ extension Text {
 extension Text {
     func defaultMessageStyle() -> some View {
         self
-            .font(.system(size: 12))
+            .font(.headline)
             .foregroundStyle(.text)
     }
 }
