@@ -4,6 +4,9 @@ struct PortraitCropView: View {
     let post: Post
     private let targetAspect: CGFloat = 9.0 / 16.0
     
+    @State private var offset: CGSize = .zero
+    @State private var lastOffset: CGSize = .zero
+    
     var loadedImage: UIImage? {
         guard let data = post.image else { return nil }
         return UIImage(data: data)
@@ -20,6 +23,19 @@ struct PortraitCropView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: width, height: height)
+                        .offset(offset)
+                        .gesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    offset = CGSize(
+                                        width: lastOffset.width + value.translation.width,
+                                        height: lastOffset.height + value.translation.height
+                                    )
+                                }
+                                .onEnded { _ in
+                                    lastOffset = offset
+                                }
+                        )
                 }
             }
             .frame(width: width, height: height)
