@@ -78,9 +78,10 @@ class PostState {
     var selectedPostDate = Date()
     var userFeedback: String? = nil
     var showCropView = false
-    func showFeedback(message: String, duration: TimeInterval = 1) {
+    
+    func showFeedback(message: String) {
         userFeedback = message
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.userFeedback = nil
         }
     }
@@ -337,17 +338,6 @@ private struct PostDetailToolbar: ToolbarContent {
     }
     
     var body: some ToolbarContent {
-        //        ToolbarItem {
-        //            Button(UIStrings.copy, systemImage: UIIcons.copy) {
-        //                UIPasteboard.general.string = post.title
-        //                postState.showFeedback(message: FeedbackMessages.copySucceeded)
-        //            }
-        //        }
-        //        
-        //        if #available(iOS 26.0, *) {
-        //            ToolbarSpacer(.fixed)
-        //        }
-        
         ToolbarItem {
             Button(UIStrings.edit, systemImage: UIIcons.edit) {
                 postState.showEditPostSheet.toggle()

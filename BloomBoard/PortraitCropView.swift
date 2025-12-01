@@ -13,6 +13,7 @@ struct PortraitCropView: View {
     @State private var lastScale: CGFloat = 1.0
     
     @State private var backgroundColor: Color = .black
+    @State private var userFeedback: String? = nil
     
     private let targetAspect: CGFloat = 9.0 / 16.0
     let post: Post
@@ -28,42 +29,46 @@ struct PortraitCropView: View {
                 let width = geo.size.width
                 let height = width / targetAspect
                 
-                ZStack {
-                    if let image = loadedImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: width, height: height)
-                            .scaleEffect(scale)
-                            .offset(offset)
-                            .gesture(
-                                SimultaneousGesture(
-                                    DragGesture()
-                                        .onChanged { value in
-                                            let newOffset = CGSize(
-                                                width: lastOffset.width + value.translation.width,
-                                                height: lastOffset.height + value.translation.height
-                                            )
-                                            offset = boundedOffset(
-                                                newOffset,
-                                                in: CGSize(width: width, height: height)
-                                            )
-                                        }
-                                        .onEnded { _ in
-                                            lastOffset = offset
-                                        },
-                                    
-                                    // Pinch zoom
-                                    MagnificationGesture()
-                                        .onChanged { value in
-                                            scale = lastScale * value
-                                        }
-                                        .onEnded { _ in
-                                            lastScale = scale
-                                        }
+                ZStack (alignment: .bottom) {
+                        if let image = loadedImage {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: width, height: height)
+                                .scaleEffect(scale)
+                                .offset(offset)
+                                .gesture(
+                                    SimultaneousGesture(
+                                        DragGesture()
+                                            .onChanged { value in
+                                                let newOffset = CGSize(
+                                                    width: lastOffset.width + value.translation.width,
+                                                    height: lastOffset.height + value.translation.height
+                                                )
+                                                offset = boundedOffset(
+                                                    newOffset,
+                                                    in: CGSize(width: width, height: height)
+                                                )
+                                            }
+                                            .onEnded { _ in
+                                                lastOffset = offset
+                                            },
+                                        
+                                        // Pinch zoom
+                                        MagnificationGesture()
+                                            .onChanged { value in
+                                                scale = lastScale * value
+                                            }
+                                            .onEnded { _ in
+                                                lastScale = scale
+                                            }
+                                    )
                                 )
-                            )
-                    }
+                        }
+                    
+                        Text(userFeedback ?? "")
+                            .defaultMessageStyle()
+                            .animation(.easeInOut, value: userFeedback)
                 }
                 .frame(width: width, height: height)
                 .clipped()
@@ -88,14 +93,9 @@ struct PortraitCropView: View {
                     .labelsHidden()
                 }
                 
-                if #available(iOS 26.0, *) {
-                    ToolbarSpacer(.fixed)
-                }
-                
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         exportImage(width: UIScreen.main.bounds.width)
-
                     } label: {
                         Image(systemName: UIIcons.download)
                     }
@@ -113,6 +113,7 @@ struct PortraitCropView: View {
         // Render as UIImage
         if let uiImage = renderer.uiImage {
             UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+            showFeedback(message: FeedbackMessages.downloadSucceeded)
         }
     }
     
@@ -134,8 +135,6 @@ struct PortraitCropView: View {
         .clipped()
     }
     
-    
-    
     // MARK: - Drag Bounds
     private func boundedOffset(_ proposed: CGSize, in frameSize: CGSize) -> CGSize {
         let maxX = frameSize.width / 2
@@ -145,6 +144,13 @@ struct PortraitCropView: View {
         let clampedY = proposed.height.clamped(to: -maxY...maxY)
         
         return CGSize(width: clampedX, height: clampedY)
+    }
+    
+    func showFeedback(message: String) {
+        userFeedback = message
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.userFeedback = nil
+        }
     }
 }
 
