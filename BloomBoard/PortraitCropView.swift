@@ -11,6 +11,10 @@ struct PortraitCropView: View {
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
 
+    @State private var backgroundColor: Color = .black
+    @State private var showInlineColorPicker = false
+
+
     private let targetAspect: CGFloat = 9.0 / 16.0
     let post: Post
     
@@ -63,10 +67,20 @@ struct PortraitCropView: View {
                                 )
                             )
                     }
+                    
+//                    if showInlineColorPicker {
+//                        ColorPicker(
+//                            "",
+//                            selection: $backgroundColor,
+//                            supportsOpacity: false
+//                        )
+//                        .labelsHidden()
+//                        .padding(.top, 12)
+//                    }
                 }
                 .frame(width: width, height: height)
                 .clipped()
-                .background(Color.black)
+                .background(backgroundColor)
                 .position(x: geo.size.width / 2, y: geo.size.height / 2)
             }
             .navigationTitle("Convert to 9:16")
@@ -76,6 +90,14 @@ struct PortraitCropView: View {
                     Button { dismiss() } label: {
                         Image(systemName: UIIcons.cancel)
                     }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    ColorPicker(
+                        "",
+                        selection: $backgroundColor,
+                        supportsOpacity: false
+                    )
                 }
             }
         }
