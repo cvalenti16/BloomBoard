@@ -33,7 +33,7 @@ struct PortraitCropView: View {
                                             width: lastOffset.width + value.translation.width,
                                             height: lastOffset.height + value.translation.height
                                         )
-                                        // Bound the drag so image never leaves the frame
+                                        
                                         offset = boundedOffset(newOffset, in: CGSize(width: width, height: height))
                                     }
                                     .onEnded { _ in
@@ -43,8 +43,8 @@ struct PortraitCropView: View {
                     }
                 }
                 .frame(width: width, height: height)
-                .clipped()                  // Crops overflowing image
-                .background(Color.black)    // Fills any letterboxed areas
+                .clipped()
+                .background(Color.black)
                 .position(x: geo.size.width / 2, y: geo.size.height / 2)
             }
             .navigationTitle("Convert to 9:16")
