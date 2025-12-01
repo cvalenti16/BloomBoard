@@ -88,6 +88,10 @@ struct PortraitCropView: View {
                     .labelsHidden()
                 }
                 
+                if #available(iOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         exportImage(width: UIScreen.main.bounds.width)
