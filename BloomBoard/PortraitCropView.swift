@@ -19,6 +19,7 @@ struct PortraitCropView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
+                        .frame(width: width, height: height)
                 }
             }
             .frame(width: width, height: height)
