@@ -24,6 +24,7 @@ struct PortraitCropView: View {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFit()
+                            .frame(width: width, height: height)
                             .offset(offset)
                             .gesture(
                                 DragGesture()
