@@ -2,8 +2,14 @@ import SwiftUI
 
 struct PortraitCropView: View {
     @Environment(\.dismiss) var dismiss
+    
+    // Offset (drag)
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
+    
+    // Zoom
+    @State private var scale: CGFloat = 1.0
+    @State private var lastScale: CGFloat = 1.0
 
     private let targetAspect: CGFloat = 9.0 / 16.0
     let post: Post
@@ -25,20 +31,36 @@ struct PortraitCropView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: width, height: height)
+                            .scaleEffect(scale)
                             .offset(offset)
                             .gesture(
-                                DragGesture()
-                                    .onChanged { value in
-                                        let newOffset = CGSize(
-                                            width: lastOffset.width + value.translation.width,
-                                            height: lastOffset.height + value.translation.height
-                                        )
-                                        
-                                        offset = boundedOffset(newOffset, in: CGSize(width: width, height: height))
-                                    }
-                                    .onEnded { _ in
-                                        lastOffset = offset
-                                    }
+                                SimultaneousGesture(
+                                    
+                                    // Drag + clamp
+                                    DragGesture()
+                                        .onChanged { value in
+                                            let newOffset = CGSize(
+                                                width: lastOffset.width + value.translation.width,
+                                                height: lastOffset.height + value.translation.height
+                                            )
+                                            offset = boundedOffset(
+                                                newOffset,
+                                                in: CGSize(width: width, height: height)
+                                            )
+                                        }
+                                        .onEnded { _ in
+                                            lastOffset = offset
+                                        },
+                                    
+                                    // Pinch zoom
+                                    MagnificationGesture()
+                                        .onChanged { value in
+                                            scale = lastScale * value
+                                        }
+                                        .onEnded { _ in
+                                            lastScale = scale
+                                        }
+                                )
                             )
                     }
                 }
@@ -51,9 +73,7 @@ struct PortraitCropView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
+                    Button { dismiss() } label: {
                         Image(systemName: UIIcons.cancel)
                     }
                 }
@@ -61,6 +81,7 @@ struct PortraitCropView: View {
         }
     }
     
+    // MARK: - Drag Bounds
     private func boundedOffset(_ proposed: CGSize, in frameSize: CGSize) -> CGSize {
         let maxX = frameSize.width / 2
         let maxY = frameSize.height / 2
