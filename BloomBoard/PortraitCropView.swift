@@ -29,10 +29,12 @@ struct PortraitCropView: View {
                             .gesture(
                                 DragGesture()
                                     .onChanged { value in
-                                        offset = CGSize(
+                                        let newOffset = CGSize(
                                             width: lastOffset.width + value.translation.width,
                                             height: lastOffset.height + value.translation.height
                                         )
+                                        // Bound the drag so image never leaves the frame
+                                        offset = boundedOffset(newOffset, in: CGSize(width: width, height: height))
                                     }
                                     .onEnded { _ in
                                         lastOffset = offset
@@ -41,7 +43,8 @@ struct PortraitCropView: View {
                     }
                 }
                 .frame(width: width, height: height)
-                .background(Color.black)
+                .clipped()                  // Crops overflowing image
+                .background(Color.black)    // Fills any letterboxed areas
                 .position(x: geo.size.width / 2, y: geo.size.height / 2)
             }
             .navigationTitle("Convert to 9:16")
@@ -56,6 +59,22 @@ struct PortraitCropView: View {
                 }
             }
         }
+    }
+    
+    private func boundedOffset(_ proposed: CGSize, in frameSize: CGSize) -> CGSize {
+        let maxX = frameSize.width / 2
+        let maxY = frameSize.height / 2
+        
+        let clampedX = proposed.width.clamped(to: -maxX...maxX)
+        let clampedY = proposed.height.clamped(to: -maxY...maxY)
+        
+        return CGSize(width: clampedX, height: clampedY)
+    }
+}
+
+extension Comparable {
+    func clamped(to limits: ClosedRange<Self>) -> Self {
+        min(max(self, limits.lowerBound), limits.upperBound)
     }
 }
 
