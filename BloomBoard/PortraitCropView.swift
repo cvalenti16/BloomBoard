@@ -98,6 +98,7 @@ struct PortraitCropView: View {
                         selection: $backgroundColor,
                         supportsOpacity: false
                     )
+                    .labelsHidden()
                 }
             }
         }
