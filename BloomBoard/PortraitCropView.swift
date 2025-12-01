@@ -3,18 +3,16 @@ import SwiftUI
 struct PortraitCropView: View {
     @Environment(\.dismiss) var dismiss
     
-    // Offset (drag)
+    // Drag
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
     
     // Zoom
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
-
+    
     @State private var backgroundColor: Color = .black
-    @State private var showInlineColorPicker = false
-
-
+    
     private let targetAspect: CGFloat = 9.0 / 16.0
     let post: Post
     
@@ -39,8 +37,6 @@ struct PortraitCropView: View {
                             .offset(offset)
                             .gesture(
                                 SimultaneousGesture(
-                                    
-                                    // Drag + clamp
                                     DragGesture()
                                         .onChanged { value in
                                             let newOffset = CGSize(
@@ -67,16 +63,6 @@ struct PortraitCropView: View {
                                 )
                             )
                     }
-                    
-//                    if showInlineColorPicker {
-//                        ColorPicker(
-//                            "",
-//                            selection: $backgroundColor,
-//                            supportsOpacity: false
-//                        )
-//                        .labelsHidden()
-//                        .padding(.top, 12)
-//                    }
                 }
                 .frame(width: width, height: height)
                 .clipped()
@@ -99,6 +85,14 @@ struct PortraitCropView: View {
                         supportsOpacity: false
                     )
                     .labelsHidden()
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: UIIcons.download)
+                    }
                 }
             }
         }
