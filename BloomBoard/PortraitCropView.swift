@@ -1,4 +1,5 @@
 import SwiftUI
+import Photos
 
 struct PortraitCropView: View {
     @Environment(\.dismiss) var dismiss
@@ -89,7 +90,8 @@ struct PortraitCropView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        
+                        exportImage(width: UIScreen.main.bounds.width)
+
                     } label: {
                         Image(systemName: UIIcons.download)
                     }
@@ -97,6 +99,38 @@ struct PortraitCropView: View {
             }
         }
     }
+    
+    private func exportImage(width: CGFloat) {
+        let height = width / targetAspect
+        let view = CropCanvas(width: width, height: height)
+
+        let renderer = ImageRenderer(content: view)
+
+        // Render as UIImage
+        if let uiImage = renderer.uiImage {
+            UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+        }
+    }
+    
+    @ViewBuilder
+    private func CropCanvas(width: CGFloat, height: CGFloat) -> some View {
+        ZStack {
+            backgroundColor
+            
+            if let image = loadedImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: width, height: height)
+                    .scaleEffect(scale)
+                    .offset(offset)
+            }
+        }
+        .frame(width: width, height: height)
+        .clipped()
+    }
+    
+    
     
     // MARK: - Drag Bounds
     private func boundedOffset(_ proposed: CGSize, in frameSize: CGSize) -> CGSize {
