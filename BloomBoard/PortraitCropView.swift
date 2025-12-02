@@ -109,8 +109,12 @@ struct PortraitCropView: View {
         let view = CropCanvas(width: width, height: height)
 
         let renderer = ImageRenderer(content: view)
-
-        // Render as UIImage
+        
+        let logicalWidth = width
+        let targetPixelWidth: CGFloat = 1080
+        let scale = targetPixelWidth / logicalWidth
+        renderer.scale = scale
+        
         if let uiImage = renderer.uiImage {
             UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
             showFeedback(message: FeedbackMessages.downloadSucceeded)

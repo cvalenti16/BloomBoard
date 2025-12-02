@@ -99,7 +99,7 @@ extension Text {
 extension Text {
     func defaultMessageStyle() -> some View {
         self
-            .font(.headline)
+            .font(.subheadline)
             .foregroundStyle(.text)
     }
 }
