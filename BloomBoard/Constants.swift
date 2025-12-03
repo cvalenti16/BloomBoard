@@ -102,6 +102,8 @@ extension Text {
         self
             .font(.subheadline)
             .foregroundStyle(.text)
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: 20)
     }
 }
 
@@ -110,10 +112,10 @@ extension Text {
     func defaultUploadImageStyle() -> some View {
         self
             .foregroundStyle(.gray)
-            .frame(maxWidth: .infinity, maxHeight: 200)
+            .frame(maxWidth: .infinity, maxHeight: 220)
             .background(.ultraThinMaterial)
             .clipShape(.rect(cornerRadius: 10))
-            .padding(10)
+            .padding()
     }
 }
 

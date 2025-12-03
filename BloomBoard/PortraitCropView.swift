@@ -16,12 +16,7 @@ struct PortraitCropView: View {
     @State private var userFeedback: String? = nil
     
     private let targetAspect: CGFloat = 9.0 / 16.0
-    let post: Post
-    
-    var loadedImage: UIImage? {
-        guard let data = post.image else { return nil }
-        return UIImage(data: data)
-    }
+    let postImage: UIImage
     
     var body: some View {
         NavigationStack {
@@ -30,45 +25,41 @@ struct PortraitCropView: View {
                 let height = width / targetAspect
                 
                 ZStack (alignment: .bottom) {
-                        if let image = loadedImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: width, height: height)
-                                .scaleEffect(scale)
-                                .offset(offset)
-                                .gesture(
-                                    SimultaneousGesture(
-                                        DragGesture()
-                                            .onChanged { value in
-                                                let newOffset = CGSize(
-                                                    width: lastOffset.width + value.translation.width,
-                                                    height: lastOffset.height + value.translation.height
-                                                )
-                                                offset = boundedOffset(
-                                                    newOffset,
-                                                    in: CGSize(width: width, height: height)
-                                                )
-                                            }
-                                            .onEnded { _ in
-                                                lastOffset = offset
-                                            },
-                                        
-                                        // Pinch zoom
-                                        MagnificationGesture()
-                                            .onChanged { value in
-                                                scale = lastScale * value
-                                            }
-                                            .onEnded { _ in
-                                                lastScale = scale
-                                            }
-                                    )
-                                )
-                        }
+                    Image(uiImage: postImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: width, height: height)
+                        .scaleEffect(scale)
+                        .offset(offset)
+                        .gesture(
+                            SimultaneousGesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        let newOffset = CGSize(
+                                            width: lastOffset.width + value.translation.width,
+                                            height: lastOffset.height + value.translation.height
+                                        )
+                                        offset = boundedOffset(
+                                            newOffset,
+                                            in: CGSize(width: width, height: height)
+                                        )
+                                    }
+                                    .onEnded { _ in
+                                        lastOffset = offset
+                                    },
+                                MagnificationGesture()
+                                    .onChanged { value in
+                                        scale = lastScale * value
+                                    }
+                                    .onEnded { _ in
+                                        lastScale = scale
+                                    }
+                            )
+                        )
                     
-                        Text(userFeedback ?? "")
-                            .defaultMessageStyle()
-                            .animation(.easeInOut, value: userFeedback)
+                    Text(userFeedback ?? "")
+                        .defaultMessageStyle()
+                        .animation(.easeInOut, value: userFeedback)
                 }
                 .frame(width: width, height: height)
                 .clipped()
@@ -107,7 +98,7 @@ struct PortraitCropView: View {
     private func exportImage(width: CGFloat) {
         let height = width / targetAspect
         let view = CropCanvas(width: width, height: height)
-
+        
         let renderer = ImageRenderer(content: view)
         
         let logicalWidth = width
@@ -126,14 +117,13 @@ struct PortraitCropView: View {
         ZStack {
             backgroundColor
             
-            if let image = loadedImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: width, height: height)
-                    .scaleEffect(scale)
-                    .offset(offset)
-            }
+            Image(uiImage: postImage)
+                .resizable()
+                .scaledToFit()
+                .frame(width: width, height: height)
+                .scaleEffect(scale)
+                .offset(offset)
+            
         }
         .frame(width: width, height: height)
         .clipped()
@@ -165,5 +155,12 @@ extension Comparable {
 }
 
 #Preview {
-    PortraitCropView(post: Post.testPosts[0])
+    var loadedImage: UIImage? {
+        guard let imageData = Post.testPosts[0].image else { return nil }
+        return UIImage(data: imageData)
+    }
+    
+    if let image = loadedImage {
+        PortraitCropView(postImage: image)
+    }
 }

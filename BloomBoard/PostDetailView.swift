@@ -57,7 +57,9 @@ struct PostDetailView: View {
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postState.showCropView) {
-            PortraitCropView(post: post)
+            if let image = loadedImage {
+                PortraitCropView(postImage: image)
+            }
         }
         .sheet(isPresented: $postState.showPostSheet) {
             PostSheet(post: post, isPosted: isPosted) { closeParentSheet in
