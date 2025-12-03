@@ -86,7 +86,7 @@ struct PortraitCropView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     ColorPicker(
-                        "",
+                        UIStrings.backgroundColor,
                         selection: $backgroundColor,
                         supportsOpacity: false
                     )

@@ -44,6 +44,7 @@ struct UIStrings {
     static let notPostedOn = "Not Posted On"
     static let clear = "Clear"
     static let filter = "Filter"
+    static let backgroundColor = "Background Color"
 }
 
 // MARK: UIIcons
