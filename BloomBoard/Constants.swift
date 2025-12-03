@@ -56,7 +56,7 @@ struct UIIcons {
     static let download = "square.and.arrow.down"
     static let edit = "pencil"
     static let calendar = "calendar"
-    static let changeIcon = "arrow.triangle.2.circlepath"
+    static let change = "arrow.triangle.2.circlepath"
     static let cancel = "xmark"
     static let save = "square.and.arrow.down"
     static let moon = "moon.fill"

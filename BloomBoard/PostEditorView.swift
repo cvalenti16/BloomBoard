@@ -112,7 +112,7 @@ struct ImagePreview: View {
                     .padding(10)
                 
                 HStack {
-                    Image(systemName: UIIcons.changeIcon)
+                    Image(systemName: UIIcons.change)
                         .defaultIconStyle()
                     
                     Button {

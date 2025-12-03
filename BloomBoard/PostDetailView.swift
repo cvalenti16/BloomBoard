@@ -41,7 +41,12 @@ struct PostDetailView: View {
             
             SocialMediaSummary(post)
             
-            PostButton(isPosted)
+            Button {
+                postState.showPostSheet = true
+            } label: {
+                Text(isPosted ? UIStrings.repost : UIStrings.post)
+                    .defaultButtonStyle()
+            }
             
             Text(postState.userFeedback ?? "")
                 .defaultMessageStyle()
@@ -50,7 +55,12 @@ struct PostDetailView: View {
         }
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
-            PostDetailToolbar(post)
+            ToolbarItem {
+                Button(UIStrings.edit, systemImage: UIIcons.edit) {
+                    postState.showEditPostSheet.toggle()
+                    
+                }
+            }
         }
         .sheet(isPresented: $postState.showEditPostSheet) {
             PostEditorView(post)
@@ -202,26 +212,6 @@ private struct UIImageView: View {
     }
 }
 
-// MARK: PostButton
-private struct PostButton: View {
-    @Environment(PostState.self) var postState
-    
-    let isPosted: Bool
-    
-    init(_ isPosted: Bool) {
-        self.isPosted = isPosted
-    }
-    
-    var body: some View {
-        Button {
-            postState.showPostSheet = true
-        } label: {
-            Text(isPosted ? UIStrings.repost : UIStrings.post)
-                .defaultButtonStyle()
-        }
-    }
-}
-
 // MARK: PostSheet
 private struct PostSheet: View {
     @Environment(\.modelContext) var modelContext
@@ -328,24 +318,3 @@ private struct PostSheet: View {
         postState.showPostSheet = false
     }
 }
-
-//MARK: Toolbar
-private struct PostDetailToolbar: ToolbarContent {
-    @Environment(PostState.self) var postState
-    
-    let post: Post
-    
-    init(_ post: Post) {
-        self.post = post
-    }
-    
-    var body: some ToolbarContent {
-        ToolbarItem {
-            Button(UIStrings.edit, systemImage: UIIcons.edit) {
-                postState.showEditPostSheet.toggle()
-                
-            }
-        }
-    }
-}
-
