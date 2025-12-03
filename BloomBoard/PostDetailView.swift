@@ -58,7 +58,7 @@ struct PostDetailView: View {
         }
         .sheet(isPresented: $postState.showCropView) {
             if let image = loadedImage {
-                PortraitCropView(postImage: image)
+                NineBySixteenView(postImage: image)
             }
         }
         .sheet(isPresented: $postState.showPostSheet) {

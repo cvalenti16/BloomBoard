@@ -1,7 +1,7 @@
 import SwiftUI
 import Photos
 
-struct PortraitCropView: View {
+struct NineBySixteenView: View {
     @Environment(\.dismiss) var dismiss
     
     // Drag
@@ -161,6 +161,6 @@ extension Comparable {
     }
     
     if let image = loadedImage {
-        PortraitCropView(postImage: image)
+        NineBySixteenView(postImage: image)
     }
 }
