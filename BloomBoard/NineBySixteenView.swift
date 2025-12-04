@@ -66,6 +66,7 @@ struct NineBySixteenView: View {
                 .background(backgroundColor)
                 .position(x: geo.size.width / 2, y: geo.size.height / 2)
             }
+            .preferredColorScheme(.dark)
             .navigationTitle("Convert to 9:16")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
