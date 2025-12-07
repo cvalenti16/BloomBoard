@@ -92,10 +92,19 @@ struct PostListView: View {
             if searchedPosts.isEmpty && !searchTerm.isEmpty {
                 ContentUnavailableView.search
             } else if searchedPosts.isEmpty {
-                ContentUnavailableView {
-                    Label("No Avaiable Posts",
-                        systemImage: UIIcons.posts
-                    )
+                switch listType {
+                case .drafts:
+                    ContentUnavailableView {
+                        Label("No Draft Posts",
+                            systemImage: UIIcons.posts
+                        )
+                    }
+                case .published:
+                    ContentUnavailableView {
+                        Label("No Published Posts",
+                            systemImage: UIIcons.published
+                        )
+                    }
                 }
             }
         }
@@ -157,7 +166,7 @@ private struct PostItemView: View {
 }
 
 
-// MARK: PostDeleteAlert
+// MARK: Deleting Posts
 private struct PostDeleteAlert: ViewModifier {
     @Environment(\.modelContext) private var modelContext
     @Environment(ListState.self) private var listState
@@ -186,7 +195,7 @@ private extension View {
     }
 }
 
-// MARK: PostListToolbar
+// MARK: Toolbar
 private struct PostListToolbar: ToolbarContent {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
