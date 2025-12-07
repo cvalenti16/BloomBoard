@@ -44,8 +44,29 @@ struct PostEditorView: View {
                     .padding(.horizontal)
                 
                 PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
-                    if imageState.uiImage != nil {
-                        ImagePreview()
+                    if let image = imageState.uiImage {
+                        ZStack {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity, maxHeight: 220)
+                                .clipShape(.rect(cornerRadius: 10))
+                                .padding()
+                            
+                            HStack {
+                                Image(systemName: UIIcons.change)
+                                    .defaultIconStyle()
+                                
+                                Button {
+                                    imageState.selectedImage = nil
+                                    imageState.uiImage = nil
+                                    imageState.imageWasChanged = true
+                                } label: {
+                                    Image(systemName: UIIcons.trash)
+                                        .defaultIconStyle()
+                                }
+                            }
+                        }
                     } else {
                         Text(UIStrings.uploadImage)
                             .defaultUploadImageStyle()
@@ -82,41 +103,6 @@ class ImageState {
     var uiImage: UIImage? = nil
     var imageWasChanged = false
     var errorMessage: String? = nil
-}
-
-//MARK: ImagePreview
-struct ImagePreview: View {
-    @Environment(ImageState.self) var imageState
-    
-    var body: some View {
-        if let image = imageState.uiImage {
-            ZStack {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: .infinity, maxHeight: 220)
-                    .clipShape(.rect(cornerRadius: 10))
-                    .padding()
-                
-                HStack {
-                    Image(systemName: UIIcons.change)
-                        .defaultIconStyle()
-                    
-                    Button {
-                        imageState.selectedImage = nil
-                        imageState.uiImage = nil
-                        imageState.imageWasChanged = true
-                    } label: {
-                        Image(systemName: UIIcons.trash)
-                            .defaultIconStyle()
-                    }
-                }
-            }
-        } else {
-            Text(UIStrings.uploadImage)
-                .defaultUploadImageStyle()
-        }
-    }
 }
 
 //MARK: PostSheetToolbar
