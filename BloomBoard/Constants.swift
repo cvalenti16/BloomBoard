@@ -63,7 +63,7 @@ struct UIIcons {
     static let document = "document"
     static let posted = "seal.fill"
     static let unpublished = "arrow.uturn.left"
-    static let portrait = "rectangle.dashed"
+    static let portrait = "square.dashed"
 }
 
 // MARK: Default Icon Style
