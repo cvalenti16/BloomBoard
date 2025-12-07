@@ -10,10 +10,9 @@ import SwiftData
 
 //MARK: PostListView
 struct PostListView: View {
+    @AppStorage("needsOnboarding") private var needsOnboarding = true
     @State private var postListState = PostListState()
     @State private var searchTerm = ""
-    
-    @AppStorage("needsOnboarding") private var needsOnboarding = true
     
     let posts: [Post]
     let isDrafts: Bool
@@ -63,15 +62,28 @@ struct PostListView: View {
     
     var body: some View {
         NavigationStack(path: $postListState.postDetailPath) {
-            PopulatedListView(posts: filteredPosts)
-                .navigationDestination(for: Post.self) { post in
-                    PostDetailView(post: post)
+            List(posts) { post in
+                PostItemView(post: post) { post in
+                    postListState.postDetailPath.append(post)
                 }
-                .postDeleteAlert()
-                .navigationTitle(currentNavigationTitle)
-                .toolbar {
-                    PostListToolbar(isDrafts: isDrafts)
+                .swipeActions(edge: .trailing) {
+                    Button {
+                        postListState.postToDelete = post
+                        postListState.showDeleteAlert.toggle()
+                    } label: {
+                        Image(systemName: UIIcons.trash)
+                            .tint(.red)
+                    }
                 }
+            }
+            .navigationDestination(for: Post.self) { post in
+                PostDetailView(post: post)
+            }
+            .postDeleteAlert()
+            .navigationTitle(currentNavigationTitle)
+            .toolbar {
+                PostListToolbar(isDrafts: isDrafts)
+            }
         }
         .tint(.text)
         .environment(postListState)
@@ -105,30 +117,6 @@ private class PostListState {
     var selectedMissingPlatform: SocialMedia? = nil
 }
 
-// MARK: PopulatedListView
-private struct PopulatedListView: View {
-    let posts: [Post]
-    
-    @Environment(PostListState.self) var postListState
-    
-    var body: some View {
-        List(posts) { post in
-            PostItemView(post: post) { post in
-                postListState.postDetailPath.append(post)
-            }
-            .swipeActions(edge: .trailing) {
-                Button {
-                    postListState.postToDelete = post
-                    postListState.showDeleteAlert.toggle()
-                } label: {
-                    Image(systemName: UIIcons.trash)
-                        .tint(.red)
-                }
-            }
-        }
-    }
-}
-
 // MARK: PostDeleteAlert
 private struct PostDeleteAlert: ViewModifier {
     @Environment(\.modelContext) private var modelContext
@@ -137,7 +125,7 @@ private struct PostDeleteAlert: ViewModifier {
     
     func body(content: Content) -> some View {
         @Bindable var postListState = postListState
-
+        
         content.alert(UIStrings.deletePost, isPresented: $postListState.showDeleteAlert) {
             Button(UIStrings.delete, role: .destructive) {
                 if let post = postListState.postToDelete {

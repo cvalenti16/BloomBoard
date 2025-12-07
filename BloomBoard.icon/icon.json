@@ -22,8 +22,8 @@
       "appearance" : "dark",
       "value" : {
         "linear-gradient" : [
-          "extended-gray:0.75000,1.00000",
-          "extended-gray:0.25000,1.00000"
+          "extended-gray:0.25000,1.00000",
+          "extended-gray:0.75000,1.00000"
         ],
         "orientation" : {
           "start" : {
