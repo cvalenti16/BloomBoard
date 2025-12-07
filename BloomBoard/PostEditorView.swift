@@ -33,12 +33,44 @@ struct PostEditorView: View {
     
     var body: some View {
         NavigationStack {
-            PostFieldsView(title: $title)
-                .navigationTitle(isEditing ? UIStrings.editPost : UIStrings.createPost)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    PostSheetToolbar(post: post, postTitle: title, isEditing: isEditing)
+            VStack {
+                TextField(UIStrings.title, text: $title, axis: .vertical)
+                    .padding(.horizontal)
+                    .bold()
+                
+                Rectangle()
+                    .foregroundStyle(.text)
+                    .frame(height: 2)
+                    .padding(.horizontal)
+                
+                PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
+                    if imageState.uiImage != nil {
+                        ImagePreview()
+                    } else {
+                        Text(UIStrings.uploadImage)
+                            .defaultUploadImageStyle()
+                    }
                 }
+                .onChange(of: imageState.selectedImage) { oldValue, newValue in
+                    Task {
+                        if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                            await MainActor.run {
+                                imageState.uiImage = UIImage(data: data)
+                                imageState.imageWasChanged = true
+                            }
+                        }
+                    }
+                }
+                
+                Text(imageState.errorMessage ?? "")
+                    .defaultMessageStyle()
+                
+            }
+            .navigationTitle(isEditing ? UIStrings.editPost : UIStrings.createPost)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                PostSheetToolbar(post: post, postTitle: title, isEditing: isEditing)
+            }
         }
         .environment(imageState)
     }
@@ -52,51 +84,6 @@ class ImageState {
     var errorMessage: String? = nil
 }
 
-//MARK: PostFieldsView
-struct PostFieldsView: View {
-    @Environment(ImageState.self) var imageState
-    @Binding var title: String
-    
-    var body: some View {
-        @Bindable var imageState = imageState
-        
-        VStack {
-            TextField(UIStrings.title, text: $title, axis: .vertical)
-                .padding(.horizontal,10)
-                .bold()
-            
-            Rectangle()
-                .foregroundStyle(.text)
-                .frame(height: 2)
-                .padding(.horizontal, 10)
-            
-            PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
-                if imageState.uiImage != nil {
-                    ImagePreview()
-                } else {
-                    Text(UIStrings.uploadImage)
-                        .defaultUploadImageStyle()
-                }
-            }
-            .onChange(of: imageState.selectedImage) { oldValue, newValue in
-                Task {
-                    if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                        await MainActor.run {
-                            imageState.uiImage = UIImage(data: data)
-                            imageState.imageWasChanged = true
-                        }
-                    }
-                }
-            }
-            
-            if let error = imageState.errorMessage {
-                Text(error)
-                    .defaultMessageStyle()
-            }
-        }
-    }
-}
-
 //MARK: ImagePreview
 struct ImagePreview: View {
     @Environment(ImageState.self) var imageState
@@ -107,9 +94,9 @@ struct ImagePreview: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(maxWidth: .infinity, maxHeight: 200)
+                    .frame(maxWidth: .infinity, maxHeight: 220)
                     .clipShape(.rect(cornerRadius: 10))
-                    .padding(10)
+                    .padding()
                 
                 HStack {
                     Image(systemName: UIIcons.change)
