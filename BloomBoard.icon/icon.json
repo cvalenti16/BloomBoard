@@ -2,39 +2,13 @@
   "fill-specializations" : [
     {
       "value" : {
-        "linear-gradient" : [
-          "gray:0.75000,1.00000",
-          "extended-gray:0.50000,1.00000"
-        ],
-        "orientation" : {
-          "start" : {
-            "x" : 0.5,
-            "y" : 0
-          },
-          "stop" : {
-            "x" : 0.5,
-            "y" : 0.7
-          }
-        }
+        "solid" : "extended-gray:0.75000,1.00000"
       }
     },
     {
       "appearance" : "dark",
       "value" : {
-        "linear-gradient" : [
-          "extended-gray:0.25000,1.00000",
-          "extended-gray:0.75000,1.00000"
-        ],
-        "orientation" : {
-          "start" : {
-            "x" : 0.5,
-            "y" : 0
-          },
-          "stop" : {
-            "x" : 0.5,
-            "y" : 0.7
-          }
-        }
+        "solid" : "extended-gray:0.25000,1.00000"
       }
     }
   ],
@@ -42,13 +16,13 @@
     {
       "layers" : [
         {
-          "image-name" : "2 – Layer.svg",
-          "name" : "2 – Layer",
+          "image-name" : "Rectangle 2-1.png",
+          "name" : "Rectangle 2-1",
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
-              -27.15625,
-              34.1171875
+              125.28857905313112,
+              -63
             ]
           }
         }
@@ -65,13 +39,59 @@
     {
       "layers" : [
         {
-          "image-name" : "1 – Layer 4.svg",
-          "name" : "1 – Layer 4",
+          "image-name" : "Rectangle 2.png",
+          "name" : "Rectangle 2",
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
-              -31.46875,
-              29.5
+              82.98303407385265,
+              47.83471851312834
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "layers" : [
+        {
+          "image-name" : "1 – Layer 2.svg",
+          "name" : "1 – Layer 2",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              -6.578125,
+              94.4453125
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "layers" : [
+        {
+          "image-name" : "2 – Layer 3.svg",
+          "name" : "2 – Layer 3",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              -170.87290589984178,
+              -17.364911166418324
             ]
           }
         }

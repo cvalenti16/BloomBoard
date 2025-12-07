@@ -2,7 +2,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     enum OnboardingStep: Int, CaseIterable {
-        case welcome, draftFeature, trackFeature, crossPostFeature
+        case welcome, drafts, performance, crossPost, nineBySixteen
     }
     
     @AppStorage("needsOnboarding") private var needsOnboarding = true
@@ -44,13 +44,13 @@ struct OnboardingView: View {
                 }
                 
                 Button {
-                    if currentStep == .crossPostFeature {
+                    if currentStep == .nineBySixteen {
                         needsOnboarding = false
                     } else if let next = OnboardingStep(rawValue: currentStep.rawValue + 1) {
                         currentStep = next
                     }
                 } label: {
-                    Text(currentStep == .crossPostFeature ? "Finish" : "Next")
+                    Text(currentStep == .nineBySixteen ? "Finish" : "Next")
                         .onboardingButtonStyle()
                 }
             }
@@ -69,27 +69,30 @@ struct OnboardingView: View {
     func imageName(for step: OnboardingStep) -> String {
         switch step {
         case .welcome: return "party.popper"
-        case .draftFeature: return "tray.and.arrow.down.fill"
-        case .trackFeature: return "chart.bar.fill"
-        case .crossPostFeature: return "square.grid.2x2.fill"
+        case .drafts: return "tray.and.arrow.down.fill"
+        case .performance: return "chart.bar.fill"
+        case .crossPost: return "square.grid.2x2.fill"
+        case .nineBySixteen: return "square.dashed"
         }
     }
     
     func title(for step: OnboardingStep) -> String {
         switch step {
         case .welcome: return "Meet BloomBoard"
-        case .draftFeature: return "Store Post Ideas"
-        case .trackFeature: return "Track Performance"
-        case .crossPostFeature: return "Manage Platforms"
+        case .drafts: return "Store Post Ideas"
+        case .performance: return "Track Performance"
+        case .crossPost: return "Manage Platforms"
+        case .nineBySixteen: return "Convert to 9:16"
         }
     }
     
     func subtitle(for step: OnboardingStep) -> String {
         switch step {
         case .welcome: return "Made to support your content workflow"
-        case .draftFeature: return "Build your content pipeline"
-        case .trackFeature: return "Rate posts by views for feedback"
-        case .crossPostFeature: return "See where you’ve shared your content"
+        case .drafts: return "Build your content pipeline"
+        case .performance: return "Rate posts by views for feedback"
+        case .crossPost: return "See where you’ve shared your content"
+        case .nineBySixteen: return "Format images for vertical platforms"
         }
     }
 }
