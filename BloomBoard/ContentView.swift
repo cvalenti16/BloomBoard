@@ -25,11 +25,11 @@ struct ContentView: View {
     var body: some View {
         TabView {
             Tab(UIStrings.drafts, systemImage: UIIcons.posts) {
-                PostListView(posts: draftPosts,  isDrafts: true, listType: .drafts)
+                PostListView(posts: draftPosts, listType: .drafts)
             }
             
             Tab(UIStrings.published, systemImage: UIIcons.published) {
-                PostListView(posts: publishedPosts, isDrafts: false, listType: .published)
+                PostListView(posts: publishedPosts, listType: .published)
             }
         }
     }

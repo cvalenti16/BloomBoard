@@ -15,7 +15,6 @@ struct PostListView: View {
     @State private var searchTerm = ""
     
     let posts: [Post]
-    let isDrafts: Bool
     let listType: PostListType
     
     var searchedPosts: [Post] {
@@ -75,7 +74,7 @@ struct PostListView: View {
             .postDeleteAlert()
             .navigationTitle(currentNavigationTitle)
             .toolbar {
-                PostListToolbar(isDrafts: isDrafts)
+                PostListToolbar(listType: listType)
             }
         }
         .tint(.text)
@@ -193,8 +192,8 @@ private struct PostListToolbar: ToolbarContent {
     
     @Environment(ListState.self) var listState
     
-    let isDrafts: Bool
-    
+    let listType: PostListType
+
     var body: some ToolbarContent {
         @Bindable var listState = listState
         ToolbarItem(placement: .topBarLeading) {
@@ -209,7 +208,8 @@ private struct PostListToolbar: ToolbarContent {
             }
         }
         
-        if isDrafts {
+        switch listType {
+        case .drafts:
             ToolbarItem {
                 Button(UIStrings.add, systemImage: UIIcons.add) {
                     listState.showAddSheet.toggle()
@@ -219,7 +219,7 @@ private struct PostListToolbar: ToolbarContent {
             if #available(iOS 26.0, *) {
                 ToolbarSpacer(.fixed)
             }
-        } else {
+        case .published:
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Text(UIStrings.availableOn)
