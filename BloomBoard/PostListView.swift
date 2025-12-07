@@ -16,6 +16,7 @@ struct PostListView: View {
     
     let posts: [Post]
     let isDrafts: Bool
+    let listType: PostListType
     
     var searchedPosts: [Post] {
         if searchTerm.isEmpty {
@@ -37,26 +38,17 @@ struct PostListView: View {
     
     var currentNavigationTitle: String {
         let count = filteredPosts.count
-        
-        if isDrafts {
-            return String(
-                format: UIStrings.navigationTitle,
-                UIStrings.draftPosts,
-                count
-            )
-        } else if let platform = listState.selectedMissingPlatform {
-            return String(
-                format: UIStrings.navigationTitle,
-                platform.rawValue,
-                count
-            )
-            
-        } else {
-            return String(
-                format: UIStrings.navigationTitle,
-                UIStrings.allPublished,
-                count
-            )
+
+        switch listType {
+        case .drafts:
+            return String(format: UIStrings.navigationTitle, UIStrings.draftPosts, count)
+
+        case .published:
+            if let platform = listState.selectedMissingPlatform {
+                return String(format: UIStrings.navigationTitle, platform.rawValue, count)
+            } else {
+                return String(format: UIStrings.navigationTitle, UIStrings.allPublished, count)
+            }
         }
     }
     
@@ -271,3 +263,7 @@ private struct PostListOverlay: View {
     }
 }
 
+enum PostListType: Equatable {
+    case drafts
+    case published
+}
