@@ -159,7 +159,7 @@ private struct SocialMediaSummary: View {
             }
             .font(.footnote)
             .foregroundStyle(.secondary)
-            .padding(.horizontal, 5)
+            .padding(.horizontal)
         }
     }
     
