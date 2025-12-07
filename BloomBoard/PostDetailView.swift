@@ -45,7 +45,13 @@ struct PostDetailView: View {
                 postState.showPostSheet = true
             } label: {
                 Text(isPosted ? UIStrings.repost : UIStrings.post)
-                    .defaultButtonStyle()
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(.thinMaterial)
+                    .foregroundStyle(.text)
+                    .clipShape(.rect(cornerRadius: 10))
+                    .padding()
             }
             
             Text(postState.userFeedback ?? "")
