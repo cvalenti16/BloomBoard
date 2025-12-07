@@ -62,7 +62,7 @@ struct PostListView: View {
     
     var body: some View {
         NavigationStack(path: $listState.postDetailPath) {
-            List(posts) { post in
+            List(filteredPosts) { post in
                 PostItemView(post: post) { post in
                     listState.postDetailPath.append(post)
                 }
