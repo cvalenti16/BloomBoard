@@ -90,12 +90,20 @@ struct PostListView: View {
                 .interactiveDismissDisabled()
         }
         .overlay {
-            PostListOverlay(
-                searchedPosts: searchedPosts,
-                filteredPosts: filteredPosts,
-                searchTerm: searchTerm,
-                isDrafts: isDrafts
-            )
+            if searchedPosts.isEmpty && !searchTerm.isEmpty {
+                ContentUnavailableView.search
+            } else if searchedPosts.isEmpty {
+                ContentUnavailableView {
+                    Label(
+                        isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts,
+                        systemImage: isDrafts ? UIIcons.posts : UIIcons.published
+                    )
+                }
+            } else if filteredPosts.isEmpty {
+                ContentUnavailableView {
+                    Label(UIStrings.noUnpublishedPosts, systemImage: UIIcons.published)
+                }
+            }
         }
     }
 }
@@ -235,30 +243,6 @@ private struct PostListToolbar: ToolbarContent {
                 } label: {
                     Label(UIStrings.filter, systemImage: UIIcons.filter)
                 }
-            }
-        }
-    }
-}
-
-private struct PostListOverlay: View {
-    let searchedPosts: [Post]
-    let filteredPosts: [Post]
-    let searchTerm: String
-    let isDrafts: Bool
-    
-    var body: some View {
-        if searchedPosts.isEmpty && !searchTerm.isEmpty {
-            ContentUnavailableView.search
-        } else if searchedPosts.isEmpty {
-            ContentUnavailableView {
-                Label(
-                    isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts,
-                    systemImage: isDrafts ? UIIcons.posts : UIIcons.published
-                )
-            }
-        } else if filteredPosts.isEmpty {
-            ContentUnavailableView {
-                Label(UIStrings.noUnpublishedPosts, systemImage: UIIcons.published)
             }
         }
     }
