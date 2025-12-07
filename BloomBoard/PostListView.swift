@@ -38,11 +38,12 @@ struct PostListView: View {
     
     var currentNavigationTitle: String {
         let count = filteredPosts.count
-
+        
         switch listType {
+        
         case .drafts:
             return String(format: UIStrings.navigationTitle, UIStrings.draftPosts, count)
-
+        
         case .published:
             if let platform = listState.selectedMissingPlatform {
                 return String(format: UIStrings.navigationTitle, platform.rawValue, count)
