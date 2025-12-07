@@ -94,14 +94,9 @@ struct PostListView: View {
                 ContentUnavailableView.search
             } else if searchedPosts.isEmpty {
                 ContentUnavailableView {
-                    Label(
-                        isDrafts ? UIStrings.noDrafts : UIStrings.noPublishedPosts,
-                        systemImage: isDrafts ? UIIcons.posts : UIIcons.published
+                    Label("No Avaiable Posts",
+                        systemImage: UIIcons.posts
                     )
-                }
-            } else if filteredPosts.isEmpty {
-                ContentUnavailableView {
-                    Label(UIStrings.noUnpublishedPosts, systemImage: UIIcons.published)
                 }
             }
         }
