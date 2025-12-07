@@ -11,7 +11,7 @@ import SwiftData
 //MARK: PostListView
 struct PostListView: View {
     @AppStorage("needsOnboarding") private var needsOnboarding = true
-    @State private var postListState = PostListState()
+    @State private var listState = ListState()
     @State private var searchTerm = ""
     
     let posts: [Post]
@@ -28,7 +28,7 @@ struct PostListView: View {
     }
     
     var filteredPosts: [Post] {
-        if let platform = postListState.selectedMissingPlatform {
+        if let platform = listState.selectedMissingPlatform {
             return searchedPosts.filter { !($0.socialMedias?.contains(platform) ?? false)}
         } else {
             return searchedPosts
@@ -44,7 +44,7 @@ struct PostListView: View {
                 UIStrings.draftPosts,
                 count
             )
-        } else if let platform = postListState.selectedMissingPlatform {
+        } else if let platform = listState.selectedMissingPlatform {
             return String(
                 format: UIStrings.navigationTitle,
                 platform.rawValue,
@@ -61,15 +61,15 @@ struct PostListView: View {
     }
     
     var body: some View {
-        NavigationStack(path: $postListState.postDetailPath) {
+        NavigationStack(path: $listState.postDetailPath) {
             List(posts) { post in
                 PostItemView(post: post) { post in
-                    postListState.postDetailPath.append(post)
+                    listState.postDetailPath.append(post)
                 }
                 .swipeActions(edge: .trailing) {
                     Button {
-                        postListState.postToDelete = post
-                        postListState.showDeleteAlert.toggle()
+                        listState.postToDelete = post
+                        listState.showDeleteAlert.toggle()
                     } label: {
                         Image(systemName: UIIcons.trash)
                             .tint(.red)
@@ -86,9 +86,9 @@ struct PostListView: View {
             }
         }
         .tint(.text)
-        .environment(postListState)
+        .environment(listState)
         .searchable(text: $searchTerm)
-        .sheet(isPresented: $postListState.showAddSheet) {
+        .sheet(isPresented: $listState.showAddSheet) {
             PostEditorView()
                 .presentationDetents([.fraction(0.60)])
         }
@@ -109,7 +109,7 @@ struct PostListView: View {
 
 // MARK: PostListProperties
 @Observable
-private class PostListState {
+private class ListState {
     var postDetailPath = NavigationPath()
     var postToDelete: Post?
     var showAddSheet = false
@@ -165,21 +165,21 @@ private struct PostItemView: View {
 // MARK: PostDeleteAlert
 private struct PostDeleteAlert: ViewModifier {
     @Environment(\.modelContext) private var modelContext
-    @Environment(PostListState.self) private var postListState
+    @Environment(ListState.self) private var listState
     
     
     func body(content: Content) -> some View {
-        @Bindable var postListState = postListState
+        @Bindable var listState = listState
         
-        content.alert(UIStrings.deletePost, isPresented: $postListState.showDeleteAlert) {
+        content.alert(UIStrings.deletePost, isPresented: $listState.showDeleteAlert) {
             Button(UIStrings.delete, role: .destructive) {
-                if let post = postListState.postToDelete {
+                if let post = listState.postToDelete {
                     modelContext.delete(post)
-                    postListState.postToDelete = nil
+                    listState.postToDelete = nil
                 }
             }
             Button(UIStrings.cancel, role: .cancel) {
-                postListState.postToDelete = nil
+                listState.postToDelete = nil
             }
         }
     }
@@ -195,12 +195,12 @@ private extension View {
 private struct PostListToolbar: ToolbarContent {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
-    @Environment(PostListState.self) var postListState
+    @Environment(ListState.self) var listState
     
     let isDrafts: Bool
     
     var body: some ToolbarContent {
-        @Bindable var postListState = postListState
+        @Bindable var listState = listState
         ToolbarItem(placement: .topBarLeading) {
             Button {
                 switch selectedAppearance {
@@ -216,7 +216,7 @@ private struct PostListToolbar: ToolbarContent {
         if isDrafts {
             ToolbarItem {
                 Button(UIStrings.add, systemImage: UIIcons.add) {
-                    postListState.showAddSheet.toggle()
+                    listState.showAddSheet.toggle()
                 }
             }
             
@@ -228,15 +228,15 @@ private struct PostListToolbar: ToolbarContent {
                 Menu {
                     Text(UIStrings.notPostedOn)
                     
-                    Picker(UIStrings.notPostedOn, selection: $postListState.selectedMissingPlatform) {
+                    Picker(UIStrings.notPostedOn, selection: $listState.selectedMissingPlatform) {
                         ForEach(SocialMedia.allCases.filter{ $0 != .none}) { platform in
                             Text(platform.rawValue).tag(platform as SocialMedia?)
                         }
                     }
                     
-                    if postListState.selectedMissingPlatform != nil {
+                    if listState.selectedMissingPlatform != nil {
                         Button(UIStrings.clear) {
-                            postListState.selectedMissingPlatform = nil
+                            listState.selectedMissingPlatform = nil
                         }
                     }
                 } label: {
