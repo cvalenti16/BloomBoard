@@ -219,9 +219,9 @@ private struct PostListToolbar: ToolbarContent {
         } else {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    Text(UIStrings.notPostedOn)
+                    Text(UIStrings.availableOn)
                     
-                    Picker(UIStrings.notPostedOn, selection: $listState.selectedMissingPlatform) {
+                    Picker(UIStrings.availableOn, selection: $listState.selectedMissingPlatform) {
                         ForEach(SocialMedia.allCases.filter{ $0 != .none}) { platform in
                             Text(platform.rawValue).tag(platform as SocialMedia?)
                         }

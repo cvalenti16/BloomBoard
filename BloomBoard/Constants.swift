@@ -38,7 +38,7 @@ struct UIStrings {
     static let noDrafts = "No Draft Posts"
     static let performance = "Performance"
     static let selectPlatform = "Select Platform"
-    static let notPostedOn = "Not Posted On"
+    static let availableOn = "Available on"
     static let clear = "Clear"
     static let filter = "Filter"
     static let backgroundColor = "Background Color"
