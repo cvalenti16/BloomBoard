@@ -42,13 +42,13 @@ struct PostListView: View {
         switch listType {
         
         case .drafts:
-            return String(format: UIStrings.navigationTitle, UIStrings.draftPosts, count)
+            return String(format: "%@ (%d)", "Draft Posts", count)
         
         case .published:
             if let platform = listState.selectedMissingPlatform {
-                return String(format: UIStrings.navigationTitle, platform.rawValue, count)
+                return String(format: "%@ (%d)", platform.rawValue, count)
             } else {
-                return String(format: UIStrings.navigationTitle, UIStrings.allPublished, count)
+                return String(format: "%@ (%d)", "All Published", count)
             }
         }
     }
