@@ -23,12 +23,9 @@ struct PostEditorView: View {
     @State private var postImage: UIImage? = nil
     @State private var imageWasChanged = false
     @State private var errorMessage: String? = nil
-    
+
+    let mode: EditorMode
     let post: Post?
-    
-    var isEditing: Bool {
-        post != nil
-    }
     
     var navigationTitle: String {
         switch mode {
@@ -38,9 +35,6 @@ struct PostEditorView: View {
             return UIStrings.editPost
         }
     }
-    
-    let mode: EditorMode
-    
     
     init(mode: EditorMode, _ post: Post? = nil) {
         self.mode = mode
@@ -120,18 +114,17 @@ struct PostEditorView: View {
                     }
                 }
                 
-                
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                             errorMessage = FeedbackMessages.emptyTitle
                             return
                         }
-                        
-                        if isEditing {
-                            updatePost()
-                        } else {
-                            createPost()
+                        switch mode {
+                        case .creating:
+                            return createPost()
+                        case .editing:
+                            return updatePost()
                         }
                         
                     } label: {

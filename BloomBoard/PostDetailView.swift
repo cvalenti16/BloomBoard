@@ -78,7 +78,7 @@ struct PostDetailView: View {
             }
         }
         .sheet(isPresented: $postState.showEditPostSheet) {
-            PostEditorView(post)
+            PostEditorView(mode: .editing(post), post)
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $postState.showCropView) {

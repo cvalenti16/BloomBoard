@@ -81,7 +81,7 @@ struct PostListView: View {
         .environment(listState)
         .searchable(text: $searchTerm)
         .sheet(isPresented: $listState.showAddSheet) {
-            PostEditorView()
+            PostEditorView(mode: .creating)
                 .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $needsOnboarding) {
