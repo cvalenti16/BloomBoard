@@ -25,7 +25,6 @@ struct PostEditorView: View {
     @State private var errorMessage: String? = nil
     
     let mode: EditorMode
-    let post: Post?
     
     var navigationTitle: String {
         switch mode {
@@ -41,10 +40,8 @@ struct PostEditorView: View {
         
         switch mode {
         case .creating:
-            self.post = nil
             _title = State(initialValue: "")
         case .editing(let post):
-            self.post = post
             _title = State(initialValue: post.title)
             
             if let data = post.image, let image = UIImage(data: data) {
@@ -144,10 +141,14 @@ struct PostEditorView: View {
     }
     
     private func updatePost() {
-        post?.title = title
+        guard case .editing(let post) = mode else {
+            return
+        }
+        
+        post.title = title
         
         if imageWasChanged {
-            post?.image = postImage?.jpegData(compressionQuality: 0.9)
+            post.image = postImage?.jpegData(compressionQuality: 0.9)
         }
         
         do {
