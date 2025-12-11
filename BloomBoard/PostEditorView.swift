@@ -105,6 +105,11 @@ struct PostEditorView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
+                        guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                            errorMessage = FeedbackMessages.emptyTitle
+                            return
+                        }
+                        
                         if isEditing {
                             updatePost()
                         } else {
@@ -115,12 +120,10 @@ struct PostEditorView: View {
                         Image(systemName: UIIcons.save)
                             .foregroundStyle(.text)
                     }
-                    .disabled(title.isEmpty)
                 }
             }
         }
     }
-    
     
     private func updatePost() {
         post?.title = title
