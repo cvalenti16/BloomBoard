@@ -10,6 +10,9 @@ import SwiftData
 import PhotosUI
 
 struct PostEditorView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    
     @State private var imageState: ImageState
     @State private var title: String
     let post: Post?
@@ -90,7 +93,16 @@ struct PostEditorView: View {
             .navigationTitle(isEditing ? UIStrings.editPost : UIStrings.createPost)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                PostSheetToolbar(post: post, postTitle: title, isEditing: isEditing)
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: UIIcons.cancel)
+                            .foregroundStyle(.text)
+                    }
+                }
+                
+                
             }
         }
         .environment(imageState)
@@ -155,7 +167,7 @@ extension PostSheetToolbar {
         post?.title = postTitle
         
         if imageState.imageWasChanged {
-            post?.image = imageState.uiImage?.jpegData(compressionQuality: 0.8)
+            post?.image = imageState.uiImage?.jpegData(compressionQuality: 0.9)
         }
         
         do {
@@ -170,7 +182,7 @@ extension PostSheetToolbar {
     private func createPost() {
         let newPost = Post(title: postTitle)
         
-        if let imageData = imageState.uiImage?.jpegData(compressionQuality: 0.8) {
+        if let imageData = imageState.uiImage?.jpegData(compressionQuality: 0.9) {
             newPost.image = imageData
         }
         
