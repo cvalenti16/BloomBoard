@@ -77,11 +77,11 @@ struct PostEditorView: View {
                 }
                 .onChange(of: selectedImage) { _, newValue in
                     Task {
-                        if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                            await MainActor.run {
-                                postImage = UIImage(data: data)
-                                imageWasChanged = true
-                            }
+                        guard let data = try? await newValue?.loadTransferable(type: Data.self) else { return }
+                        
+                        await MainActor.run {
+                            postImage = UIImage(data: data)
+                            imageWasChanged = true
                         }
                     }
                 }
