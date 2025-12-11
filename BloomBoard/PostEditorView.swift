@@ -23,7 +23,7 @@ struct PostEditorView: View {
     @State private var postImage: UIImage? = nil
     @State private var imageWasChanged = false
     @State private var errorMessage: String? = nil
-
+    
     let mode: EditorMode
     let post: Post?
     
@@ -36,13 +36,20 @@ struct PostEditorView: View {
         }
     }
     
-    init(mode: EditorMode, _ post: Post? = nil) {
+    init(mode: EditorMode) {
         self.mode = mode
-        self.post = post
-        _title = State(initialValue: post?.title ?? "")
         
-        if let data = post?.image, let image = UIImage(data: data) {
-            _postImage = State(initialValue: image)
+        switch mode {
+        case .creating:
+            self.post = nil
+            _title = State(initialValue: "")
+        case .editing(let post):
+            self.post = post
+            _title = State(initialValue: post.title)
+            
+            if let data = post.image, let image = UIImage(data: data) {
+                _postImage = State(initialValue: image)
+            }
         }
     }
     
