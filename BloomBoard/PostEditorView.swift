@@ -9,6 +9,11 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 
+enum EditorMode {
+    case creating
+    case editing(Post)
+}
+
 struct PostEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -25,7 +30,20 @@ struct PostEditorView: View {
         post != nil
     }
     
-    init(_ post: Post? = nil) {
+    var navigationTitle: String {
+        switch mode {
+        case .creating:
+            return UIStrings.createPost
+        case .editing:
+            return UIStrings.editPost
+        }
+    }
+    
+    let mode: EditorMode
+    
+    
+    init(mode: EditorMode, _ post: Post? = nil) {
+        self.mode = mode
         self.post = post
         _title = State(initialValue: post?.title ?? "")
         
@@ -90,7 +108,7 @@ struct PostEditorView: View {
                     .defaultMessageStyle()
                 
             }
-            .navigationTitle(isEditing ? UIStrings.editPost : UIStrings.createPost)
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
