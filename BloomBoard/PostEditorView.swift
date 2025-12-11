@@ -13,8 +13,12 @@ struct PostEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     
-    @State private var imageState: ImageState
     @State private var title: String
+    @State private var selectedImage: PhotosPickerItem? = nil
+    @State private var postImage: UIImage? = nil
+    @State private var imageWasChanged = false
+    @State private var errorMessage: String? = nil
+    
     let post: Post?
     
     var isEditing: Bool {
@@ -25,13 +29,9 @@ struct PostEditorView: View {
         self.post = post
         _title = State(initialValue: post?.title ?? "")
         
-        let imageState = ImageState()
-        
-        if let data = post?.image {
-            imageState.uiImage = UIImage(data: data)
+        if let data = post?.image, let image = UIImage(data: data) {
+            _postImage = State(initialValue: image)
         }
-        
-        _imageState = State(initialValue: imageState)
     }
     
     var body: some View {
@@ -46,8 +46,8 @@ struct PostEditorView: View {
                     .frame(height: 2)
                     .padding(.horizontal)
                 
-                PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
-                    if let image = imageState.uiImage {
+                PhotosPicker(selection: $selectedImage, matching: .images, photoLibrary: .shared()) {
+                    if let image = postImage {
                         ZStack {
                             Image(uiImage: image)
                                 .resizable()
@@ -61,9 +61,9 @@ struct PostEditorView: View {
                                     .defaultIconStyle()
                                 
                                 Button {
-                                    imageState.selectedImage = nil
-                                    imageState.uiImage = nil
-                                    imageState.imageWasChanged = true
+                                    selectedImage = nil
+                                    postImage = nil
+                                    imageWasChanged = true
                                 } label: {
                                     Image(systemName: UIIcons.trash)
                                         .defaultIconStyle()
@@ -75,18 +75,18 @@ struct PostEditorView: View {
                             .defaultUploadImageStyle()
                     }
                 }
-                .onChange(of: imageState.selectedImage) { oldValue, newValue in
+                .onChange(of: selectedImage) { _, newValue in
                     Task {
                         if let data = try? await newValue?.loadTransferable(type: Data.self) {
                             await MainActor.run {
-                                imageState.uiImage = UIImage(data: data)
-                                imageState.imageWasChanged = true
+                                postImage = UIImage(data: data)
+                                imageWasChanged = true
                             }
                         }
                     }
                 }
                 
-                Text(imageState.errorMessage ?? "")
+                Text(errorMessage ?? "")
                     .defaultMessageStyle()
                 
             }
@@ -103,86 +103,44 @@ struct PostEditorView: View {
                 }
                 
                 
-            }
-        }
-        .environment(imageState)
-    }
-}
-
-@Observable
-class ImageState {
-    var selectedImage: PhotosPickerItem? = nil
-    var uiImage: UIImage? = nil
-    var imageWasChanged = false
-    var errorMessage: String? = nil
-}
-
-//MARK: PostSheetToolbar
-struct PostSheetToolbar: ToolbarContent {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @Environment(ImageState.self) var imageState
-    
-    var post: Post?
-    var postTitle: String
-    
-    var isEditing: Bool
-    
-    var body: some ToolbarContent {
-        ToolbarItem(placement: .cancellationAction) {
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: UIIcons.cancel)
-                    .foregroundStyle(.text)
-            }
-        }
-        
-        ToolbarItem(placement: .confirmationAction) {
-            Button {
-                guard !postTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                    imageState.errorMessage = FeedbackMessages.emptyTitle
-                    return
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        if isEditing {
+                            updatePost()
+                        } else {
+                            createPost()
+                        }
+                        
+                    } label: {
+                        Image(systemName: UIIcons.save)
+                            .foregroundStyle(.text)
+                    }
+                    .disabled(title.isEmpty)
                 }
-                
-                if isEditing {
-                    updatePost()
-                } else {
-                    createPost()
-                }
-                
-            } label: {
-                Image(systemName: UIIcons.save)
-                    .foregroundStyle(.text)
             }
         }
     }
-}
-
-
-// MARK: Create/Update Helpers
-extension PostSheetToolbar {
+    
     
     private func updatePost() {
-        post?.title = postTitle
+        post?.title = title
         
-        if imageState.imageWasChanged {
-            post?.image = imageState.uiImage?.jpegData(compressionQuality: 0.9)
+        if imageWasChanged {
+            post?.image = postImage?.jpegData(compressionQuality: 0.9)
         }
         
         do {
             try modelContext.save()
-            
             dismiss()
         } catch {
-            imageState.errorMessage = FeedbackMessages.savedFailed
+            errorMessage = FeedbackMessages.savedFailed
         }
     }
     
     private func createPost() {
-        let newPost = Post(title: postTitle)
+        let newPost = Post(title: title)
         
-        if let imageData = imageState.uiImage?.jpegData(compressionQuality: 0.9) {
+        if let imageData = postImage?.jpegData(compressionQuality: 0.9) {
             newPost.image = imageData
         }
         
@@ -191,7 +149,8 @@ extension PostSheetToolbar {
             try modelContext.save()
             dismiss()
         } catch {
-            imageState.errorMessage = FeedbackMessages.savedFailed
+            errorMessage = FeedbackMessages.savedFailed
         }
     }
 }
+
