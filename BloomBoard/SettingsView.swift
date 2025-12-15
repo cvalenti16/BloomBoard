@@ -59,9 +59,9 @@ struct SettingsView: View {
                         
                     }
                 ))
-                .scrollDisabled(true)
                 .padding(.horizontal)
             }
+            .scrollDisabled(true)
             .navigationTitle("Tracked Platforms")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
