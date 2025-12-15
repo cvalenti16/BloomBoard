@@ -20,9 +20,9 @@ struct PostEditorView: View {
     
     @State private var title: String
     @State private var imageState: ImageState
+    @State private var errorMessage: String? = nil
     
     let mode: EditorMode
-    
     var navigationTitle: String {
         switch mode {
         case .creating:
@@ -61,10 +61,10 @@ struct PostEditorView: View {
                     .frame(height: 2)
                     .padding(.horizontal)
                 
-                ImagePickerView()
+                ImagePickerView(errorMessage: $errorMessage)
                     .environment(imageState)
                 
-                Text(imageState.errorMessage ?? "")
+                Text(errorMessage ?? "")
                     .defaultMessageStyle()
                 
             }
@@ -82,21 +82,17 @@ struct PostEditorView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                            imageState.errorMessage = FeedbackMessages.emptyTitle
-                            return
-                        }
                         switch mode {
                         case .creating:
                             return createPost()
                         case .editing:
                             return updatePost()
                         }
-                        
                     } label: {
                         Image(systemName: UIIcons.save)
                             .foregroundStyle(.text)
                     }
+                    .disabled(title.isEmpty)
                 }
             }
         }
@@ -117,7 +113,7 @@ struct PostEditorView: View {
             try modelContext.save()
             dismiss()
         } catch {
-            imageState.errorMessage = FeedbackMessages.savedFailed
+            errorMessage = FeedbackMessages.savedFailed
         }
     }
     
@@ -133,7 +129,7 @@ struct PostEditorView: View {
             try modelContext.save()
             dismiss()
         } catch {
-            imageState.errorMessage = FeedbackMessages.savedFailed
+            errorMessage = FeedbackMessages.savedFailed
         }
     }
 }
@@ -143,11 +139,11 @@ class ImageState {
     var selectedImage: PhotosPickerItem? = nil
     var postImage: UIImage? = nil
     var imageWasChanged = false
-    var errorMessage: String? = nil
 }
 
 private struct ImagePickerView: View {
     @Environment(ImageState.self) var imageState
+    @Binding var errorMessage: String?
     
     var body: some View {
         @Bindable var imageState = imageState
@@ -184,7 +180,7 @@ private struct ImagePickerView: View {
         .onChange(of: imageState.selectedImage) { _, newValue in
             Task {
                 guard let data = try? await newValue?.loadTransferable(type: Data.self) else {
-                    imageState.errorMessage = FeedbackMessages.genericError
+                    errorMessage = FeedbackMessages.genericError
                     return
                 }
                 
