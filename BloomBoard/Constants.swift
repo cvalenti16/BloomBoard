@@ -13,6 +13,7 @@ struct FeedbackMessages {
     static let emptyTitle = "Please Enter a Title"
     static let savedFailed = "Failed to save, please try again"
     static let downloadSucceeded = "Downloaded"
+    static let genericError = "An error occurred, please try again"
 }
 
 // MARK: UIStrings

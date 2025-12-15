@@ -19,10 +19,7 @@ struct PostEditorView: View {
     @Environment(\.modelContext) private var modelContext
     
     @State private var title: String
-    @State private var selectedImage: PhotosPickerItem? = nil
-    @State private var postImage: UIImage? = nil
-    @State private var imageWasChanged = false
-    @State private var errorMessage: String? = nil
+    @State private var imageState: ImageState
     
     let mode: EditorMode
     
@@ -37,17 +34,19 @@ struct PostEditorView: View {
     
     init(mode: EditorMode) {
         self.mode = mode
+        let imageState = ImageState()
         
         switch mode {
         case .creating:
             _title = State(initialValue: "")
+            
         case .editing(let post):
             _title = State(initialValue: post.title)
-            
-            if let data = post.image, let image = UIImage(data: data) {
-                _postImage = State(initialValue: image)
+            if let data = post.image {
+                imageState.postImage = UIImage(data: data)
             }
         }
+        _imageState = State(initialValue: imageState)
     }
     
     var body: some View {
@@ -62,47 +61,10 @@ struct PostEditorView: View {
                     .frame(height: 2)
                     .padding(.horizontal)
                 
-                PhotosPicker(selection: $selectedImage, matching: .images, photoLibrary: .shared()) {
-                    if let image = postImage {
-                        ZStack {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: .infinity, maxHeight: 220)
-                                .clipShape(.rect(cornerRadius: 10))
-                                .padding()
-                            
-                            HStack {
-                                Image(systemName: UIIcons.change)
-                                    .defaultIconStyle()
-                                
-                                Button {
-                                    selectedImage = nil
-                                    postImage = nil
-                                    imageWasChanged = true
-                                } label: {
-                                    Image(systemName: UIIcons.trash)
-                                        .defaultIconStyle()
-                                }
-                            }
-                        }
-                    } else {
-                        Text(UIStrings.uploadImage)
-                            .defaultUploadImageStyle()
-                    }
-                }
-                .onChange(of: selectedImage) { _, newValue in
-                    Task {
-                        guard let data = try? await newValue?.loadTransferable(type: Data.self) else { return }
-                        
-                        await MainActor.run {
-                            postImage = UIImage(data: data)
-                            imageWasChanged = true
-                        }
-                    }
-                }
+                ImagePickerView()
+                    .environment(imageState)
                 
-                Text(errorMessage ?? "")
+                Text(imageState.errorMessage ?? "")
                     .defaultMessageStyle()
                 
             }
@@ -121,7 +83,7 @@ struct PostEditorView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                            errorMessage = FeedbackMessages.emptyTitle
+                            imageState.errorMessage = FeedbackMessages.emptyTitle
                             return
                         }
                         switch mode {
@@ -147,22 +109,22 @@ struct PostEditorView: View {
         
         post.title = title
         
-        if imageWasChanged {
-            post.image = postImage?.jpegData(compressionQuality: 0.9)
+        if imageState.imageWasChanged {
+            post.image = imageState.postImage?.jpegData(compressionQuality: 0.9)
         }
         
         do {
             try modelContext.save()
             dismiss()
         } catch {
-            errorMessage = FeedbackMessages.savedFailed
+            imageState.errorMessage = FeedbackMessages.savedFailed
         }
     }
     
     private func createPost() {
         let newPost = Post(title: title)
         
-        if let imageData = postImage?.jpegData(compressionQuality: 0.9) {
+        if let imageData = imageState.postImage?.jpegData(compressionQuality: 0.9) {
             newPost.image = imageData
         }
         
@@ -171,8 +133,66 @@ struct PostEditorView: View {
             try modelContext.save()
             dismiss()
         } catch {
-            errorMessage = FeedbackMessages.savedFailed
+            imageState.errorMessage = FeedbackMessages.savedFailed
         }
     }
 }
 
+@Observable
+class ImageState {
+    var selectedImage: PhotosPickerItem? = nil
+    var postImage: UIImage? = nil
+    var imageWasChanged = false
+    var errorMessage: String? = nil
+}
+
+private struct ImagePickerView: View {
+    @Environment(ImageState.self) var imageState
+    
+    var body: some View {
+        @Bindable var imageState = imageState
+        
+        PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
+            if let image = imageState.postImage {
+                ZStack {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity, maxHeight: 220)
+                        .clipShape(.rect(cornerRadius: 10))
+                        .padding()
+                    
+                    HStack {
+                        Image(systemName: UIIcons.change)
+                            .defaultIconStyle()
+                        
+                        Button {
+                            imageState.selectedImage = nil
+                            imageState.postImage = nil
+                            imageState.imageWasChanged = true
+                        } label: {
+                            Image(systemName: UIIcons.trash)
+                                .defaultIconStyle()
+                        }
+                    }
+                }
+            } else {
+                Text(UIStrings.uploadImage)
+                    .defaultUploadImageStyle()
+            }
+        }
+        .onChange(of: imageState.selectedImage) { _, newValue in
+            Task {
+                guard let data = try? await newValue?.loadTransferable(type: Data.self) else {
+                    imageState.errorMessage = FeedbackMessages.genericError
+                    return
+                }
+                
+                await MainActor.run {
+                    imageState.postImage = UIImage(data: data)
+                    imageState.imageWasChanged = true
+                }
+            }
+        }
+    }
+}
