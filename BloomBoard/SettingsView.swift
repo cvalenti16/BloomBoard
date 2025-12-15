@@ -39,30 +39,34 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationStack {
-            List(SocialMedia.allCases.filter{$0 != .none}) { platform in
-                Toggle(platform.rawValue, isOn: Binding(
-                    get: {
-                        tracked.contains(platform)
-                    },
-                    set: { isOn in
-                        var current = tracked
-                        if isOn {
-                            current.insert(platform)
-                        } else {
-                            current.remove(platform)
-                        }
-                        
-                        platforms = current
-                            .map(\.rawValue)
-                            .sorted()
-                            .joined(separator: ",")
-                        
+            List {
+                Section {
+                    ForEach(SocialMedia.allCases.filter { $0 != .none }) { platform in
+                        Toggle(platform.rawValue, isOn: Binding(
+                            get: {
+                                tracked.contains(platform)
+                            },
+                            set: { isOn in
+                                var current = tracked
+                                if isOn {
+                                    current.insert(platform)
+                                } else {
+                                    _ = current.remove(platform)
+                                }
+                                platforms = current
+                                    .map(\.rawValue)
+                                    .sorted()
+                                    .joined(separator: ",")
+                            }
+                        ))
+                        .padding(.horizontal)
                     }
-                ))
-                .padding(.horizontal)
+                } header: {
+                    Text("Tracked Platforms")
+                }
             }
             .scrollDisabled(true)
-            .navigationTitle("Tracked Platforms")
+            .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -83,5 +87,4 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
 }
-
 
