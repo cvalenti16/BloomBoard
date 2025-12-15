@@ -42,6 +42,7 @@ struct PostEditorView: View {
             
         case .editing(let post):
             _title = State(initialValue: post.title)
+            
             if let data = post.image {
                 imageState.postImage = UIImage(data: data)
             }
