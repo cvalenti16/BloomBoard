@@ -11,6 +11,8 @@ struct SettingsView: View {
     @AppStorage("trackedPlatforms")
     private var platforms: String = ""
     
+    @Environment(\.dismiss) private var dismiss
+    
     private var allSocials: [SocialMedia] {
         SocialMedia.allCases.filter { $0 != .none }
     }
@@ -62,6 +64,16 @@ struct SettingsView: View {
             }
             .navigationTitle("Tracked Platforms")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: UIIcons.cancel)
+                            .foregroundStyle(.text)
+                    }
+                }
+            }
         }
     }
 }
