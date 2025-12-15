@@ -88,6 +88,9 @@ struct PostListView: View {
             OnboardingView()
                 .interactiveDismissDisabled()
         }
+        .sheet(isPresented: $listState.showSettingsSheet) {
+            SettingsView()
+        }
         .overlay {
             if searchedPosts.isEmpty && !searchTerm.isEmpty {
                 ContentUnavailableView.search
@@ -117,6 +120,7 @@ private class ListState {
     var postDetailPath = NavigationPath()
     var postToDelete: Post?
     var showAddSheet = false
+    var showSettingsSheet = false
     var showDeleteAlert = false
     var selectedMissingPlatform: SocialMedia? = nil
 }
@@ -217,6 +221,18 @@ private struct PostListToolbar: ToolbarContent {
             }
         }
         
+        if #available(iOS 26.0, *) {
+            ToolbarSpacer(.fixed)
+        }
+        
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                listState.showSettingsSheet = true
+            } label : {
+                Image(systemName: "gear")
+            }
+        }
+        
         switch listType {
         case .drafts:
             ToolbarItem {
@@ -225,9 +241,6 @@ private struct PostListToolbar: ToolbarContent {
                 }
             }
             
-            if #available(iOS 26.0, *) {
-                ToolbarSpacer(.fixed)
-            }
         case .published:
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
