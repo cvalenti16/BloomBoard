@@ -8,11 +8,68 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @AppStorage("trackedPlatforms")
+    private var platforms: String = ""
+    
+    private var allSocials: [SocialMedia] {
+        SocialMedia.allCases.filter { $0 != .none }
+    }
+    
+    private var tracked: Set<SocialMedia> {
+        get {
+            guard !platforms.isEmpty else {
+                return Set(allSocials)
+            }
+            
+            return Set(
+                platforms
+                    .split(separator: ",")
+                    .compactMap { SocialMedia(rawValue: String($0)) }
+            )
+        }
+        set {
+            platforms = newValue
+                .map(\.rawValue)
+                .sorted()
+                .joined(separator: ",")
+        }
+    }
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            List(SocialMedia.allCases.filter{$0 != .none}) { platform in
+                Toggle(platform.rawValue, isOn: Binding(
+                    get: {
+                        tracked.contains(platform)
+                    },
+                    set: { isOn in
+                        var current = tracked
+                        if isOn {
+                            current.insert(platform)
+                        } else {
+                            current.remove(platform)
+                        }
+                        
+                        platforms = current
+                            .map(\.rawValue)
+                            .sorted()
+                            .joined(separator: ",")
+                        
+                    }
+                ))
+                .scrollDisabled(true)
+                .padding(.horizontal)
+            }
+            .navigationTitle("Tracked Platforms")
+            .navigationBarTitleDisplayMode(.inline)
+        }
     }
 }
+
+
 
 #Preview {
     SettingsView()
 }
+
+
