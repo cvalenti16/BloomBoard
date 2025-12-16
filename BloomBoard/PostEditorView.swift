@@ -181,7 +181,6 @@ private struct ImagePickerView: View {
         .onChange(of: imageState.selectedImage) { _, newValue in
             Task {
                 guard let data = try? await newValue?.loadTransferable(type: Data.self) else {
-                    errorMessage = FeedbackMessages.genericError
                     return
                 }
                 
