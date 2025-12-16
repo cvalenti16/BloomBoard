@@ -88,9 +88,9 @@ struct PostListView: View {
             SettingsView()
         }
         .overlay {
-            if searchedPosts.isEmpty && !searchTerm.isEmpty {
+            if filteredPosts.isEmpty && !searchTerm.isEmpty {
                 ContentUnavailableView.search
-            } else if searchedPosts.isEmpty {
+            } else if filteredPosts.isEmpty {
                 switch listType {
                 case .drafts:
                     ContentUnavailableView {
