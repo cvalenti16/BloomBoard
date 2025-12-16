@@ -79,6 +79,7 @@ struct PostDetailView: View {
         }
         .sheet(isPresented: $postState.showEditPostSheet) {
             PostEditorView(mode: .editing(post))
+                .presentationDetents([.fraction(0.75)])
         }
         .sheet(isPresented: $postState.showCropView) {
             if let image = loadedImage {
