@@ -44,11 +44,7 @@ struct PostListView: View {
             return String(format: "%@ (%d)", "Drafts", count)
         
         case .published:
-            if let platform = listState.selectedMissingPlatform {
-                return String(format: "%@ (%d)", platform.rawValue, count)
-            } else {
-                return String(format: "%@ (%d)", "Published", count)
-            }
+            return String(format: "%@ (%d)", listState.selectedMissingPlatform?.rawValue ?? "Published", count)
         }
     }
     
@@ -237,10 +233,6 @@ private struct PostListToolbar: ToolbarContent {
             }
         }
         
-        if #available(iOS 26.0, *) {
-            ToolbarSpacer(.fixed)
-        }
-        
         ToolbarItem(placement: .topBarLeading) {
             Button {
                 listState.showSettingsSheet = true
@@ -260,9 +252,9 @@ private struct PostListToolbar: ToolbarContent {
         case .published:
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    Text(UIStrings.availableOn)
+                    Text(UIStrings.availableFor)
                     
-                    Picker(UIStrings.availableOn, selection: $listState.selectedMissingPlatform) {
+                    Picker(UIStrings.availableFor, selection: $listState.selectedMissingPlatform) {
                         ForEach(trackedPlatforms
                             .sorted {$0.rawValue < $1.rawValue}) { platform in
                             Text(platform.rawValue).tag(platform as SocialMedia?)

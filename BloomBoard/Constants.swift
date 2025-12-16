@@ -35,7 +35,7 @@ struct UIStrings {
     static let repost = "Repost"
     static let performance = "Performance"
     static let selectPlatform = "Select Platform"
-    static let availableOn = "Available on"
+    static let availableFor = "Available for"
     static let clear = "Clear"
     static let filter = "Filter"
     static let backgroundColor = "Background Color"
