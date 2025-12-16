@@ -207,19 +207,38 @@ private struct UIImageView: View {
 
 // MARK: PostSheet
 private struct PostSheet: View {
+    @AppStorage("trackedPlatforms")
+    private var platforms: String = ""
+    
     @Environment(\.modelContext) var modelContext
     @Environment(PostState.self) var postState
-    @State private var selectedMedia: SocialMedia = .facebook
+    @State private var selectedMedia: SocialMedia = .none
+    
     let post: Post
     let isPosted: Bool
     let closeParentSheet: (Bool) -> Void
     
+    private var trackedPlatforms: Set<SocialMedia> {
+        guard !platforms.isEmpty else {
+            return Set(
+                SocialMedia.allCases.filter { $0 != .none }
+            )
+        }
+
+        return Set(
+            platforms
+                .split(separator: ",")
+                .compactMap { SocialMedia(rawValue: String($0)) }
+        )
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
-                List(SocialMedia.allCases.filter {
-                    $0 != .none && $0 != post.originalPlatform
-                }) { media in
+                List(trackedPlatforms
+                    .filter {$0 != post.originalPlatform}
+                    .sorted {$0.rawValue < $1.rawValue}){media in
+                        
                     Button {
                         selectedMedia = media
                     } label: {
