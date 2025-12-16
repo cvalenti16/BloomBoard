@@ -225,7 +225,7 @@ private struct PostListToolbar: ToolbarContent {
             Button {
                 listState.showSettingsSheet = true
             } label : {
-                Image(systemName: "gear")
+                Image(systemName: "gearshape")
             }
         }
         
