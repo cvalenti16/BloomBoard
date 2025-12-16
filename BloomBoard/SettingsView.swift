@@ -14,7 +14,9 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     
     private var allSocials: [SocialMedia] {
-        SocialMedia.allCases.filter { $0 != .none }
+        SocialMedia.allCases
+            .filter { $0 != .none }
+            .sorted { $0.rawValue < $1.rawValue }
     }
     
     private var tracked: Set<SocialMedia> {
@@ -41,7 +43,7 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section {
-                    ForEach(SocialMedia.allCases.filter { $0 != .none }) { platform in
+                    ForEach(allSocials) { platform in
                         Toggle(platform.rawValue, isOn: Binding(
                             get: {
                                 tracked.contains(platform)
@@ -51,7 +53,7 @@ struct SettingsView: View {
                                 if isOn {
                                     current.insert(platform)
                                 } else {
-                                    _ = current.remove(platform)
+                                    current.remove(platform)
                                 }
                                 platforms = current
                                     .map(\.rawValue)

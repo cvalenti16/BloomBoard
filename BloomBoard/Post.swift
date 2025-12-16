@@ -71,4 +71,5 @@ enum SocialMedia: String, CaseIterable, Codable, Identifiable {
     case tiktok = "TikTok"
     case x = "X"
     case youtube = "YouTube"
+    case linkedIn = "LinkedIn"
 }
