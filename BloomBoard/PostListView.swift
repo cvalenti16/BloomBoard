@@ -21,8 +21,8 @@ struct PostListView: View {
         if searchTerm.isEmpty {
             return posts
         } else {
-            return posts.filter { posts in
-                posts.title.localizedCaseInsensitiveContains(searchTerm)
+            return posts.filter { post in
+                post.title.localizedCaseInsensitiveContains(searchTerm)
             }
         }
     }
