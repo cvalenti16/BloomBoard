@@ -11,6 +11,8 @@ struct SettingsView: View {
     @AppStorage("trackedPlatforms")
     private var platforms: String = ""
     
+    @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
+    
     @Environment(\.dismiss) private var dismiss
     
     private var allSocials: [SocialMedia] {
@@ -41,34 +43,29 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    ForEach(allSocials) { platform in
-                        Toggle(platform.rawValue, isOn: Binding(
-                            get: {
-                                tracked.contains(platform)
-                            },
-                            set: { isOn in
-                                var current = tracked
-                                if isOn {
-                                    current.insert(platform)
-                                } else {
-                                    current.remove(platform)
-                                }
-                                platforms = current
-                                    .map(\.rawValue)
-                                    .sorted()
-                                    .joined(separator: ",")
-                            }
-                        ))
-                        .padding(.horizontal)
+            List(allSocials){ platform in
+                Toggle(platform.rawValue, isOn: Binding(
+                    get: {
+                        tracked.contains(platform)
+                    },
+                    set: { isOn in
+                        var current = tracked
+                        if isOn {
+                            current.insert(platform)
+                        } else {
+                            current.remove(platform)
+                        }
+                        platforms = current
+                            .map(\.rawValue)
+                            .sorted()
+                            .joined(separator: ",")
                     }
-                } header: {
-                    Text("Tracked Platforms")
-                }
+                ))
+                .padding(.horizontal)
             }
+            
             .scrollDisabled(true)
-            .navigationTitle("Settings")
+            .navigationTitle("Tracked Platforms")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -79,12 +76,25 @@ struct SettingsView: View {
                             .foregroundStyle(.text)
                     }
                 }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        switch selectedAppearance {
+                        case .dark: selectedAppearance = .light
+                        case .light: selectedAppearance = .dark
+                        }
+                    } label: {
+                        Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
+                            .symbolEffect(.bounce, value: selectedAppearance)
+                    }
+                    
+                    
+                }
             }
+            .environment(\.colorScheme, selectedAppearance == .dark ? .dark : .light)
         }
     }
 }
-
-
 
 #Preview {
     SettingsView()

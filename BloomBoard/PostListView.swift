@@ -197,7 +197,6 @@ private extension View {
 
 // MARK: Toolbar
 private struct PostListToolbar: ToolbarContent {
-    @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     @AppStorage("trackedPlatforms")
     private var platforms: String = ""
     
@@ -221,17 +220,6 @@ private struct PostListToolbar: ToolbarContent {
 
     var body: some ToolbarContent {
         @Bindable var listState = listState
-        ToolbarItem(placement: .topBarLeading) {
-            Button {
-                switch selectedAppearance {
-                case .dark: selectedAppearance = .light
-                case .light: selectedAppearance = .dark
-                }
-            } label: {
-                Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
-                    .symbolEffect(.bounce, value: selectedAppearance)
-            }
-        }
         
         ToolbarItem(placement: .topBarLeading) {
             Button {
