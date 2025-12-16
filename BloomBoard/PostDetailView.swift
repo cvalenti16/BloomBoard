@@ -33,7 +33,7 @@ struct PostDetailView: View {
                 .font(.title3)
                 .bold()
                 .textSelection(.enabled)
-                .padding(.horizontal, 10)
+                .padding(.horizontal)
             
             PostDateView(postPerformance: $postPerformance, post: post)
             
@@ -136,7 +136,7 @@ private struct PostDateView: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .padding(.horizontal, 10)
+                .padding(.horizontal)
                 .onChange(of: postPerformance) { _, newValue in
                     post.performance = newValue
                 }
@@ -198,7 +198,7 @@ private struct UIImageView: View {
                     .frame(maxWidth: .infinity, maxHeight: 220)
                     .background(.ultraThinMaterial)
                     .clipShape(.rect(cornerRadius: 10))
-                    .padding(10)
+                    .padding()
             }
         }
     }
