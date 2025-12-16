@@ -202,10 +202,26 @@ private extension View {
 // MARK: Toolbar
 private struct PostListToolbar: ToolbarContent {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
+    @AppStorage("trackedPlatforms")
+    private var platforms: String = ""
     
     @Environment(ListState.self) var listState
     
     let listType: PostListType
+    
+    private var trackedPlatforms: Set<SocialMedia> {
+        guard !platforms.isEmpty else {
+            return Set(
+                SocialMedia.allCases.filter { $0 != .none }
+            )
+        }
+
+        return Set(
+            platforms
+                .split(separator: ",")
+                .compactMap { SocialMedia(rawValue: String($0)) }
+        )
+    }
 
     var body: some ToolbarContent {
         @Bindable var listState = listState
@@ -247,7 +263,8 @@ private struct PostListToolbar: ToolbarContent {
                     Text(UIStrings.availableOn)
                     
                     Picker(UIStrings.availableOn, selection: $listState.selectedMissingPlatform) {
-                        ForEach(SocialMedia.allCases.filter{ $0 != .none}) { platform in
+                        ForEach(trackedPlatforms
+                            .sorted {$0.rawValue < $1.rawValue}) { platform in
                             Text(platform.rawValue).tag(platform as SocialMedia?)
                         }
                     }
