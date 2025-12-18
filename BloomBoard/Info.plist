@@ -7,5 +7,9 @@ Privacy - Photo Library Usage Description
 Privacy - Photo Library Usage Description
 </key>
 	<string>We need access to your photo library so you can attach images to your posts</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

@@ -12,13 +12,27 @@ import SwiftData
 struct BloomBoardApp: App {
     
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
+    let modelContainer: ModelContainer
+    
+    init() {
+         do {
+             modelContainer = try ModelContainer(
+                 for: Post.self,
+                 configurations: ModelConfiguration(
+                     cloudKitDatabase: .automatic
+                 )
+             )
+         } catch {
+             fatalError(error.localizedDescription)
+         }
+     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(selectedAppearance.colorScheme)
         }
-        .modelContainer(for: Post.self)
+        .modelContainer(modelContainer)
     }
 }
 

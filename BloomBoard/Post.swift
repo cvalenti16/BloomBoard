@@ -12,21 +12,19 @@ import SwiftUI
 // MARK: Post Model
 @Model
 class Post: Identifiable {
-    @Attribute(.unique) private(set) var id: UUID
-    var title: String
+    private(set) var id: UUID = UUID()
+    var title: String = ""
     @Attribute(.externalStorage) var image: Data?
     var postDate: Date?
-    private(set) var creationDate: Date
+    private(set) var creationDate: Date = Date()
     var performance: Performance?
     var socialMedias: [SocialMedia]?
     var originalPlatform: SocialMedia?
     
     init(title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil, socialMedias: [SocialMedia]? = nil, originalPlatform: SocialMedia? = nil) {
-        self.id = UUID()
         self.title = title
         self.image = image
         self.postDate = postDate
-        self.creationDate = Date()
         self.performance = performance
         self.socialMedias = socialMedias
         self.originalPlatform = originalPlatform
