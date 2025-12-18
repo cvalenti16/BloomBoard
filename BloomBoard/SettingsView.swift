@@ -116,8 +116,8 @@ func fetchICloudAvailability() async -> String {
     case .restricted: return "iCloud Restricted"
     case .couldNotDetermine: return "iCloud Undetermined"
     case .temporarilyUnavailable: return "iCloud Temporarily Unavailable"
-    case .none: return "iCloud Unkown Error"
-    @unknown default: return "iCloud Unkown Error"
+    case .none: return "iCloud Unknown Error"
+    @unknown default: return "iCloud Unknown Error"
     }
 }
 
