@@ -72,14 +72,16 @@ struct PostDetailView: View {
         .toolbar {
             ToolbarItem {
                 Button(UIStrings.edit, systemImage: UIIcons.edit) {
-                    postState.showEditPostSheet.toggle()
-                    
+                    var trans = Transaction()
+                    trans.disablesAnimations = true
+                    withTransaction(trans) {
+                        postState.showEditPostSheet.toggle()
+                    }
                 }
             }
         }
         .sheet(isPresented: $postState.showEditPostSheet) {
             PostEditorView(mode: .editing(post))
-                .presentationDetents([.fraction(0.75)])
         }
         .sheet(isPresented: $postState.showCropView) {
             if let image = loadedImage {

@@ -21,6 +21,7 @@ struct PostEditorView: View {
     @State private var title: String
     @State private var imageState: ImageState
     @State private var errorMessage: String? = nil
+    @FocusState private var isTitleFocused: Bool
     
     let mode: EditorMode
     var navigationTitle: String {
@@ -54,13 +55,10 @@ struct PostEditorView: View {
         NavigationStack {
             VStack {
                 TextField(UIStrings.title, text: $title, axis: .vertical)
+                    .focused($isTitleFocused)
                     .padding(.horizontal)
                     .bold()
-                
-                Rectangle()
-                    .foregroundStyle(.text)
-                    .frame(height: 2)
-                    .padding(.horizontal)
+                    .font(.title3)
                 
                 ImagePickerView(errorMessage: $errorMessage)
                     .environment(imageState)
@@ -96,6 +94,9 @@ struct PostEditorView: View {
                     .disabled(title.isEmpty)
                 }
             }
+        }
+        .task {
+            isTitleFocused = true
         }
     }
     

@@ -39,10 +39,10 @@ struct PostListView: View {
         let count = filteredPosts.count
         
         switch listType {
-        
+            
         case .drafts:
             return String(format: "%@ (%d)", "Drafts", count)
-        
+            
         case .published:
             return String(format: "%@ (%d)", listState.selectedMissingPlatform?.rawValue ?? "Published", count)
         }
@@ -78,7 +78,6 @@ struct PostListView: View {
         .searchable(text: $searchTerm)
         .sheet(isPresented: $listState.showAddSheet) {
             PostEditorView(mode: .creating)
-                .presentationDetents([.fraction(0.60)])
         }
         .sheet(isPresented: $needsOnboarding) {
             OnboardingView()
@@ -95,13 +94,13 @@ struct PostListView: View {
                 case .drafts:
                     ContentUnavailableView {
                         Label("No Draft Posts",
-                            systemImage: UIIcons.posts
+                              systemImage: UIIcons.posts
                         )
                     }
                 case .published:
                     ContentUnavailableView {
                         Label("No Published Posts",
-                            systemImage: UIIcons.published
+                              systemImage: UIIcons.published
                         )
                     }
                 }
@@ -210,14 +209,14 @@ private struct PostListToolbar: ToolbarContent {
                 SocialMedia.allCases.filter { $0 != .none }
             )
         }
-
+        
         return Set(
             platforms
                 .split(separator: ",")
                 .compactMap { SocialMedia(rawValue: String($0)) }
         )
     }
-
+    
     var body: some ToolbarContent {
         @Bindable var listState = listState
         
@@ -233,7 +232,12 @@ private struct PostListToolbar: ToolbarContent {
         case .drafts:
             ToolbarItem {
                 Button(UIStrings.add, systemImage: UIIcons.add) {
-                    listState.showAddSheet.toggle()
+                    var trans = Transaction()
+                    trans.disablesAnimations = true
+                    withTransaction(trans) {
+                        listState.showAddSheet.toggle()
+                    
+                    }
                 }
             }
             
@@ -245,8 +249,8 @@ private struct PostListToolbar: ToolbarContent {
                     Picker(UIStrings.availableFor, selection: $listState.selectedMissingPlatform) {
                         ForEach(trackedPlatforms
                             .sorted {$0.rawValue < $1.rawValue}) { platform in
-                            Text(platform.rawValue).tag(platform as SocialMedia?)
-                        }
+                                Text(platform.rawValue).tag(platform as SocialMedia?)
+                            }
                     }
                     
                     if listState.selectedMissingPlatform != nil {
