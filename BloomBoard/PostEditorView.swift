@@ -54,17 +54,38 @@ struct PostEditorView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                TextField(UIStrings.title, text: $title, axis: .vertical)
-                    .focused($isTitleFocused)
+                
+                TextField("Title",text: $title)
                     .padding(.horizontal)
-                    .bold()
-                    .font(.title3)
+                    .focused($isTitleFocused)
+                Spacer()
                 
                 ImagePickerView(errorMessage: $errorMessage)
                     .environment(imageState)
                 
                 Text(errorMessage ?? "")
                     .defaultMessageStyle()
+                
+                PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
+                    HStack {
+                        Image(systemName: "photo")
+                            .foregroundStyle(.text)
+                            .padding()
+                        Spacer()
+                    }
+                }
+                .onChange(of: imageState.selectedImage) { _, newValue in
+                    Task {
+                        guard let data = try? await newValue?.loadTransferable(type: Data.self) else {
+                            return
+                        }
+                        
+                        await MainActor.run {
+                            imageState.postImage = UIImage(data: data)
+                            imageState.imageWasChanged = true
+                        }
+                    }
+                }
                 
             }
             .navigationTitle(navigationTitle)
@@ -149,47 +170,33 @@ private struct ImagePickerView: View {
     
     var body: some View {
         @Bindable var imageState = imageState
-        
-        PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
-            if let image = imageState.postImage {
-                ZStack {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: .infinity, maxHeight: 220)
-                        .clipShape(.rect(cornerRadius: 10))
-                        .padding()
+        if let image = imageState.postImage {
+            ZStack {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: 220)
+                    .clipShape(.rect(cornerRadius: 10))
+                    .padding()
+                
+                HStack {
+                    Image(systemName: UIIcons.change)
+                        .defaultIconStyle()
                     
-                    HStack {
-                        Image(systemName: UIIcons.change)
+                    Button {
+                        imageState.selectedImage = nil
+                        imageState.postImage = nil
+                        imageState.imageWasChanged = true
+                    } label: {
+                        Image(systemName: UIIcons.trash)
                             .defaultIconStyle()
-                        
-                        Button {
-                            imageState.selectedImage = nil
-                            imageState.postImage = nil
-                            imageState.imageWasChanged = true
-                        } label: {
-                            Image(systemName: UIIcons.trash)
-                                .defaultIconStyle()
-                        }
                     }
                 }
-            } else {
-                Text(UIStrings.uploadImage)
-                    .defaultUploadImageStyle()
             }
-        }
-        .onChange(of: imageState.selectedImage) { _, newValue in
-            Task {
-                guard let data = try? await newValue?.loadTransferable(type: Data.self) else {
-                    return
-                }
-                
-                await MainActor.run {
-                    imageState.postImage = UIImage(data: data)
-                    imageState.imageWasChanged = true
-                }
-            }
+        } else {
+            Text("")
+                .frame(maxWidth: .infinity, maxHeight: 220)
+                .padding()
         }
     }
 }
