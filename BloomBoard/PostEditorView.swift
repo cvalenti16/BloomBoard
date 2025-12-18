@@ -54,7 +54,6 @@ struct PostEditorView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                
                 TextField("Title",text: $title)
                     .padding(.horizontal)
                     .font(.title2)
@@ -181,10 +180,7 @@ private struct ImagePickerView: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .padding()
                 
-                HStack {
-                    Image(systemName: UIIcons.change)
-                        .defaultIconStyle()
-                    
+                
                     Button {
                         imageState.selectedImage = nil
                         imageState.postImage = nil
@@ -193,7 +189,7 @@ private struct ImagePickerView: View {
                         Image(systemName: UIIcons.trash)
                             .defaultIconStyle()
                     }
-                }
+                
             }
         } else {
             Text("")
