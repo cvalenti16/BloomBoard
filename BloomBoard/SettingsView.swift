@@ -33,7 +33,7 @@ struct SettingsView: View {
             return Set(
                 platforms
                     .split(separator: ",")
-                    .compactMap { SocialMedia(rawValue: String($0)) }
+                    .compactMap { SocialMedia(rawValue: String($0))}
             )
         }
         set {
@@ -46,35 +46,36 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                List(allSocials){ platform in
-                    Toggle(platform.rawValue, isOn: Binding(
-                        get: {
-                            tracked.contains(platform)
-                        },
-                        set: { isOn in
-                            var current = tracked
-                            if isOn {
-                                current.insert(platform)
-                            } else {
-                                current.remove(platform)
-                            }
-                            platforms = current
-                                .map(\.rawValue)
-                                .sorted()
-                                .joined(separator: ",")
-                        }
-                    ))
-                    .padding(.horizontal)
-                }
-                
-                if let iCloudStatus = iCloudStatus {
-                    Text(iCloudStatus)
+            List {
+                Section(
+                    header: Text("Tracked Platforms"),
+                    footer: Text(iCloudStatus ?? "")
                         .defaultMessageStyle()
+                ) {
+                    ForEach(allSocials){ platform in
+                        Toggle(platform.rawValue, isOn: Binding(
+                            get: {
+                                tracked.contains(platform)
+                            },
+                            set: { isOn in
+                                var current = tracked
+                                if isOn {
+                                    current.insert(platform)
+                                } else {
+                                    current.remove(platform)
+                                }
+                                platforms = current
+                                    .map(\.rawValue)
+                                    .sorted()
+                                    .joined(separator: ",")
+                            }
+                        ))
+                        .padding(.horizontal)
+                    }
                 }
             }
             .scrollDisabled(true)
-            .navigationTitle("Tracked Platforms")
+            .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -96,8 +97,6 @@ struct SettingsView: View {
                         Image(systemName: selectedAppearance == .dark ? UIIcons.moon : UIIcons.sun)
                             .symbolEffect(.bounce, value: selectedAppearance)
                     }
-                    
-                    
                 }
             }
             .environment(\.colorScheme, selectedAppearance == .dark ? .dark : .light)
@@ -106,18 +105,18 @@ struct SettingsView: View {
             iCloudStatus = await fetchICloudAvailability()
         }
     }
-}
-
-func fetchICloudAvailability() async -> String {
-    let status = try? await CKContainer.default().accountStatus()
-    switch status {
-    case .available: return "iCloud Sync Enabled"
-    case .noAccount: return "Sign into iCloud in Settings to sync data"
-    case .restricted: return "iCloud Restricted"
-    case .couldNotDetermine: return "iCloud Undetermined"
-    case .temporarilyUnavailable: return "iCloud Temporarily Unavailable"
-    case .none: return "iCloud Unknown Error"
-    @unknown default: return "iCloud Unknown Error"
+    
+    func fetchICloudAvailability() async -> String {
+        let status = try? await CKContainer.default().accountStatus()
+        switch status {
+        case .available: return "iCloud Sync Enabled"
+        case .noAccount: return "Sign into iCloud in Settings to sync data"
+        case .restricted: return "iCloud Restricted"
+        case .couldNotDetermine: return "iCloud Undetermined"
+        case .temporarilyUnavailable: return "iCloud Temporarily Unavailable"
+        case .none: return "iCloud Unknown Error"
+        @unknown default: return "iCloud Unknown Error"
+        }
     }
 }
 
