@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct SettingsView: View {
     @AppStorage("trackedPlatforms")
@@ -14,6 +15,8 @@ struct SettingsView: View {
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
     @Environment(\.dismiss) private var dismiss
+    
+    @State private var iCloudStatus: String? = nil
     
     private var allSocials: [SocialMedia] {
         SocialMedia.allCases
@@ -43,25 +46,32 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationStack {
-            List(allSocials){ platform in
-                Toggle(platform.rawValue, isOn: Binding(
-                    get: {
-                        tracked.contains(platform)
-                    },
-                    set: { isOn in
-                        var current = tracked
-                        if isOn {
-                            current.insert(platform)
-                        } else {
-                            current.remove(platform)
+            VStack {
+                List(allSocials){ platform in
+                    Toggle(platform.rawValue, isOn: Binding(
+                        get: {
+                            tracked.contains(platform)
+                        },
+                        set: { isOn in
+                            var current = tracked
+                            if isOn {
+                                current.insert(platform)
+                            } else {
+                                current.remove(platform)
+                            }
+                            platforms = current
+                                .map(\.rawValue)
+                                .sorted()
+                                .joined(separator: ",")
                         }
-                        platforms = current
-                            .map(\.rawValue)
-                            .sorted()
-                            .joined(separator: ",")
-                    }
-                ))
-                .padding(.horizontal)
+                    ))
+                    .padding(.horizontal)
+                }
+                
+                if let iCloudStatus = iCloudStatus {
+                    Text(iCloudStatus)
+                        .defaultMessageStyle()
+                }
             }
             .scrollDisabled(true)
             .navigationTitle("Tracked Platforms")
@@ -92,6 +102,22 @@ struct SettingsView: View {
             }
             .environment(\.colorScheme, selectedAppearance == .dark ? .dark : .light)
         }
+        .task {
+            iCloudStatus = await fetchICloudAvailability()
+        }
+    }
+}
+
+func fetchICloudAvailability() async -> String {
+    let status = try? await CKContainer.default().accountStatus()
+    switch status {
+    case .available: return "iCloud Sync Enabled"
+    case .noAccount: return "Sign into iCloud in Settings to sync data"
+    case .restricted: return "iCloud Restricted"
+    case .couldNotDetermine: return "iCloud Undetermined"
+    case .temporarilyUnavailable: return "iCloud Temporarily Unavailable"
+    case .none: return "iCloud Unkown Error"
+    @unknown default: return "iCloud Unkown Error"
     }
 }
 
