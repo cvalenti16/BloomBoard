@@ -57,7 +57,9 @@ struct PostEditorView: View {
                 
                 TextField("Title",text: $title)
                     .padding(.horizontal)
+                    .font(.title2)
                     .focused($isTitleFocused)
+                
                 Spacer()
                 
                 ImagePickerView(errorMessage: $errorMessage)

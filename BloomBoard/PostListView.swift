@@ -236,7 +236,6 @@ private struct PostListToolbar: ToolbarContent {
                     trans.disablesAnimations = true
                     withTransaction(trans) {
                         listState.showAddSheet.toggle()
-                    
                     }
                 }
             }
