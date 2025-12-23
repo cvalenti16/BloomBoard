@@ -81,33 +81,35 @@ struct PostEditorView: View {
                 Text(errorMessage ?? "")
                     .defaultMessageStyle()
                 
-                PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
-                    HStack {
-                        Image(systemName: "photo")
-                            .foregroundStyle(.text)
-                            .padding()
-                        Spacer()
-                    }
-                }
-                .onChange(of: imageState.selectedImage) { _, newValue in
-                    Task {
-                        guard let data = try? await newValue?.loadTransferable(type: Data.self) else {
-                            return
-                        }
+                HStack {
+                    PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
+                            Image(systemName: "photo")
+                                .foregroundStyle(.text)
+                                .padding()
                         
-                        await MainActor.run {
-                            imageState.postImage = UIImage(data: data)
-                            imageState.imageWasChanged = true
+                    }
+                    .onChange(of: imageState.selectedImage) { _, newValue in
+                        Task {
+                            guard let data = try? await newValue?.loadTransferable(type: Data.self) else {
+                                return
+                            }
+                            
+                            await MainActor.run {
+                                imageState.postImage = UIImage(data: data)
+                                imageState.imageWasChanged = true
+                            }
                         }
                     }
-                }
-                
-                if canUseAI {
-                    SuggestedTitlesView(
-                        titleSuggestor: titleSuggestor,
-                        publishedPosts: publishedPosts,
-                        title: $title
-                    )
+                    
+                    if canUseAI {
+                        SuggestedTitlesView(
+                            titleSuggestor: titleSuggestor,
+                            publishedPosts: publishedPosts,
+                            title: $title
+                        )
+                    }
+                    
+                    Spacer()
                 }
             }
             .navigationTitle(navigationTitle)
@@ -279,6 +281,6 @@ struct SuggestedTitlesView: View {
                 .font(.subheadline)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: 100)
+//        .frame(maxWidth: .infinity, maxHeight: 100)
     }
 }
