@@ -61,7 +61,7 @@ struct PostEditorView: View {
                 
                 Spacer()
                 
-                ImagePickerView(errorMessage: $errorMessage)
+                ImagePickerView()
                     .environment(imageState)
                 
                 Text(errorMessage ?? "")
@@ -167,7 +167,6 @@ class ImageState {
 
 private struct ImagePickerView: View {
     @Environment(ImageState.self) var imageState
-    @Binding var errorMessage: String?
     
     var body: some View {
         @Bindable var imageState = imageState
