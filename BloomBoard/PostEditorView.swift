@@ -19,9 +19,9 @@ struct PostEditorView: View {
     @Environment(\.modelContext) private var modelContext
     
     @Query(filter: #Predicate<Post> {$0.postDate != nil},
-        sort: [
+           sort: [
             SortDescriptor(\Post.postDate, order: .reverse)
-        ]) var publishedPosts: [Post]
+           ]) var publishedPosts: [Post]
     
     @State private var title: String
     @State private var imageState: ImageState
@@ -78,14 +78,26 @@ struct PostEditorView: View {
                 ImagePickerView()
                     .environment(imageState)
                 
+                if let titles = titleSuggestor?.titles {
+                    ForEach(titles, id: \.self) { title in
+                        Button {
+                            self.title = title
+                        } label: {
+                            Text(title)
+                                .font(.subheadline)
+                                .foregroundStyle(.text)
+                        }
+                    }
+                }
+                
                 Text(errorMessage ?? "")
                     .defaultMessageStyle()
                 
                 HStack {
                     PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
-                            Image(systemName: "photo")
-                                .foregroundStyle(.text)
-                                .padding()
+                        Image(systemName: "photo")
+                            .foregroundStyle(.text)
+                            .padding()
                         
                     }
                     .onChange(of: imageState.selectedImage) { _, newValue in
@@ -105,7 +117,6 @@ struct PostEditorView: View {
                         SuggestedTitlesView(
                             titleSuggestor: titleSuggestor,
                             publishedPosts: publishedPosts,
-                            title: $title
                         )
                     }
                     
@@ -206,15 +217,14 @@ private struct ImagePickerView: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .padding()
                 
-                
-                    Button {
-                        imageState.selectedImage = nil
-                        imageState.postImage = nil
-                        imageState.imageWasChanged = true
-                    } label: {
-                        Image(systemName: UIIcons.trash)
-                            .defaultIconStyle()
-                    }
+                Button {
+                    imageState.selectedImage = nil
+                    imageState.postImage = nil
+                    imageState.imageWasChanged = true
+                } label: {
+                    Image(systemName: UIIcons.trash)
+                        .defaultIconStyle()
+                }
                 
             }
         } else {
@@ -228,7 +238,6 @@ private struct ImagePickerView: View {
 struct SuggestedTitlesView: View {
     let titleSuggestor: TitleSuggestor?
     let publishedPosts: [Post]
-    @Binding var title: String
     
     var body: some View {
         VStack {
@@ -240,47 +249,30 @@ struct SuggestedTitlesView: View {
                     .foregroundStyle(.text)
                 
             case .success:
-                if let titles = titleSuggestor?.titles {
-                    VStack {
-                        ForEach(titles, id: \.self) { title in
-                            Button {
-                                self.title = title
-                            } label: {
-                                Text(title)
-                                    .defaultMessageStyle()
-                            }
-                        }
-                        
-                        Button {
-                            Task {
-                                await titleSuggestor?.generateTitle(publishedPosts)
-                            }
-                        } label: {
-                            Label("Other titles", systemImage: "sparkles")
-                        }
-                        .padding(.horizontal)
-                        .foregroundStyle(.text)
-                        .font(.footnote)
+                Button {
+                    Task {
+                        await titleSuggestor?.generateTitles(publishedPosts)
                     }
+                } label: {
+                    Label("Other titles", systemImage: "sparkles")
                 }
+                .foregroundStyle(.text)
                 
             case .failed:
                 Text("Error generating titles, Please try again.")
-                    .defaultMessageStyle()
+                    .font(.subheadline)
+                    .foregroundStyle(.text)
                 
             default:
                 Button {
                     Task {
-                        await titleSuggestor?.generateTitle(publishedPosts)
+                        await titleSuggestor?.generateTitles(publishedPosts)
                     }
                 } label: {
-                    Label("Generate title ideas", systemImage: "sparkles")
+                    Image(systemName: "sparkles")
                 }
-                .padding(.horizontal)
                 .foregroundStyle(.text)
-                .font(.subheadline)
             }
         }
-//        .frame(maxWidth: .infinity, maxHeight: 100)
     }
 }

@@ -31,8 +31,9 @@ final class TitleSuggestor {
         self.model = ai.generativeModel(modelName: "gemini-2.5-flash")
     }
     
-    func generateTitle(_ posts: [Post]) async {
+    func generateTitles(_ posts: [Post]) async {
         titlesStatus = .fetching
+        titles = nil
         let recentTitles = posts.map { "- \($0.title)" }.joined(separator: "\n")
         
         let prompt = """
