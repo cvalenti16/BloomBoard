@@ -18,10 +18,24 @@ struct PostEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     
+    @Query(filter: #Predicate<Post> {$0.postDate != nil},
+        sort: [
+            SortDescriptor(\Post.postDate, order: .reverse)
+        ]) var publishedPosts: [Post]
+    
     @State private var title: String
     @State private var imageState: ImageState
     @State private var errorMessage: String? = nil
+    @State private var titleSuggestor: TitleSuggestor?
+    
     @FocusState private var isTitleFocused: Bool
+    
+    private var canUseAI: Bool {
+        if case .creating = mode, publishedPosts.count >= 5 {
+            return true
+        }
+        return false
+    }
     
     let mode: EditorMode
     var navigationTitle: String {
@@ -88,6 +102,13 @@ struct PostEditorView: View {
                     }
                 }
                 
+                if canUseAI {
+                    SuggestedTitlesView(
+                        titleSuggestor: titleSuggestor,
+                        publishedPosts: publishedPosts,
+                        title: $title
+                    )
+                }
             }
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
@@ -119,6 +140,10 @@ struct PostEditorView: View {
         }
         .task {
             isTitleFocused = true
+            
+            if canUseAI {
+                titleSuggestor = TitleSuggestor()
+            }
         }
     }
     
@@ -195,5 +220,65 @@ private struct ImagePickerView: View {
                 .frame(maxWidth: .infinity, maxHeight: 220)
                 .padding()
         }
+    }
+}
+
+struct SuggestedTitlesView: View {
+    let titleSuggestor: TitleSuggestor?
+    let publishedPosts: [Post]
+    @Binding var title: String
+    
+    var body: some View {
+        VStack {
+            switch titleSuggestor?.titlesStatus {
+                
+            case .fetching:
+                Image(systemName: "sparkles")
+                    .symbolEffect(.pulse)
+                    .foregroundStyle(.text)
+                
+            case .success:
+                if let titles = titleSuggestor?.titles {
+                    VStack {
+                        ForEach(titles, id: \.self) { title in
+                            Button {
+                                self.title = title
+                            } label: {
+                                Text(title)
+                                    .defaultMessageStyle()
+                            }
+                        }
+                        
+                        Button {
+                            Task {
+                                await titleSuggestor?.generateTitle(publishedPosts)
+                            }
+                        } label: {
+                            Label("Other titles", systemImage: "sparkles")
+                        }
+                        .padding(.horizontal)
+                        .foregroundStyle(.text)
+                        .font(.footnote)
+                    }
+                }
+                
+            case .failed:
+                Text("Error generating titles, Please try again.")
+                    .defaultMessageStyle()
+                
+            default:
+                Button {
+                    Task {
+                        await titleSuggestor?.generateTitle(publishedPosts)
+                    }
+                } label: {
+                    Label("Generate title ideas", systemImage: "sparkles")
+                }
+                .padding(.horizontal)
+                .foregroundStyle(.text)
+                .font(.subheadline)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: 100)
     }
 }
