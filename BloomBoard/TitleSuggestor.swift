@@ -45,20 +45,20 @@ final class TitleSuggestor {
         The user has previously published these titles:
         \(recentTitles)
 
-        Use the image as context only if it helps clarify the intent of the title.
+        The post includes an image. Use it only as supporting context to better understand the title’s intent. Do not introduce new topics.
+
 
         Constraints:
-        - Keep the original meaning
+        - Preserve the original meaning and intent
         - Match the user's tone and writing style
         - Keep the title length similar to their previous titles
-        - Make the title clearer, tighter, or more engaging
         - Output exactly three improved variations
         - No emojis, quotes, numbering, or explanations
+        - Improve clarity, flow, or impact without over-polishing
         """
         
         do {
             let response = try await model.generateContent(prompt, image)
-            
             
             let lines = response.text?
                 .components(separatedBy: .newlines)
