@@ -31,7 +31,7 @@ struct PostEditorView: View {
     @FocusState private var isTitleFocused: Bool
     
     private var canUseAI: Bool {
-        if case .creating = mode, publishedPosts.count >= 5 {
+        if publishedPosts.count >= 5 {
             return true
         }
         return false
@@ -113,11 +113,12 @@ struct PostEditorView: View {
                         }
                     }
                     
-                    if canUseAI {
+                    if canUseAI, !title.isEmpty, let image = imageState.postImage {
                         SuggestedTitlesView(
                             titleSuggestor: titleSuggestor,
                             publishedPosts: publishedPosts,
-                            postImage: imageState.postImage
+                            postImage: image,
+                            postTitle: title
                         )
                     }
                     
@@ -239,7 +240,8 @@ private struct ImagePickerView: View {
 struct SuggestedTitlesView: View {
     let titleSuggestor: TitleSuggestor?
     let publishedPosts: [Post]
-    var postImage: UIImage? = nil
+    let postImage: UIImage
+    let postTitle: String
     
     var body: some View {
         VStack {
@@ -253,7 +255,7 @@ struct SuggestedTitlesView: View {
             case .success:
                 Button {
                     Task {
-                        await titleSuggestor?.generateTitles(publishedPosts)
+                        await titleSuggestor?.generateTitles(publishedPosts, postImage,postTitle)
                     }
                 } label: {
                     Label("Other titles", systemImage: "sparkles")
@@ -268,7 +270,7 @@ struct SuggestedTitlesView: View {
             default:
                 Button {
                     Task {
-                        await titleSuggestor?.generateTitles(publishedPosts, postImage)
+                        await titleSuggestor?.generateTitles(publishedPosts, postImage, postTitle)
                     }
                 } label: {
                     Image(systemName: "sparkles")

@@ -31,45 +31,34 @@ final class TitleSuggestor {
         self.model = ai.generativeModel(modelName: "gemini-2.5-flash")
     }
     
-    func generateTitles(_ posts: [Post], _ image: UIImage? = nil) async {
+    func generateTitles(_ posts: [Post], _ image: UIImage , _ title: String) async {
         titlesStatus = .fetching
         titles = nil
         let recentTitles = posts.map { "- \($0.title)" }.joined(separator: "\n")
         
-        var prompt = """
-        You are helping write a new social media post titles for this user.
-        Here are all the published posts they have:
+        let prompt = """
+        You are helping improve a social media post title written by the user.
 
+        Original title:
+        \(title)
+
+        The user has previously published these titles:
         \(recentTitles)
-        
-        
-        
-"""
-        if image != nil {
-            prompt += """
-    The new post includes an image. Use the image as inspiration while keeping the user's tone and past topics in mind.
-    
-    """
-        }
-        
-        prompt += """
-        
+
+        Use the image as context only if it helps clarify the intent of the title.
+
         Constraints:
-        - Match the tone and voice of the user
-        - The size of the titles should related
-        - Output exactly three lines, one title per line, no numbering or bullets
-        - Avoid repeating the exact titles above
-        - Keep it related to what the user has posted; no quotes or emojis
+        - Keep the original meaning
+        - Match the user's tone and writing style
+        - Keep the title length similar to their previous titles
+        - Make the title clearer, tighter, or more engaging
+        - Output exactly three improved variations
+        - No emojis, quotes, numbering, or explanations
         """
         
         do {
-            let response: GenerateContentResponse
-
-            if let image {
-                response = try await model.generateContent(prompt, image)
-            } else {
-                response = try await model.generateContent(prompt)
-            }
+            let response = try await model.generateContent(prompt, image)
+            
             
             let lines = response.text?
                 .components(separatedBy: .newlines)
