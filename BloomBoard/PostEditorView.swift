@@ -69,8 +69,8 @@ struct PostEditorView: View {
         NavigationStack {
             VStack {
                 TextField("Title", text: $title, axis: .vertical)
-                    .padding(.horizontal)
-                    .font(.title2)
+                    .padding()
+                    .font(.title3)
                     .focused($isTitleFocused)
                 
                 Spacer()
