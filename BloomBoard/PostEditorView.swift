@@ -117,6 +117,7 @@ struct PostEditorView: View {
                         SuggestedTitlesView(
                             titleSuggestor: titleSuggestor,
                             publishedPosts: publishedPosts,
+                            postImage: imageState.postImage
                         )
                     }
                     
@@ -238,6 +239,7 @@ private struct ImagePickerView: View {
 struct SuggestedTitlesView: View {
     let titleSuggestor: TitleSuggestor?
     let publishedPosts: [Post]
+    var postImage: UIImage? = nil
     
     var body: some View {
         VStack {
@@ -266,7 +268,7 @@ struct SuggestedTitlesView: View {
             default:
                 Button {
                     Task {
-                        await titleSuggestor?.generateTitles(publishedPosts)
+                        await titleSuggestor?.generateTitles(publishedPosts, postImage)
                     }
                 } label: {
                     Image(systemName: "sparkles")

@@ -31,17 +31,29 @@ final class TitleSuggestor {
         self.model = ai.generativeModel(modelName: "gemini-2.5-flash")
     }
     
-    func generateTitles(_ posts: [Post]) async {
+    func generateTitles(_ posts: [Post], _ image: UIImage? = nil) async {
         titlesStatus = .fetching
         titles = nil
         let recentTitles = posts.map { "- \($0.title)" }.joined(separator: "\n")
         
-        let prompt = """
-        You are helping write new social media post titles for this user.
+        var prompt = """
+        You are helping write a new social media post titles for this user.
         Here are all the published posts they have:
 
         \(recentTitles)
-
+        
+        
+        
+"""
+        if image != nil {
+            prompt += """
+    The new post includes an image. Use the image as inspiration while keeping the user's tone and past topics in mind.
+    
+    """
+        }
+        
+        prompt += """
+        
         Constraints:
         - Match the tone and voice of the user
         - The size of the titles should related
@@ -51,15 +63,22 @@ final class TitleSuggestor {
         """
         
         do {
-            let response = try await model.generateContent(prompt)
+            let response: GenerateContentResponse
+
+            if let image {
+                response = try await model.generateContent(prompt, image)
+            } else {
+                response = try await model.generateContent(prompt)
+            }
+            
             let lines = response.text?
                 .components(separatedBy: .newlines)
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { !$0.isEmpty }
-                ?? []
+            ?? []
             
             let suggestions = Array(lines.prefix(3))
-
+            
             self.titles = suggestions.isEmpty ? nil : suggestions
             titlesStatus = .success
             
