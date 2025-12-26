@@ -209,7 +209,6 @@ private struct ImagePreview: View {
     @Environment(ImageState.self) var imageState
     
     var body: some View {
-        @Bindable var imageState = imageState
         if let image = imageState.postImage {
             ZStack {
                 Image(uiImage: image)
@@ -244,39 +243,37 @@ struct SuggestedTitlesView: View {
     let postTitle: String
     
     var body: some View {
-        VStack {
-            switch titleSuggestor?.titlesStatus {
-                
-            case .fetching:
-                Image(systemName: "sparkles")
-                    .symbolEffect(.pulse)
-                    .foregroundStyle(.text)
-                
-            case .success:
-                Button {
-                    Task {
-                        await titleSuggestor?.generateTitles(publishedPosts, postImage,postTitle)
-                    }
-                } label: {
-                    Label("Other titles", systemImage: "sparkles")
-                }
+        switch titleSuggestor?.titlesStatus {
+            
+        case .fetching:
+            Label("Refining title", systemImage: "sparkles")
+                .symbolEffect(.pulse)
                 .foregroundStyle(.text)
-                
-            case .failed:
-                Text("Error generating titles, Please try again.")
-                    .font(.subheadline)
-                    .foregroundStyle(.text)
-                
-            default:
-                Button {
-                    Task {
-                        await titleSuggestor?.generateTitles(publishedPosts, postImage, postTitle)
-                    }
-                } label: {
-                    Image(systemName: "sparkles")
+            
+        case .success:
+            Button {
+                Task {
+                    await titleSuggestor?.generateTitles(publishedPosts, postImage,postTitle)
                 }
-                .foregroundStyle(.text)
+            } label: {
+                Label("Other versions", systemImage: "sparkles")
             }
+            .foregroundStyle(.text)
+            
+        case .failed:
+            Text("Error generating titles, Please try again.")
+                .font(.subheadline)
+                .foregroundStyle(.text)
+            
+        default:
+            Button {
+                Task {
+                    await titleSuggestor?.generateTitles(publishedPosts, postImage, postTitle)
+                }
+            } label: {
+                Label("Refine title", systemImage: "sparkles")
+            }
+            .foregroundStyle(.text)
         }
     }
 }
