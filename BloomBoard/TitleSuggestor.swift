@@ -34,7 +34,9 @@ final class TitleSuggestor {
     func generateTitles(_ posts: [Post], _ image: UIImage , _ title: String) async {
         titlesStatus = .fetching
         titles = nil
-        let recentTitles = posts.map { "- \($0.title)" }.joined(separator: "\n")
+        
+        let recentTitles = posts.map {"- \($0.title)"}
+            .joined(separator: "\n")
         
         let prompt = """
         You are helping improve a social media post title written by the user.
@@ -45,9 +47,8 @@ final class TitleSuggestor {
         The user has previously published these titles:
         \(recentTitles)
 
-        The post includes an image. Use it only as supporting context to better understand the title’s intent. Do not introduce new topics.
-
-
+        The post includes an image. Use it as supporting context to better understand the title’s intent. Do not introduce new topics.
+        
         Constraints:
         - Preserve the original meaning and intent
         - Match the user's tone and writing style
