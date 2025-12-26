@@ -30,6 +30,8 @@ struct PostEditorView: View {
     
     @FocusState private var isTitleFocused: Bool
     
+    let mode: EditorMode
+    
     private var canUseAI: Bool {
         if publishedPosts.count >= 5 {
             return true
@@ -37,7 +39,6 @@ struct PostEditorView: View {
         return false
     }
     
-    let mode: EditorMode
     var navigationTitle: String {
         switch mode {
         case .creating:
@@ -75,7 +76,7 @@ struct PostEditorView: View {
                 
                 Spacer()
                 
-                ImagePickerView()
+                ImagePreview()
                     .environment(imageState)
                 
                 if let titles = titleSuggestor?.titles {
@@ -155,7 +156,6 @@ struct PostEditorView: View {
         }
         .task {
             isTitleFocused = true
-            
             if canUseAI {
                 titleSuggestor = TitleSuggestor()
             }
@@ -205,7 +205,7 @@ class ImageState {
     var imageWasChanged = false
 }
 
-private struct ImagePickerView: View {
+private struct ImagePreview: View {
     @Environment(ImageState.self) var imageState
     
     var body: some View {
