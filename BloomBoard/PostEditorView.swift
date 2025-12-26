@@ -33,10 +33,7 @@ struct PostEditorView: View {
     let mode: EditorMode
     
     private var canUseAI: Bool {
-        if publishedPosts.count >= 5 {
-            return true
-        }
-        return false
+        publishedPosts.count >= 5
     }
     
     var navigationTitle: String {
