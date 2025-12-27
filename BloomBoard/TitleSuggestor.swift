@@ -20,7 +20,7 @@ enum FetchStatus {
 @Observable
 @MainActor
 final class TitleSuggestor {
-    private(set) var titles: [String]?
+    private(set) var title: String?
     private(set) var titlesStatus: FetchStatus = .notStarted
     
     private let ai: FirebaseAI
@@ -33,7 +33,7 @@ final class TitleSuggestor {
     
     func generateTitles(_ posts: [Post], _ image: UIImage , _ title: String) async {
         titlesStatus = .fetching
-        titles = nil
+        self.title = nil
         
         let recentTitles = posts.map {"- \($0.title)"}
             .joined(separator: "\n")
@@ -53,7 +53,7 @@ final class TitleSuggestor {
         - Preserve the original meaning and intent
         - Match the user's tone and writing style
         - Keep the title length similar to their previous titles
-        - Output exactly three improved variations
+        - Output exactly one improved variations
         - No emojis, quotes, numbering, or explanations
         - Improve clarity, flow, or impact without over-polishing
         """
@@ -61,20 +61,19 @@ final class TitleSuggestor {
         do {
             let response = try await model.generateContent(prompt, image)
             
-            let lines = response.text?
-                .components(separatedBy: .newlines)
-                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                .filter { !$0.isEmpty }
-            ?? []
+            let title = response.text
+//                .components(separatedBy: .newlines)
+//                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+//                .filter { !$0.isEmpty }
+            ?? ""
             
-            let suggestions = Array(lines.prefix(3))
             
-            self.titles = suggestions.isEmpty ? nil : suggestions
+            self.title = title.isEmpty ? nil : title
             titlesStatus = .success
             
         } catch {
             titlesStatus = .failed
-            self.titles = nil
+            self.title = nil
             
             Task { @MainActor in
                 try? await Task.sleep(for: .seconds(2))

@@ -76,8 +76,7 @@ struct PostEditorView: View {
                 ImagePreview()
                     .environment(imageState)
                 
-                if let titles = titleSuggestor?.titles {
-                    ForEach(titles, id: \.self) { title in
+                if let title = titleSuggestor?.title {
                         Button {
                             self.title = title
                         } label: {
@@ -85,7 +84,6 @@ struct PostEditorView: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.text)
                         }
-                    }
                 }
                 
                 Text(errorMessage ?? "")
