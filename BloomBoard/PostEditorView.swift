@@ -71,10 +71,10 @@ struct PostEditorView: View {
                     .font(.title3)
                     .focused($isTitleFocused)
                 
-                Spacer()
-                
                 ImagePreview()
                     .environment(imageState)
+                
+                Spacer()
                 
                 if let title = titleSuggestor?.title {
                         Button {
