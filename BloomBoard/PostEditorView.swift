@@ -55,39 +55,39 @@ struct PostEditorView: View {
         NavigationStack {
             VStack {
                 TextField("Title", text: $title, axis: .vertical)
-                    .padding(.horizontal)
+                    .padding()
                     .font(.title2)
                     .focused($isTitleFocused)
                 
-                Spacer()
-                
-                ImagePickerView()
+                ImagePreview()
                     .environment(imageState)
+                
+                Spacer()
                 
                 Text(errorMessage ?? "")
                     .defaultMessageStyle()
                 
-                PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
-                    HStack {
+                HStack {
+                    PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
                         Image(systemName: "photo")
                             .foregroundStyle(.text)
                             .padding()
-                        Spacer()
                     }
-                }
-                .onChange(of: imageState.selectedImage) { _, newValue in
-                    Task {
-                        guard let data = try? await newValue?.loadTransferable(type: Data.self) else {
-                            return
-                        }
-                        
-                        await MainActor.run {
-                            imageState.postImage = UIImage(data: data)
-                            imageState.imageWasChanged = true
+                    .onChange(of: imageState.selectedImage) { _, newValue in
+                        Task {
+                            guard let data = try? await newValue?.loadTransferable(type: Data.self) else {
+                                return
+                            }
+                            
+                            await MainActor.run {
+                                imageState.postImage = UIImage(data: data)
+                                imageState.imageWasChanged = true
+                            }
                         }
                     }
+                    
+                    Spacer()
                 }
-                
             }
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
@@ -165,7 +165,7 @@ class ImageState {
     var imageWasChanged = false
 }
 
-private struct ImagePickerView: View {
+private struct ImagePreview: View {
     @Environment(ImageState.self) var imageState
     
     var body: some View {
@@ -179,7 +179,6 @@ private struct ImagePickerView: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .padding()
                 
-                
                     Button {
                         imageState.selectedImage = nil
                         imageState.postImage = nil
@@ -188,7 +187,6 @@ private struct ImagePickerView: View {
                         Image(systemName: UIIcons.trash)
                             .defaultIconStyle()
                     }
-                
             }
         } else {
             Text("")
