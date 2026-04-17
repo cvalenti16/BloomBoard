@@ -35,37 +35,11 @@ struct PostDetailView: View {
                 .textSelection(.enabled)
                 .padding(.horizontal)
             
-            PostDateView(postPerformance: $postPerformance, post: post)
+//            PostDateView(postPerformance: $postPerformance, post: post)
             
             UIImageView(loadedImage: loadedImage)
-            
-            if let medias = post.socialMedias {
-                HStack {
-                    Image(systemName: UIIcons.socialMedia)
-                    Text(summaryText(medias))
-                    
-                }
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal)
-            }
-            
-            Button {
-                postState.showPostSheet = true
-            } label: {
-                Text(isPosted ? UIStrings.repost : UIStrings.post)
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(.thinMaterial)
-                    .foregroundStyle(.text)
-                    .clipShape(.rect(cornerRadius: 10))
-                    .padding()
-            }
-            
-            Text(postState.userFeedback ?? "")
-                .defaultMessageStyle()
-                .animation(.easeInOut, value: postState.userFeedback)
+           
+        
             
         }
         .toolbarBackground(.visible, for: .navigationBar)

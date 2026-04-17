@@ -14,7 +14,7 @@ struct ContentView: View {
     
     @Query(
         sort: [
-            SortDescriptor(\Post.creationDate)
+            SortDescriptor(\Post.creationDate,order: .reverse)
         ]) var posts: [Post]
     
     @State private var listState = ListState()
@@ -129,24 +129,11 @@ private struct PostItemView: View {
             }
             
             HStack {
-                if let postDate = post.postDate {
-                    Text("\(UIStrings.posted)\(postDate, style: .date)")
-                } else {
-                    Text("\(UIStrings.created)\(post.creationDate, style: .date)")
-                }
-                
+                Text("\(UIStrings.created)\(post.creationDate, style: .date)")
                 Image(systemName: hasImage ? UIIcons.photo : UIIcons.document)
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
-            
-            if let postPerformance = post.performance {
-                Text((postPerformance.rawValue))
-                    .padding(5)
-                    .background(postPerformance.color.opacity(0.5))
-                    .clipShape(.rect(cornerRadius: 10))
-                    .font(.subheadline)
-            }
         }
     }
 }

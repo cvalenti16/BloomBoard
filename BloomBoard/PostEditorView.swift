@@ -18,7 +18,7 @@ struct PostEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     
-    @Query(filter: #Predicate<Post> {$0.postDate != nil},
+    @Query(
            sort: [
             SortDescriptor(\Post.postDate, order: .reverse)
            ]) var publishedPosts: [Post]
