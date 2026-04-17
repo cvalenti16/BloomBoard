@@ -206,11 +206,9 @@ private struct PostListToolbar: ToolbarContent {
         case .drafts:
             ToolbarItem {
                 Button(UIStrings.add, systemImage: UIIcons.add) {
-                    var trans = Transaction()
-                    trans.disablesAnimations = true
-                    withTransaction(trans) {
-                        listState.showAddSheet.toggle()
-                    }
+                    
+                    listState.showAddSheet.toggle()
+
                 }
             }
             

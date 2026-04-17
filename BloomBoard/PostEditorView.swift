@@ -149,8 +149,11 @@ struct PostEditorView: View {
                 }
             }
         }
-        .task {
+        .onAppear {
             isTitleFocused = true
+        }
+        .task {
+            
             if canUseAI {
                 titleSuggestor = TitleSuggestor()
             }

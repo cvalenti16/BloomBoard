@@ -35,14 +35,9 @@ struct PostDetailView: View {
                 .textSelection(.enabled)
                 .padding(.horizontal)
             
-//            PostDateView(postPerformance: $postPerformance, post: post)
             
             UIImageView(loadedImage: loadedImage)
-           
-        
-            
         }
-        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem {
                 Button(UIStrings.edit, systemImage: UIIcons.edit) {
