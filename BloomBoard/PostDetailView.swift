@@ -33,7 +33,7 @@ struct PostDetailView: View {
                 .font(.title3)
                 .bold()
                 .textSelection(.enabled)
-                .padding(.horizontal)
+                .padding(.horizontal, 5)
             
             
             UIImageView(loadedImage: loadedImage)
