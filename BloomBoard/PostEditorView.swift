@@ -19,9 +19,12 @@ struct PostEditorView: View {
     @Environment(\.modelContext) private var modelContext
     
     @Query(
-           sort: [
-            SortDescriptor(\Post.postDate, order: .reverse)
-           ]) var publishedPosts: [Post]
+        filter: #Predicate<Post> { post in
+            post.isAITrainingPost == true
+        },
+        sort: [
+            SortDescriptor(\Post.creationDate, order: .reverse)
+        ]) var aiTrainingPosts: [Post]
     
     @State private var title: String
     @State private var imageState: ImageState
@@ -33,7 +36,7 @@ struct PostEditorView: View {
     let mode: EditorMode
     
     private var canUseAI: Bool {
-        publishedPosts.count >= 5
+        aiTrainingPosts.count >= 5
     }
     
     var navigationTitle: String {
@@ -112,7 +115,7 @@ struct PostEditorView: View {
                     if canUseAI, !title.isEmpty {
                         SuggestedTitlesView(
                             titleSuggestor: titleSuggestor,
-                            publishedPosts: publishedPosts,
+                            aiTrainingPosts: aiTrainingPosts,
                             postImage: imageState.postImage,
                             postTitle: title
                         )
@@ -236,7 +239,7 @@ private struct ImagePreview: View {
 
 struct SuggestedTitlesView: View {
     let titleSuggestor: TitleSuggestor?
-    let publishedPosts: [Post]
+    let aiTrainingPosts: [Post]
     let postImage: UIImage?
     let postTitle: String
     
@@ -251,7 +254,7 @@ struct SuggestedTitlesView: View {
         case .success:
             Button {
                 Task {
-                    await titleSuggestor?.generateTitles(publishedPosts, postImage,postTitle)
+                    await titleSuggestor?.generateTitles(aiTrainingPosts, postImage, postTitle)
                 }
             } label: {
                 Label("Other versions", systemImage: "sparkles")
@@ -266,7 +269,7 @@ struct SuggestedTitlesView: View {
         default:
             Button {
                 Task {
-                    await titleSuggestor?.generateTitles(publishedPosts, postImage, postTitle)
+                    await titleSuggestor?.generateTitles(aiTrainingPosts, postImage, postTitle)
                 }
             } label: {
                 Label("Refine title", systemImage: "sparkles")
