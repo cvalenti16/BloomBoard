@@ -130,7 +130,13 @@ private struct PostItemView: View {
             
             HStack {
                 Text("\(UIStrings.created)\(post.creationDate, style: .date)")
+                
                 Image(systemName: hasImage ? UIIcons.photo : UIIcons.document)
+
+                if post.isAITrainingPost {
+                    Image(systemName: "sparkles")
+                }
+                
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
