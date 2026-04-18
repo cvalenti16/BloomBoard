@@ -29,14 +29,22 @@ struct PostDetailView: View {
     
     var body: some View {
         VStack{
-            Text(post.title)
-                .font(.title3)
-                .bold()
-                .textSelection(.enabled)
-                .padding(.horizontal, 5)
-            
-            
+            VStack(alignment: .leading, spacing: 8) {
+                Text(post.title)
+                    .font(.title3)
+                    .bold()
+                    .textSelection(.enabled)
+                
+                AITrainingToggle(post: post)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
+
             UIImageView(loadedImage: loadedImage)
+            
+            Text(postState.userFeedback ?? "")
+                .defaultMessageStyle()
+                .animation(.easeInOut, value: postState.userFeedback)
         }
         .toolbar {
             ToolbarItem {
@@ -70,6 +78,36 @@ struct PostDetailView: View {
     func summaryText(_ medias: [SocialMedia]) -> String {
         let names = medias.map { $0.rawValue }
         return names.joined(separator: ", ")
+    }
+}
+
+private struct AITrainingToggle: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(PostState.self) private var postState
+    
+    let post: Post
+    
+    var body: some View {
+        Toggle("AI Training", isOn: toggleBinding)
+            .foregroundStyle(.text)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    private var toggleBinding: Binding<Bool> {
+        Binding(
+            get: { post.isAITrainingPost },
+            set: { newValue in
+                let oldValue = post.isAITrainingPost
+                post.isAITrainingPost = newValue
+                
+                do {
+                    try modelContext.save()
+                } catch {
+                    post.isAITrainingPost = oldValue
+                    postState.showFeedback(message: FeedbackMessages.savedFailed)
+                }
+            }
+        )
     }
 }
 
