@@ -31,12 +31,23 @@ final class TitleSuggestor {
         self.model = ai.generativeModel(modelName: "gemini-2.5-flash")
     }
     
-    func generateTitles(_ posts: [Post], _ image: UIImage , _ title: String) async {
+    func generateTitles(_ posts: [Post], _ image: UIImage?, _ title: String) async {
         titlesStatus = .fetching
         self.title = nil
         
         let recentTitles = posts.map {"- \($0.title)"}
             .joined(separator: "\n")
+        
+        let imageContext: String
+        if image != nil {
+            imageContext = """
+            The post includes an image. Use it as supporting context to better understand the title's intent. Do not introduce new topics that are not grounded in the title or image.
+            """
+        } else {
+            imageContext = """
+            The post does not include an image. Base your suggestion only on the original title and the user's previous titles. Do not invent visual details or new topics.
+            """
+        }
         
         let prompt = """
         You are helping improve a social media post title written by the user.
@@ -47,21 +58,27 @@ final class TitleSuggestor {
         The user has previously published these titles:
         \(recentTitles)
 
-        The post includes an image. Use it as supporting context to better understand the title’s intent. Do not introduce new topics.
+        \(imageContext)
         
         Constraints:
         - Preserve the original meaning and intent
         - Match the user's tone and writing style
         - Keep the title length similar to their previous titles
-        - Output exactly one improved variations
+        - Output exactly one improved variation
         - No emojis, quotes, numbering, or explanations
         - Improve clarity, flow, or impact without over-polishing
         """
         
         do {
-            let response = try await model.generateContent(prompt, image)
+            let responseText: String?
             
-            let title = response.text
+            if let image {
+                responseText = try await model.generateContent(prompt, image).text
+            } else {
+                responseText = try await model.generateContent(prompt).text
+            }
+            
+            let title = responseText
 //                .components(separatedBy: .newlines)
 //                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
 //                .filter { !$0.isEmpty }

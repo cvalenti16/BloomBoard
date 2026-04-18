@@ -109,11 +109,11 @@ struct PostEditorView: View {
                         }
                     }
                     
-                    if canUseAI, !title.isEmpty, let image = imageState.postImage {
+                    if canUseAI, !title.isEmpty {
                         SuggestedTitlesView(
                             titleSuggestor: titleSuggestor,
                             publishedPosts: publishedPosts,
-                            postImage: image,
+                            postImage: imageState.postImage,
                             postTitle: title
                         )
                     }
@@ -237,7 +237,7 @@ private struct ImagePreview: View {
 struct SuggestedTitlesView: View {
     let titleSuggestor: TitleSuggestor?
     let publishedPosts: [Post]
-    let postImage: UIImage
+    let postImage: UIImage?
     let postTitle: String
     
     var body: some View {
