@@ -29,22 +29,19 @@ struct PostDetailView: View {
     
     var body: some View {
         VStack{
-            VStack(alignment: .leading, spacing: 8) {
-                Text(post.title)
-                    .font(.title3)
-                    .bold()
-                    .textSelection(.enabled)
-                
-                AITrainingToggle(post: post)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal)
+            Text(post.title)
+                .font(.title3)
+                .bold()
+                .textSelection(.enabled)
+                .padding(.horizontal)
 
             UIImageView(loadedImage: loadedImage)
             
             Text(postState.userFeedback ?? "")
                 .defaultMessageStyle()
                 .animation(.easeInOut, value: postState.userFeedback)
+
+            AITrainingButton(post: post)
         }
         .toolbar {
             ToolbarItem {
@@ -81,33 +78,39 @@ struct PostDetailView: View {
     }
 }
 
-private struct AITrainingToggle: View {
+private struct AITrainingButton: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(PostState.self) private var postState
     
     let post: Post
     
     var body: some View {
-        Toggle("AI Training", isOn: toggleBinding)
-            .foregroundStyle(.text)
-            .frame(maxWidth: .infinity, alignment: .leading)
+        Button {
+            updateAITrainingStatus()
+        } label: {
+            Text(post.isAITrainingPost ? "Remove from AI Training" : "Add to AI Training")
+                .font(.headline)
+                .foregroundStyle(.text)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        }
+        .padding(.horizontal)
+        .padding(.bottom)
     }
     
-    private var toggleBinding: Binding<Bool> {
-        Binding(
-            get: { post.isAITrainingPost },
-            set: { newValue in
-                let oldValue = post.isAITrainingPost
-                post.isAITrainingPost = newValue
-                
-                do {
-                    try modelContext.save()
-                } catch {
-                    post.isAITrainingPost = oldValue
-                    postState.showFeedback(message: FeedbackMessages.savedFailed)
-                }
-            }
-        )
+    private func updateAITrainingStatus() {
+        let oldValue = post.isAITrainingPost
+        post.isAITrainingPost.toggle()
+        
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            post.isAITrainingPost = oldValue
+            postState.showFeedback(message: FeedbackMessages.savedFailed)
+        }
     }
 }
 
