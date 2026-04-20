@@ -12,13 +12,10 @@ import SwiftData
 struct PostListView: View {
     @AppStorage("needsOnboarding") private var needsOnboarding = true
     
-    @Query(
-        sort: [
-            SortDescriptor(\Post.creationDate,order: .reverse)
-        ]) var posts: [Post]
-    
     @State private var listState = ListState()
     @State private var searchTerm = ""
+    
+    let posts: [Post]
     
     var searchedPosts: [Post] {
         if searchTerm.isEmpty {

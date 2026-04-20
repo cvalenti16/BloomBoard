@@ -6,13 +6,31 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Query(
+        filter: #Predicate<Post> { $0.postDate == nil },
+        sort: [
+            SortDescriptor(\Post.creationDate)
+        ]) var draftPosts: [Post]
+    
+    @Query(
+        filter: #Predicate<Post> { $0.postDate != nil },
+        sort: [
+            SortDescriptor(\Post.postDate)
+        ]) var publishedPosts: [Post]
+        
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        TabView {
+            Tab("Drafts", systemImage: "square.and.pencil") {
+                PostListView(posts: draftPosts)
+            }
+            
+            Tab("Published", systemImage: "checkmark.seal.text.page.rtl" ) {
+                PostListView(posts: publishedPosts)
+            }
+        }
     }
 }
 
-#Preview {
-    ContentView()
-}
