@@ -35,13 +35,14 @@ struct PostDetailView: View {
                 .textSelection(.enabled)
                 .padding(.horizontal)
             
+            AITrainingButton(post: post)
+            
             UIImageView(loadedImage: loadedImage)
             
             Text(postState.userFeedback ?? "")
                 .defaultMessageStyle()
                 .animation(.easeInOut, value: postState.userFeedback)
             
-            AITrainingButton(post: post)
         }
         .toolbar {
             ToolbarItem {
