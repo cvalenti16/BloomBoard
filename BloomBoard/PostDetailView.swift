@@ -34,13 +34,13 @@ struct PostDetailView: View {
                 .bold()
                 .textSelection(.enabled)
                 .padding(.horizontal)
-
+            
             UIImageView(loadedImage: loadedImage)
             
             Text(postState.userFeedback ?? "")
                 .defaultMessageStyle()
                 .animation(.easeInOut, value: postState.userFeedback)
-
+            
             AITrainingButton(post: post)
         }
         .toolbar {
@@ -75,38 +75,33 @@ struct PostDetailView: View {
 }
 
 private struct AITrainingButton: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(PostState.self) private var postState
     
     let post: Post
     
     var body: some View {
-        Button {
-            updateAITrainingStatus()
-        } label: {
-            Text(post.isAITrainingPost ? "Remove from AI Training" : "Add to AI Training")
-                .font(.headline)
-                .foregroundStyle(.text)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-        }
-        .padding(.horizontal)
-        .padding(.bottom)
+        Toggle("AI Training", isOn: toggleBinding)
+            .font(.headline)
+            .foregroundStyle(.text)
+            .fixedSize()
     }
     
-    private func updateAITrainingStatus() {
-        let oldValue = post.isAITrainingPost
-        post.isAITrainingPost.toggle()
-        
-        do {
-            try modelContext.save()
-            dismiss()
-        } catch {
-            post.isAITrainingPost = oldValue
-            postState.showFeedback(message: FeedbackMessages.savedFailed)
-        }
+    private var toggleBinding: Binding<Bool> {
+        Binding(
+            get: { post.isAITrainingPost },
+            set: { newValue in
+                let oldValue = post.isAITrainingPost
+                post.isAITrainingPost = newValue
+                
+                do {
+                    try modelContext.save()
+                } catch {
+                    post.isAITrainingPost = oldValue
+                    postState.showFeedback(message: FeedbackMessages.savedFailed)
+                }
+            }
+        )
     }
 }
 
@@ -232,7 +227,7 @@ private struct PostSheet: View {
                 SocialMedia.allCases.filter { $0 != .none }
             )
         }
-
+        
         return Set(
             platforms
                 .split(separator: ",")
@@ -247,28 +242,28 @@ private struct PostSheet: View {
                     .filter {$0 != post.originalPlatform}
                     .sorted {$0.rawValue < $1.rawValue}){media in
                         
-                    Button {
-                        selectedMedia = media
-                    } label: {
-                        HStack {
-                            Text(media.rawValue)
-                            
-                            if isAlreadyShared(media) {
-                                Image(systemName: UIIcons.posted)
-                                    .foregroundStyle(.secondary)
-                                    .font(.subheadline)
-                            }
-                            
-                            Spacer()
-                            
-                            if selectedMedia == media {
-                                Image(systemName: isAlreadyShared(selectedMedia) ? UIIcons.cancel :  UIIcons.checkmark)
-                                    .foregroundStyle(.tint)
+                        Button {
+                            selectedMedia = media
+                        } label: {
+                            HStack {
+                                Text(media.rawValue)
+                                
+                                if isAlreadyShared(media) {
+                                    Image(systemName: UIIcons.posted)
+                                        .foregroundStyle(.secondary)
+                                        .font(.subheadline)
+                                }
+                                
+                                Spacer()
+                                
+                                if selectedMedia == media {
+                                    Image(systemName: isAlreadyShared(selectedMedia) ? UIIcons.cancel :  UIIcons.checkmark)
+                                        .foregroundStyle(.tint)
+                                }
                             }
                         }
+                        .scrollDisabled(true)
                     }
-                    .scrollDisabled(true)
-                }
                 
                 if isPosted {
                     Button {
