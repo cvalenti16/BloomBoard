@@ -18,7 +18,7 @@ struct ContentView: View {
     @Query(
         filter: #Predicate<Post> { $0.postDate != nil },
         sort: [
-            SortDescriptor(\Post.postDate)
+            SortDescriptor(\Post.postDate, order: .reverse)
         ]) var publishedPosts: [Post]
         
     var body: some View {
