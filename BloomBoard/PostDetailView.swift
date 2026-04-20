@@ -46,11 +46,7 @@ struct PostDetailView: View {
         .toolbar {
             ToolbarItem {
                 Button(UIStrings.edit, systemImage: UIIcons.edit) {
-                    var trans = Transaction()
-                    trans.disablesAnimations = true
-                    withTransaction(trans) {
-                        postState.showEditPostSheet.toggle()
-                    }
+                    postState.showEditPostSheet.toggle()
                 }
             }
         }
