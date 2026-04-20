@@ -32,7 +32,7 @@ struct BloomBoardApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            PostListView()
                 .preferredColorScheme(selectedAppearance.colorScheme)
         }
         .modelContainer(modelContainer)
