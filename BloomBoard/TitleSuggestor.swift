@@ -61,6 +61,7 @@ final class TitleSuggestor {
         \(imageContext)
         
         Constraints:
+        - Make the smallest effective improvement, not a full rewrite
         - Preserve the original meaning and intent
         - Match the user's tone and writing style
         - Keep the title length similar to their previous titles
