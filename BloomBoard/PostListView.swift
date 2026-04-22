@@ -16,6 +16,8 @@ struct PostListView: View {
     @State private var searchTerm = ""
     
     let posts: [Post]
+    let listType: PostListType
+
     
     var searchedPosts: [Post] {
         if searchTerm.isEmpty {
@@ -37,7 +39,13 @@ struct PostListView: View {
     
     var currentNavigationTitle: String {
         let count = filteredPosts.count
-        return String(format: "%@ (%d)", "Posts", count)
+        
+        switch listType {
+        case .drafts:
+            return String(format: "%@ (%d)", "Drafts", count)
+        case .published:
+            return String(format: "%@ (%d)", "Posts", count)
+        }
     }
     
     var body: some View {
@@ -62,7 +70,7 @@ struct PostListView: View {
             .postDeleteAlert()
             .navigationTitle(currentNavigationTitle)
             .toolbar {
-                PostListToolbar(listType: .drafts)
+                PostListToolbar(listType: listType)
             }
         }
         .tint(.text)

@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 
+@available(iOS 18.0, *)
 struct ContentView: View {
     @Query(
         filter: #Predicate<Post> { $0.postDate == nil },
@@ -23,14 +24,17 @@ struct ContentView: View {
         
     var body: some View {
         TabView {
-            Tab("Drafts", systemImage: "square.and.pencil") {
-                PostListView(posts: draftPosts)
+            Tab {
+                PostListView(posts: draftPosts, listType: .drafts)
+            } label: {
+                Image(systemName: "square.and.pencil")
             }
             
-            Tab("Published", systemImage: "checkmark.seal.text.page.rtl" ) {
-                PostListView(posts: publishedPosts)
+            Tab {
+                PostListView(posts: publishedPosts, listType: .published)
+            } label: {
+                Image(systemName: "paperplane.fill")
             }
         }
     }
 }
-
