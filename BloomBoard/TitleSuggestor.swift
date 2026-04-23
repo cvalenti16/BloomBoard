@@ -31,7 +31,7 @@ final class TitleSuggestor {
         self.model = ai.generativeModel(modelName: "gemini-2.5-flash")
     }
     
-    func generateTitles(_ posts: [Post], _ image: UIImage?, _ title: String) async {
+    func improveTitle(_ posts: [Post], _ image: UIImage?, _ title: String) async {
         titlesStatus = .fetching
         self.title = nil
         

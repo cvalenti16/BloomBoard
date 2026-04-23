@@ -254,7 +254,7 @@ struct SuggestedTitlesView: View {
         case .success:
             Button {
                 Task {
-                    await titleSuggestor?.generateTitles(aiTrainingPosts, postImage, postTitle)
+                    await titleSuggestor?.improveTitle(aiTrainingPosts, postImage, postTitle)
                 }
             } label: {
                 Label("Other versions", systemImage: "sparkles")
@@ -269,7 +269,7 @@ struct SuggestedTitlesView: View {
         default:
             Button {
                 Task {
-                    await titleSuggestor?.generateTitles(aiTrainingPosts, postImage, postTitle)
+                    await titleSuggestor?.improveTitle(aiTrainingPosts, postImage, postTitle)
                 }
             } label: {
                 Label("Refine title", systemImage: "sparkles")
