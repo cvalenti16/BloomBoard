@@ -34,9 +34,55 @@ final class TitleSuggestor {
     
     func generateTitles(_ posts: [Post]) async {
         titlesStatus = .fetching
+        self.title = nil
+        self.titles = nil
         let recentTitles = posts.map {"- \($0.title)"}
             .joined(separator: "\n")
         
+        let prompt = """
+        You are helping the user come up with three new social media post ideas.
+
+        The user has previously published these titles:
+        \(recentTitles)
+        
+        Constraints:
+        - Generate exactly three distinct post title ideas
+        - Match the user's tone, writing style, and level of directness
+        - Use the previous titles to learn the user's voice, not to copy them
+        - Keep the ideas similar in length to the user's previous titles
+        - Make the ideas feel specific and useful, not generic
+        - Avoid repeating the same idea three different ways
+        - Avoid emojis, hashtags, quotes, and extra commentary
+        - Return only the three titles, one per line
+        """
+        
+        do {
+            let responseText: String?
+            responseText = try await model.generateContent(prompt).text
+            
+            let parsedTitles = responseText?
+                .components(separatedBy: .newlines)
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+            
+            if let parsedTitles, !parsedTitles.isEmpty {
+                self.titles = Array(parsedTitles.prefix(3))
+            } else {
+                self.titles = nil
+            }
+            
+            titlesStatus = .success
+            
+        } catch {
+            titlesStatus = .failed
+            self.title = nil
+            self.titles = nil
+            
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(2))
+                titlesStatus = .notStarted
+            }
+        }
         
     }
     
