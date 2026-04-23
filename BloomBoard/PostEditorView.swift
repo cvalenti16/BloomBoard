@@ -113,12 +113,16 @@ struct PostEditorView: View {
                     }
                     
                     if canUseAI, !title.isEmpty {
-                        SuggestedTitlesView(
+                        ImproveTitlesView(
                             titleSuggestor: titleSuggestor,
                             aiTrainingPosts: aiTrainingPosts,
                             postImage: imageState.postImage,
                             postTitle: title
                         )
+                    }
+                    
+                    if canUseAI, title.isEmpty {
+                        GenerateTitlesView(titleSuggestor: titleSuggestor, aiTrainingPosts: aiTrainingPosts)
                     }
                     
                     Spacer()
@@ -237,7 +241,7 @@ private struct ImagePreview: View {
     }
 }
 
-struct SuggestedTitlesView: View {
+struct ImproveTitlesView: View {
     let titleSuggestor: TitleSuggestor?
     let aiTrainingPosts: [Post]
     let postImage: UIImage?
@@ -273,6 +277,46 @@ struct SuggestedTitlesView: View {
                 }
             } label: {
                 Label("Refine title", systemImage: "sparkles")
+            }
+            .foregroundStyle(.text)
+        }
+    }
+}
+
+struct GenerateTitlesView: View {
+    let titleSuggestor: TitleSuggestor?
+    let aiTrainingPosts: [Post]
+    
+    var body: some View {
+        switch titleSuggestor?.titlesStatus {
+            
+        case .fetching:
+            Label("Generating titles", systemImage: "sparkles")
+                .symbolEffect(.pulse)
+                .foregroundStyle(.text)
+            
+        case .success:
+            Button {
+                Task {
+                    await titleSuggestor?.generateTitles(aiTrainingPosts)
+                }
+            } label: {
+                Label("Other titles", systemImage: "sparkles")
+            }
+            .foregroundStyle(.text)
+            
+        case .failed:
+            Text("Error generating titles, Please try again.")
+                .font(.subheadline)
+                .foregroundStyle(.text)
+            
+        default:
+            Button {
+                Task {
+                    await titleSuggestor?.generateTitles(aiTrainingPosts)
+                }
+            } label: {
+                Label("Generate titles", systemImage: "sparkles")
             }
             .foregroundStyle(.text)
         }
