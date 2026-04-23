@@ -21,6 +21,7 @@ enum FetchStatus {
 @MainActor
 final class TitleSuggestor {
     private(set) var title: String?
+    private(set) var titles: [String]?
     private(set) var titlesStatus: FetchStatus = .notStarted
     
     private let ai: FirebaseAI
@@ -29,6 +30,14 @@ final class TitleSuggestor {
     init() {
         self.ai = FirebaseAI.firebaseAI(backend: .googleAI())
         self.model = ai.generativeModel(modelName: "gemini-2.5-flash")
+    }
+    
+    func generateTitles(_ posts: [Post]) async {
+        titlesStatus = .fetching
+        let recentTitles = posts.map {"- \($0.title)"}
+            .joined(separator: "\n")
+        
+        
     }
     
     func improveTitle(_ posts: [Post], _ image: UIImage?, _ title: String) async {
