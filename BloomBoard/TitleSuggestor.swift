@@ -135,9 +135,6 @@ final class TitleSuggestor {
             }
             
             let title = responseText
-//                .components(separatedBy: .newlines)
-//                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-//                .filter { !$0.isEmpty }
             ?? ""
             
             
