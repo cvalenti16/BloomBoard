@@ -10,6 +10,8 @@ struct PostDetailView: View {
     @Environment(\.dismiss) var dismiss
     @State private var postState: PostState
     @State private var postPerformance: Performance
+    @State private var showRemix: Bool = false
+    
     let post: Post
     
     var isPosted: Bool {
@@ -47,7 +49,14 @@ struct PostDetailView: View {
             
         }
         .toolbar {
-            ToolbarItem {
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Remix", systemImage: "arrow.uturn.left") {
+                    showRemix = true
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing)  {
                 Button(UIStrings.edit, systemImage: UIIcons.edit) {
                     postState.showEditPostSheet.toggle()
                 }
@@ -56,6 +65,9 @@ struct PostDetailView: View {
         .sheet(isPresented: $postState.showEditPostSheet) {
             PostEditorView(mode: .editing(post))
         }
+        .sheet(isPresented: $showRemix, content: {
+            PostEditorView(mode: .remix(post))
+        })
         .sheet(isPresented: $postState.showCropView) {
             if let image = loadedImage {
                 NineBySixteenView(postImage: image)
