@@ -89,7 +89,7 @@ struct PostEditorView: View {
                         Text(title)
                             .font(.subheadline)
                             .foregroundStyle(.text)
-                            .padding()
+                            .padding(.horizontal)
                             .multilineTextAlignment(.leading)
                     }
                 }
