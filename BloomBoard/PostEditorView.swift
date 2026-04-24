@@ -12,6 +12,7 @@ import PhotosUI
 enum EditorMode {
     case creating
     case editing(Post)
+    case remix(Post)
 }
 
 struct PostEditorView: View {
@@ -45,6 +46,8 @@ struct PostEditorView: View {
             return UIStrings.createPost
         case .editing:
             return UIStrings.editPost
+        case .remix:
+            return "Remix post"
         }
     }
     
@@ -57,6 +60,13 @@ struct PostEditorView: View {
             _title = State(initialValue: "")
             
         case .editing(let post):
+            _title = State(initialValue: post.title)
+            
+            if let data = post.image {
+                imageState.postImage = UIImage(data: data)
+            }
+            
+        case .remix(let post):
             _title = State(initialValue: post.title)
             
             if let data = post.image {
@@ -122,6 +132,8 @@ struct PostEditorView: View {
                         )
                     }
                     
+                    
+                    
                     Spacer()
                 }
             }
@@ -144,7 +156,11 @@ struct PostEditorView: View {
                             return createPost()
                         case .editing:
                             return updatePost()
+                            
+                        case .remix:
+                            break
                         }
+                    
                     } label: {
                         Image(systemName: UIIcons.save)
                             .foregroundStyle(.text)
@@ -279,6 +295,9 @@ struct ImproveTitlesView: View {
         }
     }
 }
+
+
+
 //
 //struct GenerateTitlesView: View {
 //    let titleSuggestor: TitleSuggestor?
