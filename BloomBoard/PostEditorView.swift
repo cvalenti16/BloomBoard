@@ -80,14 +80,14 @@ struct PostEditorView: View {
                 Spacer()
                 
                 if let title = titleSuggestor?.title {
-                        Button {
-                            self.title = title
-                        } label: {
-                            Text(title)
-                                .font(.subheadline)
-                                .foregroundStyle(.text)
-                                .padding()
-                        }
+                    Button {
+                        self.title = title
+                    } label: {
+                        Text(title)
+                            .font(.subheadline)
+                            .foregroundStyle(.text)
+                            .padding()
+                    }
                 }
                 
                 Text(errorMessage ?? "")
