@@ -41,7 +41,7 @@ final class TitleSuggestor {
         
         let prompt = """
         You are helping the user come up with three new social media post ideas.
-
+        
         The user has previously published these titles:
         \(recentTitles)
         
@@ -106,13 +106,13 @@ final class TitleSuggestor {
         
         let prompt = """
         You are helping improve a social media post title written by the user.
-
+        
         Original title:
         \(title)
-
+        
         The user has previously published these titles:
         \(recentTitles)
-
+        
         \(imageContext)
         
         Constraints:
@@ -124,6 +124,75 @@ final class TitleSuggestor {
         - No emojis, quotes, numbering, or explanations
         - Improve clarity, flow, or impact without over-polishing
         """
+        
+        do {
+            let responseText: String?
+            
+            if let image {
+                responseText = try await model.generateContent(prompt, image).text
+            } else {
+                responseText = try await model.generateContent(prompt).text
+            }
+            
+            let title = responseText
+            ?? ""
+            
+            
+            self.title = title.isEmpty ? nil : title
+            titlesStatus = .success
+            
+        } catch {
+            titlesStatus = .failed
+            self.title = nil
+            
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(2))
+                titlesStatus = .notStarted
+            }
+        }
+    }
+    
+    func remixTitle(_ posts: [Post], _ image: UIImage?, _ title: String) async {
+        titlesStatus = .fetching
+        self.title = nil
+        
+        let recentTitles = posts.map {"- \($0.title)"}
+            .joined(separator: "\n")
+        
+        let imageContext: String
+        if image != nil {
+            imageContext = """
+                The post includes an image. Use it as supporting context to better understand the title's intent. Do not introduce new topics that are not grounded in the title or image.
+                """
+        } else {
+            imageContext = """
+                The post does not include an image. Base your suggestion only on the original title and the user's previous titles. Do not invent visual details or new topics.
+                """
+        }
+        
+        let prompt = """
+            You are helping remix a social media post title written by the user.
+            
+            This original post title already performed well:
+            \(title)
+            
+            The user has previously published these titles:
+            \(recentTitles)
+            
+            \(imageContext)
+            
+            Constraints:
+            - Create one new version that feels similar in spirit to the original, but not like a copy
+            - Preserve the same general topic, point of view, and tone
+            - Match the user's tone and writing style
+            - Keep the title length similar to their previous titles
+            - Make it feel like a fresh follow-up or alternate angle to a post that already worked
+            - Do not repeat the original title with only tiny word swaps
+            - Do not introduce a completely new topic
+            - Output exactly one remixed variation
+            - No emojis, quotes, numbering, or explanations
+            - Keep it natural and social-post ready
+            """
         
         do {
             let responseText: String?
