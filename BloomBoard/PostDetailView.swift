@@ -51,7 +51,7 @@ struct PostDetailView: View {
         .toolbar {
             
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Remix", systemImage: "arrow.uturn.left") {
+                Button("Remix", systemImage: "arrow.triangle.2.circlepath") {
                     showRemix = true
                 }
             }
