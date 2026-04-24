@@ -119,6 +119,7 @@ struct PostEditorView: View {
                     
                     if canUseAI, !title.isEmpty {
                         ImproveTitlesView(
+                            mode: mode,
                             titleSuggestor: titleSuggestor,
                             aiTrainingPosts: aiTrainingPosts,
                             postImage: imageState.postImage,
@@ -146,15 +147,11 @@ struct PostEditorView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         switch mode {
-                        case .creating:
+                        case .creating, .remix:
                             return createPost()
                         case .editing:
                             return updatePost()
-                            
-                        case .remix:
-                            break
                         }
-                    
                     } label: {
                         Image(systemName: UIIcons.save)
                             .foregroundStyle(.text)
@@ -249,26 +246,45 @@ private struct ImagePreview: View {
 }
 
 struct ImproveTitlesView: View {
+    let mode: EditorMode
     let titleSuggestor: TitleSuggestor?
     let aiTrainingPosts: [Post]
     let postImage: UIImage?
     let postTitle: String
     
+    private var primaryLabel: String {
+        switch mode {
+        case .remix:
+            return "Remix post"
+        case .creating, .editing:
+            return "Refine title"
+        }
+    }
+    
+    private var secondaryLabel: String {
+        switch mode {
+        case .remix:
+            return "Other remixes"
+        case .creating, .editing:
+            return "Other versions"
+        }
+    }
+    
     var body: some View {
         switch titleSuggestor?.titlesStatus {
             
         case .fetching:
-            Label("Refining title", systemImage: "sparkles")
+            Label(primaryLabel, systemImage: "sparkles")
                 .symbolEffect(.pulse)
                 .foregroundStyle(.text)
             
         case .success:
             Button {
                 Task {
-                    await titleSuggestor?.improveTitle(aiTrainingPosts, postImage, postTitle)
+                    await runAIAction()
                 }
             } label: {
-                Label("Other versions", systemImage: "sparkles")
+                Label(secondaryLabel, systemImage: "sparkles")
             }
             .foregroundStyle(.text)
             
@@ -280,12 +296,21 @@ struct ImproveTitlesView: View {
         default:
             Button {
                 Task {
-                    await titleSuggestor?.improveTitle(aiTrainingPosts, postImage, postTitle)
+                    await runAIAction()
                 }
             } label: {
-                Label("Refine title", systemImage: "sparkles")
+                Label(primaryLabel, systemImage: "sparkles")
             }
             .foregroundStyle(.text)
+        }
+    }
+    
+    private func runAIAction() async {
+        switch mode {
+        case .remix:
+            await titleSuggestor?.remixTitle(aiTrainingPosts, postImage, postTitle)
+        case .creating, .editing:
+            await titleSuggestor?.improveTitle(aiTrainingPosts, postImage, postTitle)
         }
     }
 }
