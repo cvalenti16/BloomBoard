@@ -59,14 +59,7 @@ struct PostEditorView: View {
         case .creating:
             _title = State(initialValue: "")
             
-        case .editing(let post):
-            _title = State(initialValue: post.title)
-            
-            if let data = post.image {
-                imageState.postImage = UIImage(data: data)
-            }
-            
-        case .remix(let post):
+        case .editing(let post), .remix(let post):
             _title = State(initialValue: post.title)
             
             if let data = post.image {
