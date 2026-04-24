@@ -261,6 +261,15 @@ struct ImproveTitlesView: View {
         }
     }
     
+    private var workingLabel: String {
+        switch mode {
+        case .remix:
+            return "Remixing post"
+        case .creating, .editing:
+            return "Refining title"
+        }
+    }
+    
     private var secondaryLabel: String {
         switch mode {
         case .remix:
@@ -274,7 +283,7 @@ struct ImproveTitlesView: View {
         switch titleSuggestor?.titlesStatus {
             
         case .fetching:
-            Label(primaryLabel, systemImage: "sparkles")
+            Label(workingLabel, systemImage: "sparkles")
                 .symbolEffect(.pulse)
                 .foregroundStyle(.text)
             
