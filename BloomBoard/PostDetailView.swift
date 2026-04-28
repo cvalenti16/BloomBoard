@@ -50,10 +50,11 @@ struct PostDetailView: View {
             
         }
         .toolbar {
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Remix", systemImage: "arrow.triangle.2.circlepath") {
-                    showRemix = true
+            if isPosted {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Remix", systemImage: "arrow.triangle.2.circlepath") {
+                        showRemix = true
+                    }
                 }
             }
             
