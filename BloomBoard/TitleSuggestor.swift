@@ -96,16 +96,16 @@ final class TitleSuggestor {
         let imageContext: String
         if image != nil {
             imageContext = """
-            The post includes an image. Use it as supporting context to better understand the title's intent. Do not introduce new topics that are not grounded in the title or image.
+            The post includes an image. Use it only as supporting context to better understand the original title. Do not introduce new topics or details that are not grounded in the original title and image.
             """
         } else {
             imageContext = """
-            The post does not include an image. Base your suggestion only on the original title and the user's previous titles. Do not invent visual details or new topics.
+            The post does not include an image. Base your suggestion only on the original title and the user's previous titles.
             """
         }
         
         let prompt = """
-        You are helping improve a social media post title written by the user.
+        You are helping improve one social media post title written by the user.
         
         Original title:
         \(title)
@@ -117,12 +117,10 @@ final class TitleSuggestor {
         
         Constraints:
         - Make the smallest effective improvement, not a full rewrite
-        - Preserve the original meaning and intent
-        - Match the user's tone and writing style
-        - Keep the title length similar to their previous titles
-        - Output exactly one improved variation
-        - No emojis, quotes, numbering, or explanations
-        - Improve clarity, flow, or impact without over-polishing
+        - Tighten the wording and flow
+        - Preserve the same meaning, tone, and topic
+        - Stay close to the original title
+        - Return one improved version
         """
         
         do {
