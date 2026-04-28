@@ -36,6 +36,7 @@ struct PostDetailView: View {
                 .bold()
                 .textSelection(.enabled)
                 .padding(.horizontal)
+                .multilineTextAlignment(.leading)
             
             AITrainingButton(post: post)
             
