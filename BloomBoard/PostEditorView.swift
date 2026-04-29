@@ -37,7 +37,7 @@ struct PostEditorView: View {
     let mode: EditorMode
     
     private var canUseAI: Bool {
-        aiTrainingPosts.count >= 5
+        aiTrainingPosts.count >= 3
     }
     
     var navigationTitle: String {
