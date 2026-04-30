@@ -74,7 +74,6 @@ struct PostEditorView: View {
             VStack {
                 TextField("What's new?", text: $title, axis: .vertical)
                     .padding()
-                    .font(.title3)
                     .focused($isTitleFocused)
                 
                 ImagePreview()
