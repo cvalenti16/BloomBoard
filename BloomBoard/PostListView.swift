@@ -8,7 +8,11 @@
 import SwiftUI
 import SwiftData
 
-//MARK: PostListView
+enum PostListType: Equatable {
+    case drafts
+    case published
+}
+
 struct PostListView: View {
     @AppStorage("needsOnboarding") private var needsOnboarding = true
     
@@ -17,7 +21,7 @@ struct PostListView: View {
     
     let posts: [Post]
     let listType: PostListType
-
+    
     
     var searchedPosts: [Post] {
         if searchTerm.isEmpty {
@@ -70,7 +74,7 @@ struct PostListView: View {
             .postDeleteAlert()
             .navigationTitle(currentNavigationTitle)
             .toolbar {
-                PostListToolbar(listType: listType)
+                PostListToolbar(listType: listType, posts: posts)
             }
         }
         .tint(.text)
@@ -137,7 +141,7 @@ private struct PostItemView: View {
                 Text("\(UIStrings.created)\(post.creationDate, style: .date)")
                 
                 Image(systemName: hasImage ? UIIcons.photo : UIIcons.document)
-
+                
                 if post.isAITrainingPost {
                     Image(systemName: "sparkles")
                 }
@@ -187,6 +191,7 @@ private struct PostListToolbar: ToolbarContent {
     @Environment(ListState.self) var listState
     
     let listType: PostListType
+    let posts: [Post]
     
     private var trackedPlatforms: Set<SocialMedia> {
         guard !platforms.isEmpty else {
@@ -217,10 +222,9 @@ private struct PostListToolbar: ToolbarContent {
         case .drafts:
             ToolbarItem {
                 Button(UIStrings.add, systemImage: UIIcons.add) {
-                    
                     listState.showAddSheet.toggle()
-
                 }
+                .disabled(posts.count >= 5)
             }
             
         case .published:
@@ -246,9 +250,4 @@ private struct PostListToolbar: ToolbarContent {
             }
         }
     }
-}
-
-enum PostListType: Equatable {
-    case drafts
-    case published
 }
