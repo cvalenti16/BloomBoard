@@ -101,7 +101,6 @@ struct PostEditorView: View {
                         Image(systemName: "photo")
                             .foregroundStyle(.text)
                             .padding()
-                        
                     }
                     .onChange(of: imageState.selectedImage) { _, newValue in
                         Task {
@@ -126,9 +125,22 @@ struct PostEditorView: View {
                         )
                     }
                     
-                    
-                    
                     Spacer()
+                    
+                    Button {
+                        switch mode {
+                        case .creating, .remix:
+                            return createPost()
+                        case .editing:
+                            return updatePost()
+                        }
+                    } label: {
+                        Image(systemName: UIIcons.save)
+                            .font(.title2)
+                            .foregroundStyle(.text)
+                    }
+                    .padding()
+                    .disabled(title.isEmpty)
                 }
             }
             .navigationTitle(navigationTitle)
@@ -143,27 +155,26 @@ struct PostEditorView: View {
                     }
                 }
                 
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        switch mode {
-                        case .creating, .remix:
-                            return createPost()
-                        case .editing:
-                            return updatePost()
-                        }
-                    } label: {
-                        Image(systemName: UIIcons.save)
-                            .foregroundStyle(.text)
-                    }
-                    .disabled(title.isEmpty)
-                }
+//                ToolbarItem(placement: .confirmationAction) {
+//                    Button {
+//                        switch mode {
+//                        case .creating, .remix:
+//                            return createPost()
+//                        case .editing:
+//                            return updatePost()
+//                        }
+//                    } label: {
+//                        Image(systemName: UIIcons.save)
+//                            .foregroundStyle(.text)
+//                    }
+//                    .disabled(title.isEmpty)
+//                }
             }
         }
         .onAppear {
             isTitleFocused = true
         }
         .task {
-            
             if canUseAI {
                 titleSuggestor = TitleSuggestor()
             }
