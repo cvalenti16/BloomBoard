@@ -100,6 +100,7 @@ struct PostEditorView: View {
                     PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
                         Image(systemName: "photo")
                             .foregroundStyle(.text)
+                            .font(.title3)
                             .padding()
                     }
                     .onChange(of: imageState.selectedImage) { _, newValue in
@@ -135,12 +136,12 @@ struct PostEditorView: View {
                             return updatePost()
                         }
                     } label: {
-                        Image(systemName: UIIcons.save)
+                        Image(systemName: "square.and.arrow.up")
                             .font(.title2)
                             .foregroundStyle(.text)
                     }
-                    .padding()
                     .disabled(title.isEmpty)
+                    .padding()
                 }
             }
             .navigationTitle(navigationTitle)
