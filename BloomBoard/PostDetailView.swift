@@ -32,7 +32,6 @@ struct PostDetailView: View {
     var body: some View {
         VStack{
             Text(post.title)
-                .font(.title3)
                 .bold()
                 .textSelection(.enabled)
                 .padding(.horizontal)
@@ -95,6 +94,7 @@ private struct AITrainingButton: View {
             .font(.headline)
             .foregroundStyle(.text)
             .fixedSize()
+            .scaleEffect(0.90)
     }
     
     private var toggleBinding: Binding<Bool> {
