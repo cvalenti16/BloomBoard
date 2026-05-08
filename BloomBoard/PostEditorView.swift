@@ -188,7 +188,6 @@ struct PostEditorView: View {
         }
         
         post.title = title
-        post.postDate = Date()
         
         if imageState.imageWasChanged {
             post.image = imageState.postImage?.jpegData(compressionQuality: 0.9)

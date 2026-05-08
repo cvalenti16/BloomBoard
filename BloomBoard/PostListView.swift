@@ -21,6 +21,7 @@ struct PostListView: View {
     
     let posts: [Post]
     let listType: PostListType
+  
     
     
     var searchedPosts: [Post] {
@@ -194,6 +195,15 @@ private struct PostListToolbar: ToolbarContent {
     let listType: PostListType
     let posts: [Post]
     
+    
+    private var primaryToolbarPlacement: ToolbarItemPlacement {
+        if #available(iOS 26.0, *) {
+            return .bottomBar
+        } else {
+            return .topBarTrailing
+        }
+    }
+    
     private var trackedPlatforms: Set<SocialMedia> {
         guard !platforms.isEmpty else {
             return Set(
@@ -221,7 +231,15 @@ private struct PostListToolbar: ToolbarContent {
         
         switch listType {
         case .drafts:
-            ToolbarItem {
+            
+            if #available(iOS 26.0, *) {
+                DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                ToolbarSpacer(placement: .bottomBar)
+            }
+            
+            
+            
+            ToolbarItem (placement: primaryToolbarPlacement) {
                 Button(UIStrings.add, systemImage: UIIcons.add) {
                     listState.showAddSheet.toggle()
                 }
