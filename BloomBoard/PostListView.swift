@@ -126,13 +126,17 @@ private struct PostItemView: View {
     
     var body: some View {
         VStack (alignment: .leading) {
+            
+            Button {
+                onSelect(post)
+            } label: {
                 Text(post.title)
                     .bold()
                     .font(.title3)
                     .foregroundStyle(.text)
                     .lineLimit(2)
                     .truncationMode(.tail)
-            
+            }
             
             HStack {
                 Text("\(UIStrings.created)\(post.creationDate, style: .date)")
@@ -146,9 +150,6 @@ private struct PostItemView: View {
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
-        }
-        .onTapGesture {
-            onSelect(post)
         }
     }
 }
@@ -224,7 +225,6 @@ private struct PostListToolbar: ToolbarContent {
                 Button(UIStrings.add, systemImage: UIIcons.add) {
                     listState.showAddSheet.toggle()
                 }
-                .disabled(posts.count >= 5)
             }
             
         case .published:

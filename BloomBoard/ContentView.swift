@@ -23,18 +23,22 @@ struct ContentView: View {
         ]) var publishedPosts: [Post]
         
     var body: some View {
-        TabView {
-            Tab {
-                PostListView(posts: draftPosts, listType: .drafts)
-            } label: {
-                Image(systemName: "square.and.pencil")
-            }
-            
-            Tab {
-                PostListView(posts: publishedPosts, listType: .published)
-            } label: {
-                Image(systemName: "paperplane.fill")
-            }
-        }
+        
+        PostListView(posts: publishedPosts, listType: .drafts)
+        
+//        TabView {
+//            Tab {
+//                PostListView(posts: draftPosts, listType: .drafts)
+//            } label: {
+//                Image(systemName: "square.and.pencil")
+//            }
+//            
+//            Tab {
+//                PostListView(posts: publishedPosts, listType: .published)
+//            } label: {
+//                Image(systemName: "paperplane.fill")
+//            }
+//        }
+        
     }
 }
