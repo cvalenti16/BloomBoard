@@ -126,16 +126,13 @@ private struct PostItemView: View {
     
     var body: some View {
         VStack (alignment: .leading) {
-            Button {
-                onSelect(post)
-            } label: {
                 Text(post.title)
                     .bold()
                     .font(.title3)
                     .foregroundStyle(.text)
                     .lineLimit(2)
                     .truncationMode(.tail)
-            }
+            
             
             HStack {
                 Text("\(UIStrings.created)\(post.creationDate, style: .date)")
@@ -149,6 +146,9 @@ private struct PostItemView: View {
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
+        }
+        .onTapGesture {
+            onSelect(post)
         }
     }
 }
