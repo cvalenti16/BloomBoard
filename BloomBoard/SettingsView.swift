@@ -6,73 +6,44 @@
 //
 
 import SwiftUI
+import SwiftData
 import CloudKit
 
 struct SettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     @AppStorage("trackedPlatforms")
     private var platforms: String = ""
     
     @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
     
-    @Environment(\.dismiss) private var dismiss
+    @Query(filter: #Predicate<Post> { post in
+        post.isAITrainingPost == true
+    }) var aiTrainingPosts: [Post]
     
     @State private var iCloudStatus: String? = nil
-    
-    private var allSocials: [SocialMedia] {
-        SocialMedia.allCases
-            .filter { $0 != .none }
-            .sorted { $0.rawValue < $1.rawValue }
-    }
-    
-    private var tracked: Set<SocialMedia> {
-        get {
-            guard !platforms.isEmpty else {
-                return Set(allSocials)
-            }
-            
-            return Set(
-                platforms
-                    .split(separator: ",")
-                    .compactMap { SocialMedia(rawValue: String($0))}
-            )
-        }
-        set {
-            platforms = newValue
-                .map(\.rawValue)
-                .sorted()
-                .joined(separator: ",")
-        }
-    }
     
     var body: some View {
         NavigationStack {
             List {
-                Section(
-                    header: Text("Tracked Platforms"),
-                    footer: Text(iCloudStatus ?? "")
-                        .defaultMessageStyle()
-                ) {
-                    ForEach(allSocials){ platform in
-                        Toggle(platform.rawValue, isOn: Binding(
-                            get: {
-                                tracked.contains(platform)
-                            },
-                            set: { isOn in
-                                var current = tracked
-                                if isOn {
-                                    current.insert(platform)
-                                } else {
-                                    current.remove(platform)
-                                }
-                                platforms = current
-                                    .map(\.rawValue)
-                                    .sorted()
-                                    .joined(separator: ",")
-                            }
-                        ))
-                        .padding(.horizontal)
+                Section(header: Text("AI training posts")) {
+                    ForEach(aiTrainingPosts){ posts in
+                        PostItemView(post: posts) { post in
+                            
+                        }
                     }
                 }
+            }
+            .overlay {
+                if aiTrainingPosts.isEmpty {
+                    ContentUnavailableView {
+                        Label("No AI Training Posts", systemImage: "tray.fill")
+                    }
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                Text(iCloudStatus ?? "")
+                    .defaultMessageStyle()
             }
             .scrollDisabled(true)
             .navigationTitle("Settings")

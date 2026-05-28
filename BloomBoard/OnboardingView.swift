@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 
+// MARK: Onboarding not completed
 private enum OnboardingPage: Int {
     case welcome
     case training
@@ -73,23 +74,11 @@ private struct TrainingView: View {
         }
         .overlay {
             if aiTrainingPosts.isEmpty {
-                
-                
-                
-                
-//                Text("This will help train your AI")
-                
-                
-                
-                
                 ContentUnavailableView {
                     Label("These will help train your AI", systemImage: "wand.and.rays")
                 }
-              
-                
             }
         }
-        
         .safeAreaInset(edge: .bottom) {
             Button {
                 
@@ -99,7 +88,6 @@ private struct TrainingView: View {
             .foregroundStyle(.text)
             .padding()
         }
-        
     }
 }
 
