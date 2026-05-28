@@ -20,14 +20,16 @@ class Post: Identifiable {
     var performance: Performance?
     var socialMedias: [SocialMedia]?
     var originalPlatform: SocialMedia?
+    var isAITrainingPost: Bool = false
     
-    init(title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil, socialMedias: [SocialMedia]? = nil, originalPlatform: SocialMedia? = nil) {
+    init(title: String, image: Data? = nil, postDate: Date? = nil, performance: Performance? = nil, socialMedias: [SocialMedia]? = nil, originalPlatform: SocialMedia? = nil, isAITrainingPost: Bool = false) {
         self.title = title
         self.image = image
         self.postDate = postDate
         self.performance = performance
         self.socialMedias = socialMedias
         self.originalPlatform = originalPlatform
+        self.isAITrainingPost = isAITrainingPost
     }
     
     static let testPosts = [

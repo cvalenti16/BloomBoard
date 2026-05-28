@@ -12,24 +12,42 @@ import PhotosUI
 enum EditorMode {
     case creating
     case editing(Post)
+    case remix(Post)
 }
 
 struct PostEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     
+    @Query(
+        filter: #Predicate<Post> { post in
+            post.isAITrainingPost == true
+        },
+        sort: [
+            SortDescriptor(\Post.creationDate, order: .reverse)
+        ]) var aiTrainingPosts: [Post]
+    
     @State private var title: String
     @State private var imageState: ImageState
     @State private var errorMessage: String? = nil
+    @State private var titleSuggestor: TitleSuggestor?
+    
     @FocusState private var isTitleFocused: Bool
     
     let mode: EditorMode
+    
+    private var canUseAI: Bool {
+        aiTrainingPosts.count >= 3
+    }
+    
     var navigationTitle: String {
         switch mode {
         case .creating:
             return UIStrings.createPost
         case .editing:
             return UIStrings.editPost
+        case .remix:
+            return "Remix post"
         }
     }
     
@@ -41,7 +59,7 @@ struct PostEditorView: View {
         case .creating:
             _title = State(initialValue: "")
             
-        case .editing(let post):
+        case .editing(let post), .remix(let post):
             _title = State(initialValue: post.title)
             
             if let data = post.image {
@@ -54,7 +72,7 @@ struct PostEditorView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                TextField("Title", text: $title, axis: .vertical)
+                TextField("What's new?", text: $title, axis: .vertical)
                     .padding()
                     .font(.title2)
                     .focused($isTitleFocused)
@@ -64,6 +82,18 @@ struct PostEditorView: View {
                 
                 Spacer()
                 
+                if let title = titleSuggestor?.title {
+                    Button {
+                        self.title = title
+                    } label: {
+                        Text(title)
+                            .font(.subheadline)
+                            .foregroundStyle(.text)
+                            .padding(.horizontal)
+                            .multilineTextAlignment(.leading)
+                    }
+                }
+                
                 Text(errorMessage ?? "")
                     .defaultMessageStyle()
                 
@@ -71,6 +101,7 @@ struct PostEditorView: View {
                     PhotosPicker(selection: $imageState.selectedImage, matching: .images, photoLibrary: .shared()) {
                         Image(systemName: "photo")
                             .foregroundStyle(.text)
+                            .font(.title3)
                             .padding()
                     }
                     .onChange(of: imageState.selectedImage) { _, newValue in
@@ -86,7 +117,32 @@ struct PostEditorView: View {
                         }
                     }
                     
+                    if canUseAI, !title.isEmpty {
+                        ImproveTitlesView(
+                            mode: mode,
+                            titleSuggestor: titleSuggestor,
+                            aiTrainingPosts: aiTrainingPosts,
+                            postImage: imageState.postImage,
+                            postTitle: title
+                        )
+                    }
+                    
                     Spacer()
+                    
+                    Button {
+                        switch mode {
+                        case .creating, .remix:
+                            return createPost()
+                        case .editing:
+                            return updatePost()
+                        }
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.title2)
+                            .foregroundStyle(.text)
+                    }
+                    .disabled(title.isEmpty)
+                    .padding()
                 }
             }
             .navigationTitle(navigationTitle)
@@ -101,24 +157,29 @@ struct PostEditorView: View {
                     }
                 }
                 
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        switch mode {
-                        case .creating:
-                            return createPost()
-                        case .editing:
-                            return updatePost()
-                        }
-                    } label: {
-                        Image(systemName: UIIcons.save)
-                            .foregroundStyle(.text)
-                    }
-                    .disabled(title.isEmpty)
-                }
+//                ToolbarItem(placement: .confirmationAction) {
+//                    Button {
+//                        switch mode {
+//                        case .creating, .remix:
+//                            return createPost()
+//                        case .editing:
+//                            return updatePost()
+//                        }
+//                    } label: {
+//                        Image(systemName: UIIcons.save)
+//                            .foregroundStyle(.text)
+//                    }
+//                    .disabled(title.isEmpty)
+//                }
             }
         }
-        .task {
+        .onAppear {
             isTitleFocused = true
+        }
+        .task {
+            if canUseAI {
+                titleSuggestor = TitleSuggestor()
+            }
         }
     }
     
@@ -169,7 +230,6 @@ private struct ImagePreview: View {
     @Environment(ImageState.self) var imageState
     
     var body: some View {
-        @Bindable var imageState = imageState
         if let image = imageState.postImage {
             ZStack {
                 Image(uiImage: image)
@@ -179,14 +239,15 @@ private struct ImagePreview: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .padding()
                 
-                    Button {
-                        imageState.selectedImage = nil
-                        imageState.postImage = nil
-                        imageState.imageWasChanged = true
-                    } label: {
-                        Image(systemName: UIIcons.trash)
-                            .defaultIconStyle()
-                    }
+                Button {
+                    imageState.selectedImage = nil
+                    imageState.postImage = nil
+                    imageState.imageWasChanged = true
+                } label: {
+                    Image(systemName: UIIcons.trash)
+                        .defaultIconStyle()
+                }
+                
             }
         } else {
             Text("")
@@ -195,3 +256,125 @@ private struct ImagePreview: View {
         }
     }
 }
+
+struct ImproveTitlesView: View {
+    let mode: EditorMode
+    let titleSuggestor: TitleSuggestor?
+    let aiTrainingPosts: [Post]
+    let postImage: UIImage?
+    let postTitle: String
+    
+    private var primaryLabel: String {
+        switch mode {
+        case .remix:
+            return "Remix post"
+        case .creating, .editing:
+            return "Refine title"
+        }
+    }
+    
+    private var workingLabel: String {
+        switch mode {
+        case .remix:
+            return "Remixing post"
+        case .creating, .editing:
+            return "Refining title"
+        }
+    }
+    
+    private var secondaryLabel: String {
+        switch mode {
+        case .remix:
+            return "Other remixes"
+        case .creating, .editing:
+            return "Other versions"
+        }
+    }
+    
+    var body: some View {
+        switch titleSuggestor?.titlesStatus {
+            
+        case .fetching:
+            Label(workingLabel, systemImage: "sparkles")
+                .symbolEffect(.pulse)
+                .foregroundStyle(.text)
+            
+        case .success:
+            Button {
+                Task {
+                    await runAIAction()
+                }
+            } label: {
+                Label(secondaryLabel, systemImage: "sparkles")
+            }
+            .foregroundStyle(.text)
+            
+        case .failed:
+            Text("Error generating titles, Please try again.")
+                .font(.subheadline)
+                .foregroundStyle(.text)
+            
+        default:
+            Button {
+                Task {
+                    await runAIAction()
+                }
+            } label: {
+                Label(primaryLabel, systemImage: "sparkles")
+            }
+            .foregroundStyle(.text)
+        }
+    }
+    
+    private func runAIAction() async {
+        switch mode {
+        case .remix:
+            await titleSuggestor?.remixTitle(aiTrainingPosts, postImage, postTitle)
+        case .creating, .editing:
+            await titleSuggestor?.improveTitle(aiTrainingPosts, postImage, postTitle)
+        }
+    }
+}
+
+
+
+//
+//struct GenerateTitlesView: View {
+//    let titleSuggestor: TitleSuggestor?
+//    let aiTrainingPosts: [Post]
+//    
+//    var body: some View {
+//        switch titleSuggestor?.titlesStatus {
+//            
+//        case .fetching:
+//            Label("Generating titles", systemImage: "sparkles")
+//                .symbolEffect(.pulse)
+//                .foregroundStyle(.text)
+//            
+//        case .success:
+//            Button {
+//                Task {
+//                    await titleSuggestor?.generateTitles(aiTrainingPosts)
+//                }
+//            } label: {
+//                Label("Other titles", systemImage: "sparkles")
+//            }
+//            .foregroundStyle(.text)
+//            
+//        case .failed:
+//            Text("Error generating titles, Please try again.")
+//                .font(.subheadline)
+//                .foregroundStyle(.text)
+//            
+//        default:
+//            Button {
+//                Task {
+//                    await titleSuggestor?.generateTitles(aiTrainingPosts)
+//                }
+//            } label: {
+//                Label("Generate titles", systemImage: "sparkles")
+//            }
+//            .foregroundStyle(.text)
+//        }
+//    }
+//}

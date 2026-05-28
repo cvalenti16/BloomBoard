@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseCore
 
 @main
 struct BloomBoardApp: App {
@@ -15,6 +16,8 @@ struct BloomBoardApp: App {
     let modelContainer: ModelContainer
     
     init() {
+        FirebaseApp.configure()
+        
          do {
              modelContainer = try ModelContainer(
                  for: Post.self,

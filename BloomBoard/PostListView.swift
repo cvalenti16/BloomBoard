@@ -8,14 +8,21 @@
 import SwiftUI
 import SwiftData
 
-//MARK: PostListView
+enum PostListType: Equatable {
+    case drafts
+    case published
+}
+
 struct PostListView: View {
     @AppStorage("needsOnboarding") private var needsOnboarding = true
+    
     @State private var listState = ListState()
     @State private var searchTerm = ""
     
     let posts: [Post]
     let listType: PostListType
+  
+    
     
     var searchedPosts: [Post] {
         if searchTerm.isEmpty {
@@ -39,12 +46,10 @@ struct PostListView: View {
         let count = filteredPosts.count
         
         switch listType {
-            
         case .drafts:
             return String(format: "%@ (%d)", "Drafts", count)
-            
         case .published:
-            return String(format: "%@ (%d)", listState.selectedMissingPlatform?.rawValue ?? "Published", count)
+            return String(format: "%@ (%d)", "Posts", count)
         }
     }
     
@@ -70,7 +75,7 @@ struct PostListView: View {
             .postDeleteAlert()
             .navigationTitle(currentNavigationTitle)
             .toolbar {
-                PostListToolbar(listType: listType)
+                PostListToolbar(listType: listType, posts: posts)
             }
         }
         .tint(.text)
@@ -90,19 +95,11 @@ struct PostListView: View {
             if filteredPosts.isEmpty && !searchTerm.isEmpty {
                 ContentUnavailableView.search
             } else if filteredPosts.isEmpty {
-                switch listType {
-                case .drafts:
-                    ContentUnavailableView {
-                        Label("No Draft Posts",
-                              systemImage: UIIcons.posts
-                        )
-                    }
-                case .published:
-                    ContentUnavailableView {
-                        Label("No Published Posts",
-                              systemImage: UIIcons.published
-                        )
-                    }
+                
+                ContentUnavailableView {
+                    Label("No Posts",
+                          systemImage: UIIcons.posts
+                    )
                 }
             }
         }
@@ -130,6 +127,7 @@ private struct PostItemView: View {
     
     var body: some View {
         VStack (alignment: .leading) {
+            
             Button {
                 onSelect(post)
             } label: {
@@ -142,24 +140,17 @@ private struct PostItemView: View {
             }
             
             HStack {
-                if let postDate = post.postDate {
-                    Text("\(UIStrings.posted)\(postDate, style: .date)")
-                } else {
-                    Text("\(UIStrings.created)\(post.creationDate, style: .date)")
-                }
+                Text("\(UIStrings.created)\(post.creationDate, style: .date)")
                 
                 Image(systemName: hasImage ? UIIcons.photo : UIIcons.document)
+                
+                if post.isAITrainingPost {
+                    Image(systemName: "sparkles")
+                }
+                
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
-            
-            if let postPerformance = post.performance {
-                Text((postPerformance.rawValue))
-                    .padding(5)
-                    .background(postPerformance.color.opacity(0.5))
-                    .clipShape(.rect(cornerRadius: 10))
-                    .font(.subheadline)
-            }
         }
     }
 }
@@ -202,6 +193,16 @@ private struct PostListToolbar: ToolbarContent {
     @Environment(ListState.self) var listState
     
     let listType: PostListType
+    let posts: [Post]
+    
+    
+    private var primaryToolbarPlacement: ToolbarItemPlacement {
+        if #available(iOS 26.0, *) {
+            return .bottomBar
+        } else {
+            return .topBarTrailing
+        }
+    }
     
     private var trackedPlatforms: Set<SocialMedia> {
         guard !platforms.isEmpty else {
@@ -230,13 +231,17 @@ private struct PostListToolbar: ToolbarContent {
         
         switch listType {
         case .drafts:
-            ToolbarItem {
+            
+            if #available(iOS 26.0, *) {
+                DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                ToolbarSpacer(placement: .bottomBar)
+            }
+            
+            
+            
+            ToolbarItem (placement: primaryToolbarPlacement) {
                 Button(UIStrings.add, systemImage: UIIcons.add) {
-                    var trans = Transaction()
-                    trans.disablesAnimations = true
-                    withTransaction(trans) {
-                        listState.showAddSheet.toggle()
-                    }
+                    listState.showAddSheet.toggle()
                 }
             }
             
@@ -263,9 +268,4 @@ private struct PostListToolbar: ToolbarContent {
             }
         }
     }
-}
-
-enum PostListType: Equatable {
-    case drafts
-    case published
 }

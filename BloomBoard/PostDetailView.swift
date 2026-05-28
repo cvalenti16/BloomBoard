@@ -10,6 +10,8 @@ struct PostDetailView: View {
     @Environment(\.dismiss) var dismiss
     @State private var postState: PostState
     @State private var postPerformance: Performance
+    @State private var showRemix: Bool = false
+    
     let post: Post
     
     var isPosted: Bool {
@@ -30,69 +32,46 @@ struct PostDetailView: View {
     var body: some View {
         VStack{
             Text(post.title)
-                .font(.title3)
                 .bold()
                 .textSelection(.enabled)
                 .padding(.horizontal)
+                .multilineTextAlignment(.leading)
             
-            PostDateView(postPerformance: $postPerformance, post: post)
+            AITrainingButton(post: post)
             
             UIImageView(loadedImage: loadedImage)
             
-            if let medias = post.socialMedias {
-                HStack {
-                    Image(systemName: UIIcons.socialMedia)
-                    Text(summaryText(medias))
-                    
-                }
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal)
-            }
-            
-            Button {
-                postState.showPostSheet = true
-            } label: {
-                Text(isPosted ? UIStrings.repost : UIStrings.post)
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(.thinMaterial)
-                    .foregroundStyle(.text)
-                    .clipShape(.rect(cornerRadius: 10))
-                    .padding()
-            }
+            PostButton(post: post, isPosted: isPosted)
             
             Text(postState.userFeedback ?? "")
                 .defaultMessageStyle()
                 .animation(.easeInOut, value: postState.userFeedback)
             
         }
-        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
-            ToolbarItem {
-                Button(UIStrings.edit, systemImage: UIIcons.edit) {
-                    var trans = Transaction()
-                    trans.disablesAnimations = true
-                    withTransaction(trans) {
-                        postState.showEditPostSheet.toggle()
+            if isPosted {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Remix", systemImage: "arrow.triangle.2.circlepath") {
+                        showRemix = true
                     }
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing)  {
+                Button(UIStrings.edit, systemImage: UIIcons.edit) {
+                    postState.showEditPostSheet.toggle()
                 }
             }
         }
         .sheet(isPresented: $postState.showEditPostSheet) {
             PostEditorView(mode: .editing(post))
         }
+        .sheet(isPresented: $showRemix, content: {
+            PostEditorView(mode: .remix(post))
+        })
         .sheet(isPresented: $postState.showCropView) {
             if let image = loadedImage {
                 NineBySixteenView(postImage: image)
-            }
-        }
-        .sheet(isPresented: $postState.showPostSheet) {
-            PostSheet(post: post, isPosted: isPosted) { closeParentSheet in
-                if closeParentSheet {
-                    dismiss()
-                }
             }
         }
         .environment(postState)
@@ -101,6 +80,38 @@ struct PostDetailView: View {
     func summaryText(_ medias: [SocialMedia]) -> String {
         let names = medias.map { $0.rawValue }
         return names.joined(separator: ", ")
+    }
+}
+
+private struct AITrainingButton: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(PostState.self) private var postState
+    
+    let post: Post
+    
+    var body: some View {
+        Toggle("AI Training", isOn: toggleBinding)
+            .font(.headline)
+            .foregroundStyle(.text)
+            .fixedSize()
+            .scaleEffect(0.90)
+    }
+    
+    private var toggleBinding: Binding<Bool> {
+        Binding(
+            get: { post.isAITrainingPost },
+            set: { newValue in
+                let oldValue = post.isAITrainingPost
+                post.isAITrainingPost = newValue
+                
+                do {
+                    try modelContext.save()
+                } catch {
+                    post.isAITrainingPost = oldValue
+                    postState.showFeedback(message: FeedbackMessages.savedFailed)
+                }
+            }
+        )
     }
 }
 
@@ -207,128 +218,63 @@ private struct UIImageView: View {
     }
 }
 
-// MARK: PostSheet
-private struct PostSheet: View {
-    @AppStorage("trackedPlatforms")
-    private var platforms: String = ""
-    
-    @Environment(\.modelContext) var modelContext
+private struct PostButton: View {
     @Environment(PostState.self) var postState
-    @State private var selectedMedia: SocialMedia = .none
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
     
     let post: Post
     let isPosted: Bool
-    let closeParentSheet: (Bool) -> Void
-    
-    private var trackedPlatforms: Set<SocialMedia> {
-        guard !platforms.isEmpty else {
-            return Set(
-                SocialMedia.allCases.filter { $0 != .none }
-            )
-        }
-
-        return Set(
-            platforms
-                .split(separator: ",")
-                .compactMap { SocialMedia(rawValue: String($0)) }
-        )
-    }
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                List(trackedPlatforms
-                    .filter {$0 != post.originalPlatform}
-                    .sorted {$0.rawValue < $1.rawValue}){media in
-                        
-                    Button {
-                        selectedMedia = media
-                    } label: {
-                        HStack {
-                            Text(media.rawValue)
-                            
-                            if isAlreadyShared(media) {
-                                Image(systemName: UIIcons.posted)
-                                    .foregroundStyle(.secondary)
-                                    .font(.subheadline)
-                            }
-                            
-                            Spacer()
-                            
-                            if selectedMedia == media {
-                                Image(systemName: isAlreadyShared(selectedMedia) ? UIIcons.cancel :  UIIcons.checkmark)
-                                    .foregroundStyle(.tint)
-                            }
-                        }
-                    }
-                    .scrollDisabled(true)
-                }
-                
-                if isPosted {
-                    Button {
-                        unpublish()
-                    } label: {
-                        Label(UIStrings.unpublish,
-                              systemImage: UIIcons.unpublished)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    }
-                }
+        
+        if post.postDate != nil {
+            Button {
+                unSchedulePost()
+            } label: {
+                Label("Unpost",
+                      systemImage: UIIcons.unpublished)
+                .font(.subheadline)
+                .foregroundStyle(.text)
+                .opacity(0.5)
             }
-            .navigationTitle(UIStrings.selectPlatform)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        closeParentSheet(false)
-                        postState.showPostSheet = false
-                    } label: {
-                        Image(systemName: UIIcons.cancel)
-                            .foregroundStyle(.text)
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        publish()
-                    } label: {
-                        Image(systemName: UIIcons.published)
-                            .foregroundStyle(.text)
-                    }
-                }
+        } else {
+            Button {
+                schedulePost()
+            } label: {
+                Text("Post")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(.ultraThinMaterial)
+                    .clipShape(.rect(cornerRadius: 10))
+                    .padding()
             }
+            .buttonStyle(.plain)
         }
     }
     
-    private func isAlreadyShared(_ media: SocialMedia) -> Bool {
-        post.socialMedias?.contains(media) ?? false
+    private func schedulePost() {
+        post.postDate = postState.selectedPostDate
+        post.performance = .unrated
+        
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            postState.showFeedback(message: FeedbackMessages.savedFailed)
+        }
     }
     
-    private func unpublish() {
+    private func unSchedulePost() {
         post.postDate = nil
         post.performance = nil
-        post.socialMedias = nil
-        post.originalPlatform = nil
-        try? modelContext.save()
-        closeParentSheet(true)
-        postState.showPostSheet = false
-    }
-    
-    private func publish () {
-        if isAlreadyShared(selectedMedia) {
-            post.socialMedias?.removeAll { $0 == selectedMedia }
-            closeParentSheet(false)
-        } else if isPosted {
-            post.socialMedias?.append(selectedMedia)
-            closeParentSheet(false)
-        } else {
-            post.postDate = postState.selectedPostDate
-            post.performance = .unrated
-            post.originalPlatform = selectedMedia
-            post.socialMedias = [selectedMedia]
-            closeParentSheet(true)
+        
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            postState.showFeedback(message: FeedbackMessages.savedFailed)
         }
-        try? modelContext.save()
-        postState.showPostSheet = false
     }
 }
