@@ -156,21 +156,6 @@ struct PostEditorView: View {
                             .foregroundStyle(.text)
                     }
                 }
-                
-//                ToolbarItem(placement: .confirmationAction) {
-//                    Button {
-//                        switch mode {
-//                        case .creating, .remix:
-//                            return createPost()
-//                        case .editing:
-//                            return updatePost()
-//                        }
-//                    } label: {
-//                        Image(systemName: UIIcons.save)
-//                            .foregroundStyle(.text)
-//                    }
-//                    .disabled(title.isEmpty)
-//                }
             }
         }
         .onAppear {
@@ -208,6 +193,8 @@ struct PostEditorView: View {
         if let imageData = imageState.postImage?.jpegData(compressionQuality: 0.9) {
             newPost.image = imageData
         }
+        
+        newPost.postDate = Date()
         
         do {
             modelContext.insert(newPost)

@@ -41,8 +41,6 @@ struct PostDetailView: View {
             
             UIImageView(loadedImage: loadedImage)
             
-            PostButton(post: post, isPosted: isPosted)
-            
             Text(postState.userFeedback ?? "")
                 .defaultMessageStyle()
                 .animation(.easeInOut, value: postState.userFeedback)
@@ -132,43 +130,6 @@ class PostState {
     }
 }
 
-// MARK: PostDateView
-private struct PostDateView: View {
-    @Environment(PostState.self) var postState
-    @Binding var postPerformance: Performance
-    
-    let post: Post
-    
-    var body: some View {
-        @Bindable var postState = postState
-        
-        VStack {
-            if post.postDate != nil {
-                Picker(UIStrings.performance, selection: $postPerformance) {
-                    ForEach(Performance.allCases, id: \.self) { performance in
-                        Text(performance.rawValue).tag(performance)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .onChange(of: postPerformance) { _, newValue in
-                    post.performance = newValue
-                }
-            } else {
-                HStack {
-                    Image(systemName: UIIcons.calendar)
-                    DatePicker(
-                        "",
-                        selection: $postState.selectedPostDate,
-                        displayedComponents: .date
-                    )
-                    .labelsHidden()
-                }
-            }
-        }
-    }
-}
-
 //MARK: UIImageView
 private struct UIImageView: View {
     @Environment(PostState.self) var postState
@@ -214,67 +175,6 @@ private struct UIImageView: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .padding()
             }
-        }
-    }
-}
-
-private struct PostButton: View {
-    @Environment(PostState.self) var postState
-    @Environment(\.dismiss) var dismiss
-    @Environment(\.modelContext) var modelContext
-    
-    let post: Post
-    let isPosted: Bool
-    
-    var body: some View {
-        
-        if post.postDate != nil {
-            Button {
-                unSchedulePost()
-            } label: {
-                Label("Unpost",
-                      systemImage: UIIcons.unpublished)
-                .font(.subheadline)
-                .foregroundStyle(.text)
-                .opacity(0.5)
-            }
-        } else {
-            Button {
-                schedulePost()
-            } label: {
-                Text("Post")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(.ultraThinMaterial)
-                    .clipShape(.rect(cornerRadius: 10))
-                    .padding()
-            }
-            .buttonStyle(.plain)
-        }
-    }
-    
-    private func schedulePost() {
-        post.postDate = postState.selectedPostDate
-        post.performance = .unrated
-        
-        do {
-            try modelContext.save()
-            dismiss()
-        } catch {
-            postState.showFeedback(message: FeedbackMessages.savedFailed)
-        }
-    }
-    
-    private func unSchedulePost() {
-        post.postDate = nil
-        post.performance = nil
-        
-        do {
-            try modelContext.save()
-            dismiss()
-        } catch {
-            postState.showFeedback(message: FeedbackMessages.savedFailed)
         }
     }
 }

@@ -21,8 +21,6 @@ struct PostListView: View {
     
     let posts: [Post]
     let listType: PostListType
-  
-    
     
     var searchedPosts: [Post] {
         if searchTerm.isEmpty {
@@ -84,10 +82,10 @@ struct PostListView: View {
         .sheet(isPresented: $listState.showAddSheet) {
             PostEditorView(mode: .creating)
         }
-        .sheet(isPresented: $needsOnboarding) {
-            OnboardingView()
-                .interactiveDismissDisabled()
-        }
+//        .sheet(isPresented: $needsOnboarding) {
+//            OnboardingView()
+//                .interactiveDismissDisabled()
+//        }
         .sheet(isPresented: $listState.showSettingsSheet) {
             SettingsView()
         }

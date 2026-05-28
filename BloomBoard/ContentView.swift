@@ -14,7 +14,6 @@ struct ContentView: View {
             SortDescriptor(\Post.creationDate, order:  .reverse)
         ]) var allPosts: [Post]
     
-        
     var body: some View {
         PostListView(posts: allPosts, listType: .drafts)
     }
