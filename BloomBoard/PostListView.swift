@@ -8,11 +8,6 @@
 import SwiftUI
 import SwiftData
 
-enum PostListType: Equatable {
-    case drafts
-    case published
-}
-
 struct PostListView: View {
     @AppStorage("needsOnboarding") private var needsOnboarding = true
     
@@ -20,7 +15,6 @@ struct PostListView: View {
     @State private var searchTerm = ""
     
     let posts: [Post]
-    let listType: PostListType
     
     var searchedPosts: [Post] {
         if searchTerm.isEmpty {
@@ -34,13 +28,7 @@ struct PostListView: View {
       
     var currentNavigationTitle: String {
         let count = searchedPosts.count
-        
-        switch listType {
-        case .drafts:
-            return String(format: "%@ (%d)", "Drafts", count)
-        case .published:
-            return String(format: "%@ (%d)", "Posts", count)
-        }
+        return String(format: "%@ (%d)", "Posts", count)
     }
     
     var body: some View {
@@ -65,7 +53,7 @@ struct PostListView: View {
             .postDeleteAlert()
             .navigationTitle(currentNavigationTitle)
             .toolbar {
-                PostListToolbar(listType: listType, posts: posts)
+                PostListToolbar(posts: posts)
             }
         }
         .tint(.text)
@@ -179,8 +167,6 @@ private struct PostListToolbar: ToolbarContent {
     private var platforms: String = ""
     
     @Environment(ListState.self) var listState
-    
-    let listType: PostListType
     let posts: [Post]
     
     
@@ -203,18 +189,14 @@ private struct PostListToolbar: ToolbarContent {
             }
         }
         
-        switch listType {
-        default:
-            
-            if #available(iOS 26.0, *) {
-                DefaultToolbarItem(kind: .search, placement: .bottomBar)
-                ToolbarSpacer(placement: .bottomBar)
-            }
-            
-            ToolbarItem (placement: primaryToolbarPlacement) {
-                Button(UIStrings.add, systemImage: UIIcons.add) {
-                    listState.showAddSheet.toggle()
-                }
+        if #available(iOS 26.0, *) {
+            DefaultToolbarItem(kind: .search, placement: .bottomBar)
+            ToolbarSpacer(placement: .bottomBar)
+        }
+        
+        ToolbarItem (placement: primaryToolbarPlacement) {
+            Button(UIStrings.add, systemImage: UIIcons.add) {
+                listState.showAddSheet.toggle()
             }
         }
     }

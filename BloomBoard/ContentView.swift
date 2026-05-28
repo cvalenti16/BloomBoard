@@ -15,6 +15,6 @@ struct ContentView: View {
         ]) var allPosts: [Post]
     
     var body: some View {
-        PostListView(posts: allPosts, listType: .drafts)
+        PostListView(posts: allPosts)
     }
 }
