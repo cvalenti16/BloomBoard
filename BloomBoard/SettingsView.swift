@@ -25,19 +25,15 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                Section(header: Text("AI training posts")) {
-                    ForEach(aiTrainingPosts){ posts in
-                        PostItemView(post: posts) { post in
-                            
-                        }
-                    }
+            List(aiTrainingPosts) { posts in
+                PostItemView(post: posts) { post in
+                    
                 }
             }
             .overlay {
                 if aiTrainingPosts.isEmpty {
                     ContentUnavailableView {
-                        Label("No AI Training Posts", systemImage: "tray.fill")
+                        Label("No AI Training Posts \n 3 are needed", systemImage: "tray.fill")
                     }
                 }
             }

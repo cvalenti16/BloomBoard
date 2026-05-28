@@ -77,11 +77,6 @@ struct PostDetailView: View {
         }
         .environment(postState)
     }
-    
-    func summaryText(_ medias: [SocialMedia]) -> String {
-        let names = medias.map { $0.rawValue }
-        return names.joined(separator: ", ")
-    }
 }
 
 private struct AITrainingButton: View {

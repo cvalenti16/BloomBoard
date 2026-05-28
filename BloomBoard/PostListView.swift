@@ -103,7 +103,6 @@ private class ListState {
     var showAddSheet = false
     var showSettingsSheet = false
     var showDeleteAlert = false
-    var selectedMissingPlatform: SocialMedia? = nil
 }
 
 //MARK: PostItemView
@@ -192,21 +191,7 @@ private struct PostListToolbar: ToolbarContent {
             return .topBarTrailing
         }
     }
-    
-    private var trackedPlatforms: Set<SocialMedia> {
-        guard !platforms.isEmpty else {
-            return Set(
-                SocialMedia.allCases.filter { $0 != .none }
-            )
-        }
-        
-        return Set(
-            platforms
-                .split(separator: ",")
-                .compactMap { SocialMedia(rawValue: String($0)) }
-        )
-    }
-    
+
     var body: some ToolbarContent {
         @Bindable var listState = listState
         
@@ -219,40 +204,16 @@ private struct PostListToolbar: ToolbarContent {
         }
         
         switch listType {
-        case .drafts:
+        default:
             
             if #available(iOS 26.0, *) {
                 DefaultToolbarItem(kind: .search, placement: .bottomBar)
                 ToolbarSpacer(placement: .bottomBar)
             }
             
-            
-            
             ToolbarItem (placement: primaryToolbarPlacement) {
                 Button(UIStrings.add, systemImage: UIIcons.add) {
                     listState.showAddSheet.toggle()
-                }
-            }
-            
-        case .published:
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Text(UIStrings.availableFor)
-                    
-                    Picker(UIStrings.availableFor, selection: $listState.selectedMissingPlatform) {
-                        ForEach(trackedPlatforms
-                            .sorted {$0.rawValue < $1.rawValue}) { platform in
-                                Text(platform.rawValue).tag(platform as SocialMedia?)
-                            }
-                    }
-                    
-                    if listState.selectedMissingPlatform != nil {
-                        Button(UIStrings.clear) {
-                            listState.selectedMissingPlatform = nil
-                        }
-                    }
-                } label: {
-                    Label(UIStrings.filter, systemImage: UIIcons.filter)
                 }
             }
         }
