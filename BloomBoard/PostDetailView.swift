@@ -5,28 +5,31 @@
 //  Created by Carlos Valentin on 7/18/25.
 //
 import SwiftUI
+import SwiftData
 
 struct PostDetailView: View {
     @Environment(\.dismiss) var dismiss
+    @Query(filter: #Predicate<Post> { post in
+        post.isAITrainingPost == true
+    }) var aiTrainingPosts: [Post]
+    
     @State private var postState: PostState
-    @State private var postPerformance: Performance
     @State private var showRemix: Bool = false
     
     let post: Post
-    
-    var isPosted: Bool {
-        return post.postDate != nil
-    }
     
     var loadedImage: UIImage? {
         guard let imageData = post.image else { return nil }
         return UIImage(data: imageData)
     }
     
+    var canRemix: Bool {
+        aiTrainingPosts.count > 3
+    }
+    
     init(post: Post) {
         self.post = post
         _postState = State(initialValue: PostState())
-        _postPerformance = State(initialValue: post.performance ?? Performance.unrated)
     }
     
     var body: some View {
@@ -47,7 +50,7 @@ struct PostDetailView: View {
             
         }
         .toolbar {
-            if isPosted {
+            if canRemix {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Remix", systemImage: "arrow.triangle.2.circlepath") {
                         showRemix = true

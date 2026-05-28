@@ -194,8 +194,6 @@ struct PostEditorView: View {
             newPost.image = imageData
         }
         
-        newPost.postDate = Date()
-        
         do {
             modelContext.insert(newPost)
             try modelContext.save()
@@ -324,8 +322,11 @@ struct ImproveTitlesView: View {
 }
 
 
+/*
+ This block works, the AI just wasn't really good at generating titles
+ 
+ */
 
-//
 //struct GenerateTitlesView: View {
 //    let titleSuggestor: TitleSuggestor?
 //    let aiTrainingPosts: [Post]

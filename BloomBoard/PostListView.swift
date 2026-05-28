@@ -31,17 +31,9 @@ struct PostListView: View {
             }
         }
     }
-    
-    var filteredPosts: [Post] {
-        if let platform = listState.selectedMissingPlatform {
-            return searchedPosts.filter { !($0.socialMedias?.contains(platform) ?? false)}
-        } else {
-            return searchedPosts
-        }
-    }
-    
+      
     var currentNavigationTitle: String {
-        let count = filteredPosts.count
+        let count = searchedPosts.count
         
         switch listType {
         case .drafts:
@@ -53,7 +45,7 @@ struct PostListView: View {
     
     var body: some View {
         NavigationStack(path: $listState.postDetailPath) {
-            List(filteredPosts) { post in
+            List(searchedPosts) { post in
                 PostItemView(post: post) { post in
                     listState.postDetailPath.append(post)
                 }
@@ -90,10 +82,9 @@ struct PostListView: View {
             SettingsView()
         }
         .overlay {
-            if filteredPosts.isEmpty && !searchTerm.isEmpty {
+            if !searchTerm.isEmpty {
                 ContentUnavailableView.search
-            } else if filteredPosts.isEmpty {
-                
+            } else if searchedPosts.isEmpty {
                 ContentUnavailableView {
                     Label("No Posts",
                           systemImage: UIIcons.posts

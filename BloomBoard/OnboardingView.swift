@@ -81,7 +81,7 @@ private struct TrainingView: View {
         }
         .safeAreaInset(edge: .bottom) {
             Button {
-                
+                // MARK Wire up the editor, might need to change it so it auto makes it remix
             } label: {
                 Text("Add Post")
             }
@@ -105,38 +105,6 @@ private struct AITraingItemView: View {
         }
     }
 }
-
-
-
-//var body: some View {
-//    VStack (alignment: .leading) {
-//        
-//        Button {
-//            onSelect(post)
-//        } label: {
-//            Text(post.title)
-//                .bold()
-//                .font(.title3)
-//                .foregroundStyle(.text)
-//                .lineLimit(2)
-//                .truncationMode(.tail)
-//        }
-//        
-//        HStack {
-//            Text("\(UIStrings.created)\(post.creationDate, style: .date)")
-//            
-//            Image(systemName: hasImage ? UIIcons.photo : UIIcons.document)
-//            
-//            if post.isAITrainingPost {
-//                Image(systemName: "sparkles")
-//            }
-//            
-//        }
-//        .font(.subheadline)
-//        .foregroundStyle(.secondary)
-//    }
-//}
-
 
 extension Bundle {
     public var icon: UIImage? {
