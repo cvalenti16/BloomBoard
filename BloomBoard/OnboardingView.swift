@@ -21,7 +21,7 @@ private enum OnboardingPage: Int {
 
 struct OnboardingView: View {
     @AppStorage("needsOnboarding") private var needsOnboarding = true
-
+    
     @State private var currentPage: OnboardingPage = .welcome
     
     private var isLastPage: Bool {
@@ -33,6 +33,9 @@ struct OnboardingView: View {
             TabView(selection: $currentPage) {
                 WelcomeView()
                     .tag(OnboardingPage.welcome)
+                
+                TrainingView()
+                    .tag(OnboardingPage.training)
             }
         }
     }
@@ -49,11 +52,62 @@ private struct WelcomeView: View {
             
             Text("Made to help you write better X posts")
                 .font(.title3)
-                
+            
         }
         .padding()
     }
 }
+
+private struct TrainingView: View {
+    @Query(filter: #Predicate<Post> { post in
+        post.isAITrainingPost == true
+    }) var aiTrainingPosts: [Post]
+    
+    var body: some View {
+        List {
+            Section(header: Text("Grab three of your best X posts")) {
+                ForEach(aiTrainingPosts) { post in
+                    
+                }
+            }
+        }
+//        .overlay {
+//            if aiTrainingPosts.isEmpty {
+//                
+//                ContentUnavailableView {
+//                    Label("These will help train your AI", systemImage: "wand.and.rays")
+//                }
+//              
+//                
+//            }
+//        }
+        
+        .safeAreaInset(edge: .bottom) {
+            Button {
+                
+            } label: {
+                Text("Add Post")
+            }
+            .foregroundStyle(.text)
+            .padding()
+        }
+        
+    }
+}
+
+private struct AiTraingItemView: View {
+    let post: Post
+    
+    var body: some View {
+        VStack {
+            
+            
+        }
+        .padding()
+    }
+}
+
+
 
 extension Bundle {
     public var icon: UIImage? {

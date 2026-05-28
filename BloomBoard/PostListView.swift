@@ -118,7 +118,7 @@ private class ListState {
 }
 
 //MARK: PostItemView
-private struct PostItemView: View {
+struct PostItemView: View {
     let post: Post
     let onSelect: (Post) -> Void
     var hasImage: Bool {
