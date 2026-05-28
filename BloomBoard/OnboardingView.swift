@@ -67,20 +67,28 @@ private struct TrainingView: View {
         List {
             Section(header: Text("Grab three of your best X posts")) {
                 ForEach(aiTrainingPosts) { post in
-                    
+                    AITraingItemView(post: post)
                 }
             }
         }
-//        .overlay {
-//            if aiTrainingPosts.isEmpty {
-//                
-//                ContentUnavailableView {
-//                    Label("These will help train your AI", systemImage: "wand.and.rays")
-//                }
-//              
-//                
-//            }
-//        }
+        .overlay {
+            if aiTrainingPosts.isEmpty {
+                
+                
+                
+                
+//                Text("This will help train your AI")
+                
+                
+                
+                
+                ContentUnavailableView {
+                    Label("These will help train your AI", systemImage: "wand.and.rays")
+                }
+              
+                
+            }
+        }
         
         .safeAreaInset(edge: .bottom) {
             Button {
@@ -95,18 +103,51 @@ private struct TrainingView: View {
     }
 }
 
-private struct AiTraingItemView: View {
+private struct AITraingItemView: View {
     let post: Post
     
     var body: some View {
         VStack {
-            
-            
+            Text(post.title)
+                .bold()
+                .font(.title3)
+                .foregroundStyle(.text)
+                .lineLimit(2)
+                .truncationMode(.tail)
         }
-        .padding()
     }
 }
 
+
+
+//var body: some View {
+//    VStack (alignment: .leading) {
+//        
+//        Button {
+//            onSelect(post)
+//        } label: {
+//            Text(post.title)
+//                .bold()
+//                .font(.title3)
+//                .foregroundStyle(.text)
+//                .lineLimit(2)
+//                .truncationMode(.tail)
+//        }
+//        
+//        HStack {
+//            Text("\(UIStrings.created)\(post.creationDate, style: .date)")
+//            
+//            Image(systemName: hasImage ? UIIcons.photo : UIIcons.document)
+//            
+//            if post.isAITrainingPost {
+//                Image(systemName: "sparkles")
+//            }
+//            
+//        }
+//        .font(.subheadline)
+//        .foregroundStyle(.secondary)
+//    }
+//}
 
 
 extension Bundle {
