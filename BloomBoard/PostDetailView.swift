@@ -40,7 +40,9 @@ struct PostDetailView: View {
                 .padding(.horizontal)
                 .multilineTextAlignment(.leading)
             
-            AITrainingButton(post: post)
+            if aiTrainingPosts.count < 3 {
+                AITrainingButton(post: post)
+            }
             
             UIImageView(loadedImage: loadedImage)
             

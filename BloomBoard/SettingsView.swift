@@ -12,22 +12,26 @@ import CloudKit
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @AppStorage("trackedPlatforms")
-    private var platforms: String = ""
+    @AppStorage("selectedAppearance")
+    private var selectedAppearance: Appearance = .dark
     
-    @AppStorage("selectedAppearance") private var selectedAppearance: Appearance = .dark
-    
-    @Query(filter: #Predicate<Post> { post in
-        post.isAITrainingPost == true
-    }) var aiTrainingPosts: [Post]
+    @Query(
+        filter: #Predicate<Post> { post in
+            post.isAITrainingPost == true
+        },
+        sort: [SortDescriptor(\Post.creationDate, order: .reverse)]
+    ) var aiTrainingPosts: [Post]
     
     @State private var iCloudStatus: String? = nil
+    @State private var showAITrainingAlert = false
+    @State private var postToRemoveAITraining: Post? = nil
     
     var body: some View {
         NavigationStack {
             List(aiTrainingPosts) { posts in
                 PostItemView(post: posts) { post in
-                    
+                    postToRemoveAITraining = post
+                    showAITrainingAlert = true
                 }
             }
             .overlay {
@@ -41,6 +45,16 @@ struct SettingsView: View {
                 Text(iCloudStatus ?? "")
                     .defaultMessageStyle()
             }
+            .alert("Remove post from AI Training?", isPresented: $showAITrainingAlert, actions: {
+                Button("Confirm", role: .destructive) {
+                    postToRemoveAITraining?.isAITrainingPost = false
+                    postToRemoveAITraining = nil
+                }
+                
+                Button("Cancel", role: .cancel) {
+                    postToRemoveAITraining = nil
+                }
+            })
             .scrollDisabled(true)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -90,4 +104,3 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
 }
-
