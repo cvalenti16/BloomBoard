@@ -13,6 +13,7 @@ struct PostListView: View {
     
     @State private var listState = ListState()
     @State private var searchTerm = ""
+    @State private var postToedit: Post? = nil
     
     let posts: [Post]
     
@@ -25,17 +26,17 @@ struct PostListView: View {
             }
         }
     }
-      
+    
     var currentNavigationTitle: String {
         let count = searchedPosts.count
         return String(format: "%@ (%d)", "Posts", count)
     }
     
     var body: some View {
-        NavigationStack(path: $listState.postDetailPath) {
+        NavigationStack {
             List(searchedPosts) { post in
-                PostItemView(post: post) { post in
-                    listState.postDetailPath.append(post)
+                PostItemView(post: post) { selectedPost in
+                    postToedit = selectedPost
                 }
                 .swipeActions(edge: .trailing) {
                     Button {
@@ -46,9 +47,6 @@ struct PostListView: View {
                             .tint(.red)
                     }
                 }
-            }
-            .navigationDestination(for: Post.self) { post in
-                PostDetailView(post: post)
             }
             .postDeleteAlert()
             .navigationTitle(currentNavigationTitle)
@@ -62,10 +60,9 @@ struct PostListView: View {
         .sheet(isPresented: $listState.showAddSheet) {
             PostEditorView(mode: .creating)
         }
-//        .sheet(isPresented: $needsOnboarding) {
-//            OnboardingView()
-//                .interactiveDismissDisabled()
-//        }
+        .sheet(item: $postToedit) { freshPost in
+            PostEditorView(mode: .editing(freshPost))
+        }
         .sheet(isPresented: $listState.showSettingsSheet) {
             SettingsView()
         }
@@ -177,7 +174,7 @@ private struct PostListToolbar: ToolbarContent {
             return .topBarTrailing
         }
     }
-
+    
     var body: some ToolbarContent {
         @Bindable var listState = listState
         
