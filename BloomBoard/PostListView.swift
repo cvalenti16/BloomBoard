@@ -61,7 +61,7 @@ struct PostListView: View {
             PostEditorView(mode: .creating)
         }
         .sheet(item: $postToedit) { freshPost in
-            PostEditorView(mode: .editing(freshPost))
+            PostEditorView(mode: .remix(freshPost))
         }
         .sheet(isPresented: $listState.showSettingsSheet) {
             SettingsView()
