@@ -117,6 +117,20 @@ struct PostEditorView: View {
                         }
                     }
                     
+                    //MARK: AI TOGGLE
+                    if case .remix(let post) = mode,
+                       aiTrainingPosts.count < 3 {
+                        Toggle(
+                            "AI Training",
+                            isOn: toggleBinding(for: post)
+                        )
+                        .font(.headline)
+                        .foregroundStyle(.text)
+                        .fixedSize()
+                        .scaleEffect(0.90)
+                    }
+                    
+                    //MARK: AI Action
                     if canUseAI, !title.isEmpty {
                         ImproveTitlesView(
                             mode: mode,
@@ -201,6 +215,25 @@ struct PostEditorView: View {
         } catch {
             errorMessage = FeedbackMessages.savedFailed
         }
+    }
+    
+    private func toggleBinding(for post: Post) -> Binding<Bool> {
+        Binding(
+            get: {
+                post.isAITrainingPost
+            },
+            set: { newValue in
+                let oldValue = post.isAITrainingPost
+                post.isAITrainingPost = newValue
+                
+                do {
+                    try modelContext.save()
+                } catch {
+                    post.isAITrainingPost = oldValue
+                    errorMessage = FeedbackMessages.savedFailed
+                }
+            }
+        )
     }
 }
 
@@ -321,7 +354,6 @@ struct ImproveTitlesView: View {
     }
 }
 
-
 /*
  This block works, the AI just wasn't really good at generating titles
  
@@ -330,15 +362,15 @@ struct ImproveTitlesView: View {
 //struct GenerateTitlesView: View {
 //    let titleSuggestor: TitleSuggestor?
 //    let aiTrainingPosts: [Post]
-//    
+//
 //    var body: some View {
 //        switch titleSuggestor?.titlesStatus {
-//            
+//
 //        case .fetching:
 //            Label("Generating titles", systemImage: "sparkles")
 //                .symbolEffect(.pulse)
 //                .foregroundStyle(.text)
-//            
+//
 //        case .success:
 //            Button {
 //                Task {
@@ -348,12 +380,12 @@ struct ImproveTitlesView: View {
 //                Label("Other titles", systemImage: "sparkles")
 //            }
 //            .foregroundStyle(.text)
-//            
+//
 //        case .failed:
 //            Text("Error generating titles, Please try again.")
 //                .font(.subheadline)
 //                .foregroundStyle(.text)
-//            
+//
 //        default:
 //            Button {
 //                Task {
