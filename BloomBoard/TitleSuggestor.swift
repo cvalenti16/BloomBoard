@@ -122,6 +122,7 @@ final class TitleSuggestor {
         - Stay close to the original title
         - If no improvement can be made on the post, return the orginal post
         - Return one improved version and nothing else
+        - Keep a similar length, writing style, and punctuation 
         """
         
         do {
@@ -184,7 +185,7 @@ final class TitleSuggestor {
             - Explore a different angle on the original post’s core idea
             - Create a fresh variation, not a completely new idea
             - Preserve the same topic, tone, and point of view
-            - Keep a similar length and writing style
+            - Keep a similar length, writing style, and punctuation 
             - Return one remixed version and nothing else
             """
         
