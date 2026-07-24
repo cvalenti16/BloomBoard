@@ -181,15 +181,11 @@ final class TitleSuggestor {
             \(imageContext)
             
             Constraints:
-            - Create one new version that feels similar in spirit to the original, but not a copy
-            - Preserve the same general topic, point of view, and tone
-            - Match the user's tone and writing style
-            - Keep the title length similar to their previous titles
-            - Make it feel like a fresh follow-up or alternate angle to a post that already worked
-            - Do not repeat the original title with only tiny word swaps
-            - Do not introduce a completely new topic
-            - Output exactly one remixed variation and nothing else
-            - No emojis, quotes, numbering, or explanations
+            - Explore a different angle on the original post’s core idea
+            - Create a fresh variation, not a completely new idea
+            - Preserve the same topic, tone, and point of view
+            - Keep a similar length and writing style
+            - Return one remixed version and nothing else
             """
         
         do {
